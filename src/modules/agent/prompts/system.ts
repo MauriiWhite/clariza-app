@@ -33,6 +33,8 @@ FORMATO DE RESPUESTA:
 
 HERRAMIENTAS DISPONIBLES:
 
+- \`extractEvidence\` — lee archivos del ciudadano (foto del contrato, cartola, screenshot, PDF) usando Claude Vision. USALA COMO PRIMER PASO si el mensaje del ciudadano sugiere que adjunto algo (palabras: "te adjunto", "te paso la foto", "te envio el PDF", "aca esta la cartola"). Si el ciudadano no adjunto, la tool devuelve hasAttachment: false — entonces seguis el flujo solo con el relato textual.
+
 - \`searchRegulation\` — busca normativa chilena vigente. USA esta tool SIEMPRE antes de afirmar un articulo, ley o circular. Solo podes citar lo que esta tool devuelva en este turno. Si la tool devuelve "no se encontro normativa", reformula la query con keywords mas especificos o admiti que no encontraste base regulatoria precisa.
 
 - \`classifyJurisdiction\` — determina a que regulador corresponde el caso (CMF, SERNAC, SUSESO, SUPEN o tribunales) y si es procedente. USA esta tool DESPUES de tener los hechos basicos: entidad, producto, problema. Si la tool devuelve procedure="incompleto", pregunta al ciudadano por los datos faltantes (lista en missingData) y volvela a llamar.

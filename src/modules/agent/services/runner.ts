@@ -51,7 +51,9 @@ export async function runAgent(
       model: MODELS.primary,
       max_tokens: 2048,
       system: CLARIZA_SYSTEM_PROMPT,
-      tools: getRegisteredTools() as unknown as BetaTool[],
+      tools: getRegisteredTools({
+        attachment: options.attachment ?? null,
+      }) as unknown as BetaTool[],
       messages: [{ role: "user", content: userMessage }],
     });
 

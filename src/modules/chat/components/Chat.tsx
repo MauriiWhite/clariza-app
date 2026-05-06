@@ -7,6 +7,11 @@
 import { useRef, useState } from "react";
 import type { ConsoleEvent } from "@/modules/agent/types";
 import { Button } from "@/modules/core/design-system/Button";
+import {
+  EMPTY_IDENTITY,
+  IdentityCard,
+  type Identity,
+} from "@/modules/chat/components/IdentityCard";
 
 interface ChatProps {
   events: ConsoleEvent[];
@@ -26,6 +31,7 @@ const QUICK_STARTS = [
 export function Chat({ events, isStreaming, onSend }: ChatProps) {
   const [draft, setDraft] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [identity, setIdentity] = useState<Identity>(EMPTY_IDENTITY);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Filtramos solo los eventos que se muestran en el hilo conversacional.
@@ -90,6 +96,11 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
               También podés adjuntar foto del contrato, cartola o un mensaje
               que recibiste.
             </p>
+
+            {/* Identity inline opcional. No bloquea — la gente con prisa la salta. */}
+            <div className="pt-2">
+              <IdentityCard identity={identity} onChange={setIdentity} />
+            </div>
           </div>
         ) : null}
 

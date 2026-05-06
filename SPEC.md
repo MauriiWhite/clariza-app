@@ -9,7 +9,15 @@
 
 ## 1. One-liner
 
-> **Clariza es un agente conversacional que recibe el problema financiero de cualquier ciudadano, lo cruza con la normativa vigente, decide a qué regulador corresponde (CMF, SERNAC, SUSESO, SUPEN o tribunales) y le entrega un reclamo formal listo para enviar.**
+> **Clariza es una plataforma de orientación inteligente que democratiza la justicia financiera: toma el relato en lenguaje sencillo del ciudadano, lo transforma en una denuncia formal tipificada, lo deriva al regulador competente (CMF, SERNAC, SUSESO, SUPEN o tribunales) y monitorea los plazos hábiles para que nunca pierda un reclamo por no saber qué decir o cuándo actuar.**
+
+### 1.1 Resumen oficial (para submission)
+
+**El problema:** Miles de chilenos pierden su derecho a restitución económica porque el lenguaje legal es una barrera y los plazos regulatorios son invisibles para el ciudadano común.
+
+**La solución:** Una plataforma de orientación inteligente que democratiza la justicia financiera. La IA toma el relato en lenguaje sencillo, lo transforma en una denuncia formal tipificada y guía paso a paso para que nadie más pierda un reclamo por no saber qué decir o cuándo actuar.
+
+**Cómo usamos IA:** La IA actúa como traductor jurídico y estratega proactivo. Usamos Claude con MCP para conectar en tiempo real con bases de datos de CMF y SERNAC. Funciona como monitor inteligente que calcula días hábiles restantes y envía recordatorios críticos, asegurando que el usuario mantenga control total del proceso de principio a fin, con interpretación y orientación constante basada en su caso.
 
 ---
 
@@ -47,9 +55,14 @@ PWA liviana (web móvil-first, opera con conexión lenta) + export de reclamo en
 | Amaro Alvial | Alfabetización financiera + trámites | No agéntico explícito |
 | Data Guardia (C. González) | Privacidad, cartas de reclamo | Track distinto (Línea 03) |
 
-**Posición de Clariza:** único agente que ejecuta el tip oficial CMF tal cual, con **derivación inteligente entre 5 reguladores** y **redacción del reclamo formal** como output final.
+**Posición de Clariza:** único agente que ejecuta el tip oficial CMF tal cual, con cuatro pilares que ningún competidor cubre junto:
 
-Frase de pitch frente a colisión: *"Ellos te traducen. Nosotros te resolvemos hasta el reclamo enviado."*
+1. **Derivación inteligente entre 5 reguladores** (CMF / SERNAC / SUSESO / SUPEN / tribunales).
+2. **Redacción del reclamo formal** como output accionable.
+3. **Monitor de plazos hábiles** — calcula días restantes según ente competente y envía recordatorios críticos antes del vencimiento.
+4. **Conexión MCP a fuentes oficiales** CMF y SERNAC en tiempo real.
+
+Frase de pitch frente a colisión: *"Ellos te traducen. Nosotros te resolvemos hasta el reclamo enviado, antes de que se te venza el plazo."*
 
 ---
 
@@ -58,7 +71,7 @@ Frase de pitch frente a colisión: *"Ellos te traducen. Nosotros te resolvemos h
 ### 4.1 Loop principal
 Agent loop con system prompt específico que orquesta tool-use de Claude Sonnet 4.6. Cada paso queda visible en una **consola de razonamiento** que el jurado ve en pantalla (cumple sub-check B3: ≥3 mensajes en ventana).
 
-### 4.2 Tools expuestas (≥2 según rúbrica — vamos con 4 para bonus agéntico)
+### 4.2 Tools expuestas (≥2 según rúbrica — vamos con 5 para bonus agéntico)
 
 #### `extraer_antecedentes(archivo: File) → Antecedentes`
 Claude Vision sobre PDF/imagen/foto. Extrae: entidad, producto, monto, fechas, cláusulas relevantes, comunicaciones previas.
@@ -90,6 +103,20 @@ Devuelve estructura:
 
 #### `generar_reclamo(canal: string, hechos: Antecedentes, normativa: CitasNormativas[]) → Reclamo`
 Devuelve PDF/markdown con: identificación, hechos, normativa invocada, petición concreta — formateado según el canal destino (cada regulador tiene formato propio).
+
+#### `calcular_plazos(ente: Ente, tipo_caso: string, fecha_hechos: Date, fecha_respuesta_entidad?: Date) → Plazos`
+Devuelve estructura:
+```ts
+{
+  plazo_total_dias_habiles: number,
+  dias_transcurridos: number,
+  dias_restantes: number,
+  fecha_limite: Date,
+  hitos: { fecha: Date, accion: string, critico: boolean }[],
+  feriados_considerados: string[]
+}
+```
+Considera feriados oficiales chilenos. Esta tool puede exponerse vía **MCP server propio** para que Claude la consulte como herramienta externa — alineado con el stack del Lab y suma puntos de "pensamiento agéntico".
 
 ### 4.3 Sistema de prompts
 - **System prompt principal**: rol asistente CMF, restricciones contra alucinación regulatoria, obligación de citar fuente con cada afirmación legal, escalación a "no sé" cuando aplique.
@@ -149,8 +176,10 @@ Devuelve PDF/markdown con: identificación, hechos, normativa invocada, petició
 
 1. **Landing** — hook + ejemplo de caso resuelto en 30s.
 2. **Chat principal** — input texto + adjuntar archivo + **consola lateral derecha** mostrando el agent loop en vivo (tool calls + resultados).
-3. **Diagnóstico** — card con: ente competente, procedencia, plazo, normativa invocada (con links), gravedad.
-4. **Reclamo** — preview del documento + botón descargar PDF + copy texto.
+3. **Diagnóstico** — card con: ente competente, procedencia, normativa invocada (con links), gravedad.
+4. **Timeline de plazos** — barra visual con días hábiles transcurridos / restantes, hitos críticos, fecha límite destacada.
+5. **Reclamo** — preview del documento + botón descargar PDF + copy texto.
+6. **Seguimiento (opcional MVP)** — formulario simple "te avisamos por email" → guarda caso + dispara recordatorios automáticos a 7 / 3 / 1 días del vencimiento.
 
 Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone viejo, conexión lenta, baja alfabetización digital).
 
@@ -159,12 +188,13 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 ## 8. Demo (M4 — 25%, video 3–5 min)
 
 ### 8.1 Estructura del video
-- **0:00–0:30** — hook: "5 millones de chilenos no saben a quién reclamar. Esto es Clariza."
+- **0:00–0:30** — hook: "Miles de chilenos pierden plata no por no tener razón, sino porque se les vence el plazo. Esto es Clariza."
 - **0:30–1:30** — caso A en vivo: usuario sube cartola banco, agente analiza, deriva a CMF, genera reclamo.
-- **1:30–2:30** — caso B: AFP → SUPEN. Mostrar que **el agente cambia de regulador** según el caso.
-- **2:30–3:30** — caso C improcedente: agente explica por qué no aplica reclamo y sugiere acción alternativa.
-- **3:30–4:00** — arquitectura agéntica: zoom a la consola con tool calls visibles.
-- **4:00–4:30** — cierre con métrica de impacto y CTA.
+- **1:30–2:15** — timeline de plazos hábiles aparece: "te quedan 18 días hábiles, te avisamos a los 7, 3 y 1".
+- **2:15–3:00** — caso B: AFP → SUPEN. Mostrar que **el agente cambia de regulador y de plazo** según el caso.
+- **3:00–3:45** — caso C improcedente: agente explica por qué no aplica reclamo y sugiere acción alternativa.
+- **3:45–4:15** — arquitectura agéntica: zoom a la consola con tool calls visibles + MCP a CMF/SERNAC.
+- **4:15–4:30** — cierre con métrica de impacto y CTA.
 
 ### 8.2 Backup plan
 - Versión local funcionando como fallback si el deploy se cae.
@@ -180,12 +210,13 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 |---|---|---|---|
 | Kickoff + setup repos | 09:00–10:00 | Todos | Repo, .env, accesos |
 | Inauguración oficial | 11:00 | — | Asistir |
-| Ingesta corpus regulatorio | 10:00–13:00 | Backend | RAN + 4 leyes en pgvector |
-| Tools: `buscar_normativa` + `extraer_antecedentes` | 13:00–16:00 | Backend | 2 tools verdes |
-| Tools: `clasificar_competencia` + `generar_reclamo` | 16:00–19:00 | Backend | 4 tools verdes |
-| Frontend: chat + consola | 13:00–19:00 | Frontend | UI funcional |
-| Integración + 3 casos demo | 19:00–21:00 | Todos | E2E funcionando |
-| Grabación video demo | 21:00–22:30 | Frontend | MP4 listo |
+| Ingesta corpus regulatorio | 10:00–13:00 | Mauricio | RAN + 4 leyes en pgvector |
+| Tools: `buscar_normativa` + `extraer_antecedentes` | 13:00–16:00 | Mauricio | 2 tools verdes |
+| Tools: `clasificar_competencia` + `generar_reclamo` + `calcular_plazos` | 16:00–19:00 | Mauricio | 5 tools verdes |
+| Frontend: chat + consola + timeline plazos | 13:00–19:00 | Exequiel | UI funcional |
+| Casos demo + validación normativa | 13:00–19:00 | Sebastián | 3 casos curados |
+| Integración + recordatorio email (cron simple) | 19:00–21:00 | Todos | E2E funcionando |
+| Grabación video demo | 21:00–22:30 | Exequiel | MP4 listo |
 | Submit corte mentor | antes 23:59 | Líder | Form completo |
 
 ### Día 7 mayo — solo si pasamos preselección
@@ -240,26 +271,27 @@ Optimizamos contra rúbrica Fase 1:
 
 ## 13. Pitch final (día 7) — esqueleto
 
-**Hook (15s):** "Cuando un chileno tiene un problema con su banco, AFP o seguro, lo primero que pierde no es la plata. Es la pista de a quién reclamar."
+**Hook (15s):** "Cuando un chileno tiene un problema con su banco, AFP o seguro, lo primero que pierde no es la plata. Es el plazo."
 
-**Problema (30s):** 28.000 reclamos al año solo en CMF. La mayoría llega mal dirigida, fuera de plazo o mal redactada. El sistema regulatorio chileno tiene 5 puertas de entrada y nadie sabe cuál tocar.
+**Problema (30s):** 28.000 reclamos al año solo en CMF. La mayoría llega mal dirigida, fuera de plazo o mal redactada. El sistema regulatorio chileno tiene 5 puertas de entrada, plazos hábiles distintos y nadie le explica al ciudadano cuál es cuál.
 
-**Solución demo en vivo (90s):** subir un caso real, el agente clasifica, deriva, genera el reclamo. Pivot al diferenciador: *misma app, otro caso, otro regulador.*
+**Solución demo en vivo (90s):** subir un caso real, el agente clasifica, deriva, calcula los días hábiles restantes, genera el reclamo. Pivot al diferenciador: *misma app, otro caso, otro regulador, otro plazo.*
 
-**Por qué Clariza vs el resto (30s):** único que ejecuta el tip oficial CMF + único con derivación multi-regulador + único que termina en reclamo formal listo.
+**Por qué Clariza vs el resto (30s):** único que ejecuta el tip oficial CMF + único con derivación multi-regulador + único que monitorea plazos hábiles + único que termina en reclamo formal listo.
 
-**Cierre (15s):** "Clariza no traduce la ley. La pone a tu favor."
+**Cierre (15s):** "Clariza no traduce la ley. La pone a tu favor antes de que se te venza el plazo."
 
 ---
 
 ## 14. Out of scope (explícito)
 
-- Login / cuenta de usuario.
-- Envío automático del reclamo al canal oficial — solo generamos el documento.
-- WhatsApp Business API — riesgo de aprobación Meta en 48h.
+- Login con contraseña / cuenta tradicional — el seguimiento se activa con email simple sin password (link mágico opcional).
+- Envío automático del reclamo al canal oficial — solo generamos el documento, el usuario lo presenta.
+- WhatsApp Business API — riesgo de aprobación Meta en 48h. Recordatorios solo por email en MVP.
 - Integración Open Finance real — fuera de alcance.
 - Mobile app nativa — PWA cubre el caso.
 - Multi-idioma — español Chile only en MVP.
+- Calendario completo de feriados regionales — usamos feriados nacionales + buffer conservador.
 
 ---
 

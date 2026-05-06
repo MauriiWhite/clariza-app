@@ -372,6 +372,7 @@ Mentoría día 6 es para **refinar**, no es preselección — la preselección T
 - Mobile app nativa — PWA cubre el caso.
 - Multi-idioma — español Chile only en MVP.
 - Calendario completo de feriados regionales — usamos feriados nacionales + buffer conservador.
+- **Cumplimiento tributario (SII / F22 / F29)** — Clariza es asistente de **reclamaciones**, no de declaraciones. SII y Tribunales Tributarios (TTA) no son uno de los 5 reguladores cubiertos. Sumarlo amplía scope sin sumar puntos en la rúbrica del Lab y se solapa con propuestas de otros equipos (ángulo "guía tributaria para emprendedores"). Queda como roadmap post-Lab para Clariza V2.
 
 ---
 

@@ -6,7 +6,39 @@ Diagramas de referencia de los flujos clave del producto. Renderizados con Merma
 
 ---
 
-## 1. Flujo principal end-to-end
+## 1. Flujo en cascada (vista lineal)
+
+Lectura rápida top-to-bottom de las 7 etapas que recorre cada caso. Útil para pitch.
+
+```mermaid
+flowchart TD
+    S1["1️⃣ Ciudadano cuenta su problema<br/>(texto libre + adjuntos)"]
+    S2["2️⃣ Clariza extrae datos del caso<br/>(entidad · monto · fecha · producto)"]
+    S3["3️⃣ Cruza hechos con normativa vigente<br/>(RAN + 9 leyes/NCG con citations)"]
+    S4["4️⃣ Decide a qué regulador corresponde<br/>(CMF · SERNAC · SUSESO · SUPEN · tribunales)"]
+    S5["5️⃣ Calcula días hábiles restantes<br/>(MCP server + feriados oficiales)"]
+    S6["6️⃣ Redacta el reclamo formal en PDF<br/>(con citas normativas verificables)"]
+    S7["7️⃣ Activa recordatorios por email<br/>(7 / 3 / 1 días antes del vencimiento)"]
+
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
+
+    style S1 fill:#fef3c7,stroke:#f59e0b
+    style S2 fill:#fef3c7,stroke:#f59e0b
+    style S3 fill:#dbeafe,stroke:#3b82f6
+    style S4 fill:#dbeafe,stroke:#3b82f6
+    style S5 fill:#dbeafe,stroke:#3b82f6
+    style S6 fill:#dcfce7,stroke:#10b981
+    style S7 fill:#dcfce7,stroke:#10b981
+```
+
+**Lectura por colores:**
+- 🟡 Input (qué da el ciudadano)
+- 🔵 Procesamiento agéntico (lo que hace Clariza con Claude)
+- 🟢 Output accionable (lo que entrega de vuelta)
+
+---
+
+## 2. Flujo principal end-to-end (con bifurcaciones)
 
 Camino completo del ciudadano desde que describe su problema hasta que recibe recordatorios de plazos.
 
@@ -31,7 +63,7 @@ flowchart TD
 
 ---
 
-## 2. Agent loop con tools (lo que se ve en la consola)
+## 3. Agent loop con tools (lo que se ve en la consola)
 
 Esto es lo que el jurado verá durante la demo — la consola lateral muestra cada llamada a tool y su resultado en vivo. Cumple sub-check **B3** de la rúbrica (≥3 mensajes visibles) y demuestra arquitectura agéntica (M3, 25%).
 
@@ -63,7 +95,7 @@ sequenceDiagram
 
 ---
 
-## 3. Casos demo → regulador competente
+## 4. Casos demo → regulador competente
 
 Los 3 casos curados para la demo mapean a 3 de los 4 perfiles oficiales del Impact Lab y demuestran que **el agente cambia de regulador según el caso**.
 
@@ -108,7 +140,7 @@ flowchart LR
 
 ---
 
-## 4. Arquitectura del sistema
+## 5. Arquitectura del sistema
 
 ```mermaid
 flowchart TB

@@ -38,49 +38,51 @@ gh pr create --base dev --head dev-tuya --title "feat: lo que hiciste"
 
 Adoptamos el patrón de **feature folders / modular monolith**. Cada módulo es autocontenido (components, hooks, services, lib, utils) y tiene un único dueño. Trabajamos en paralelo, integramos al final.
 
+**Reparto:** Exequiel toma el **flujo principal** (landing + recorrido del usuario al entrar) y todo lo del agente. Mauricio toma los **encargos específicos** (componentes que entregan output del agente: diagnóstico, reclamo PDF, recordatorios).
+
 ```
 src/
-├── app/                    ← Next.js routing + API routes        [Mauricio]
+├── app/                    ← Next.js routing + landing + API routes  [Exequiel]
 └── modules/
-    ├── core/               ← design system + UI primitives        [Mauricio]
+    ├── core/               ← design system + UI primitives           [Exequiel]
     │   ├── components/
     │   ├── design-system/
     │   ├── hooks/
     │   ├── lib/            (supabase client compartido)
     │   └── utils/
-    ├── agent/              ← orquestación del agente Claude       [Exequiel]
+    ├── agent/              ← orquestación del agente Claude          [Exequiel]
     │   ├── lib/            (cliente Anthropic + IDs de modelos)
     │   ├── prompts/        (system prompt y plantillas)
-    │   ├── services/       (runner, agent loop)
+    │   ├── services/       (runner, eventEmitter, toolRegistry)
     │   ├── tools/          (tools utilitarias: echo, helpers)
     │   └── types/          (ConsoleEvent, RunAgentResult)
-    ├── tools/              ← las 5 tools reales del producto      [Exequiel]
+    ├── tools/              ← las 5 tools reales del producto         [Exequiel]
     │   ├── extractEvidence/
     │   ├── searchRegulation/
     │   ├── classifyJurisdiction/
     │   ├── calculateDeadlines/
     │   └── draftClaim/
-    ├── regulations/        ← corpus regulatorio + RAG             [Exequiel]
+    ├── regulations/        ← corpus regulatorio + RAG                [Exequiel]
     │   ├── services/       (ingest, search)
     │   ├── lib/            (BCN API, embeddings)
     │   ├── data/           (corpus markdown, fallback)
     │   └── utils/
-    ├── chat/               ← UI conversacional                    [Mauricio]
+    ├── chat/               ← UI conversacional principal             [Exequiel]
     │   ├── components/     (Chat, MessageList, FileUpload)
     │   ├── hooks/          (useChat, useStream)
     │   ├── services/       (cliente SSE)
     │   └── states/
-    ├── console/            ← consola con tool calls visibles      [Mauricio]
+    ├── console/            ← consola con tool calls visibles         [Exequiel]
     │   ├── components/     (Console, ToolCallBlock, ToolResultBlock)
     │   └── hooks/
-    ├── diagnosis/          ← cards de diagnóstico + timeline      [Mauricio]
+    ├── diagnosis/          ← cards de diagnóstico + timeline         [Mauricio]
     │   ├── components/     (DiagnosisCard, TimelineDeadlines)
     │   └── hooks/
-    ├── claim/              ← reclamo formal + PDF                 [Mauricio]
+    ├── claim/              ← reclamo formal + PDF                    [Mauricio]
     │   ├── components/     (ReclamoPreview, DownloadButton)
     │   ├── services/       (PDFGenerator)
     │   └── templates/      (formato por regulador)
-    └── reminders/          ← email + cron + persistencia casos    [Mauricio]
+    └── reminders/          ← email + cron + persistencia casos       [Mauricio]
         ├── services/       (email, cron, casesRepo)
         ├── lib/            (Resend, supabase queries)
         └── schema/         (cases table SQL)
@@ -88,18 +90,18 @@ src/
 
 ### Tabla de owners por módulo
 
-| Módulo | Owner | Cuántos componentes esperados |
+| Módulo | Owner | Foco |
 |---|---|---|
-| `app/` | **Mauricio** | 2-3 routes + 2 API handlers |
-| `modules/core/` | **Mauricio** | design system + 4-5 primitives |
-| `modules/agent/` | **Exequiel** | runner + prompts + types (la base) |
-| `modules/tools/` | **Exequiel** | 5 tools (las del SPEC §4.2) |
-| `modules/regulations/` | **Exequiel** | ingest + search + BCN API |
-| `modules/chat/` | **Mauricio** | UI conversacional principal |
-| `modules/console/` | **Mauricio** | la consola visible (clave demo) |
-| `modules/diagnosis/` | **Mauricio** | output del agente |
-| `modules/claim/` | **Mauricio** | reclamo + PDF |
-| `modules/reminders/` | **Mauricio** | persistencia + email |
+| `app/` | **Exequiel** | Landing, layout, routing, API routes |
+| `modules/core/` | **Exequiel** | Design system para todo el resto |
+| `modules/agent/` | **Exequiel** | Runner + prompts + types (base agéntica) |
+| `modules/tools/` | **Exequiel** | Las 5 tools reales del agente |
+| `modules/regulations/` | **Exequiel** | Corpus regulatorio + RAG |
+| `modules/chat/` | **Exequiel** | UI conversacional — flujo principal del usuario |
+| `modules/console/` | **Exequiel** | Consola tool calls — clave para M3 (35% rúbrica) |
+| `modules/diagnosis/` | **Mauricio** | Encargo específico: cards de output del agente |
+| `modules/claim/` | **Mauricio** | Encargo específico: reclamo formal + generador PDF |
+| `modules/reminders/` | **Mauricio** | Encargo específico: persistencia casos + cron email |
 
 ### Zonas compartidas (avisar antes de tocar)
 
@@ -113,9 +115,11 @@ src/
 
 ### Carga aproximada
 
-- **Exequiel** — 3 módulos (`agent`, `tools`, `regulations`) — el cerebro.
-- **Mauricio** — 7 módulos (`app`, `core`, `chat`, `console`, `diagnosis`, `claim`, `reminders`) — la app que envuelve el cerebro.
+- **Exequiel** — 7 módulos (`app`, `core`, `agent`, `tools`, `regulations`, `chat`, `console`) — flujo principal + cerebro + UI conversacional.
+- **Mauricio** — 3 módulos (`diagnosis`, `claim`, `reminders`) — entregables específicos que reciben output del agente y lo materializan (card, PDF, email).
 - **Sebastián** — 0 módulos de código, dueño de docs (CASES, ficha, pitch, video) y QA contra la app real.
+
+**Lógica del reparto:** Exequiel tiene visión integrada del flujo (landing → chat → consola → output) y construye la base. Mauricio se enfoca en piezas específicas que pueden desarrollarse con vibecoding contra contratos claros (recibe `RegulatoryDiagnosis`, `ClaimDocument`, `ReminderSchedule` y los renderiza). Esto permite que ambos avancen en paralelo sin pisarse.
 
 **Regla de oro:** si tocás algo fuera de tu zona, avisás antes y mergeás chico inmediatamente.
 
@@ -150,20 +154,20 @@ src/
 
 | ID | Componente | Owner | Estado |
 |---|---|---|---|
-| F3.1 | Layout principal + landing con hook | Mauricio | ⏳ |
-| F3.2 | `components/chat/Chat.tsx` — input texto + adjuntar archivo | Mauricio | ⏳ |
-| F3.3 | `components/console/Console.tsx` — tool calls visibles en vivo | Mauricio | ⏳ |
-| F3.4 | `components/timeline/Timeline.tsx` — plazos hábiles + barra | Mauricio | ⏳ |
-| F3.5 | `components/reclamo/ReclamoPreview.tsx` — preview + descarga PDF | Mauricio | ⏳ |
-| F3.6 | PWA manifest + responsive móvil-first + accesibilidad alta | Mauricio | ⏳ |
-| F3.7 | Estado vacío + estados de carga + error states | Mauricio | ⏳ |
+| F3.1 | Landing + layout principal con hook | Exequiel | ⏳ |
+| F3.2 | `chat/components/Chat.tsx` — input texto + adjuntar archivo | Exequiel | ⏳ |
+| F3.3 | `console/components/Console.tsx` — tool calls visibles en vivo | Exequiel | ⏳ |
+| F3.4 | `diagnosis/components/TimelineDeadlines.tsx` — plazos hábiles | Mauricio | ⏳ |
+| F3.5 | `claim/components/ReclamoPreview.tsx` — preview + descarga PDF | Mauricio | ⏳ |
+| F3.6 | PWA manifest + responsive móvil-first + accesibilidad alta | Exequiel | ⏳ |
+| F3.7 | Estado vacío + estados de carga + error states | Exequiel (chat/console) · Mauricio (diagnosis/claim) | ⏳ |
 
 ### F4 — Backend & API
 
 | ID | Componente | Owner | Estado |
 |---|---|---|---|
-| F4.1 | Route handler `/api/agent` con streaming SSE | Mauricio | ⏳ |
-| F4.2 | Route handler `/api/upload` para archivos al Files API | Mauricio | ⏳ |
+| F4.1 | Route handler `/api/agent` con streaming SSE | Exequiel | ⏳ |
+| F4.2 | Route handler `/api/upload` para archivos al Files API | Exequiel | ⏳ |
 | F4.3 | PDF generator con `@react-pdf/renderer` | Mauricio | ⏳ |
 | F4.4 | Persistencia de casos en Supabase (tabla `cases`) | Mauricio | ⏳ |
 | F4.5 | Cron de recordatorios email con Resend (alertas 7/3/1 días) | Mauricio | ⏳ |
@@ -185,7 +189,7 @@ src/
 
 | ID | Componente | Owner | Estado |
 |---|---|---|---|
-| F6.1 | Deploy a Vercel + variables de entorno producción | Mauricio | ⏳ |
+| F6.1 | Deploy a Vercel + variables de entorno producción | Exequiel | ⏳ |
 | F6.2 | Setup local de cada uno con `.env.local` | Cada uno | ⏳ |
 | F6.3 | Smoke test verde antes de cada PR a `dev` | Owner del PR | ✅ infra |
 | F6.4 | Modo offline / fallback con casos pre-grabados | Mauricio + Sebastián | ⏳ |
@@ -194,9 +198,9 @@ src/
 
 | Persona | Componentes | Foco |
 |---|---|---|
-| **Exequiel** | F1.1, F1.2, F1.4, F2.1–F2.7, F5.5 | 11 componentes — el cerebro |
-| **Mauricio** | F1.3, F3.1–F3.7, F4.1–F4.6, F6.1, F6.4 | 16 componentes — la app que envuelve el cerebro |
-| **Sebastián** | F1.5, F2.8, F5.1–F5.4, F5.6–F5.7, F6.4 | 9 componentes — narrativa, validación, pitch |
+| **Exequiel** | F1.1, F1.2, F1.4, F2.1–F2.7, F3.1–F3.3, F3.6, F4.1, F4.2, F5.5, F6.1 | Flujo principal + cerebro + UI conversacional |
+| **Mauricio** | F1.3, F3.4, F3.5, F4.3–F4.6, F6.4 | Encargos específicos: diagnosis, claim, reminders |
+| **Sebastián** | F1.5, F2.8, F5.1–F5.4, F5.6–F5.7, F6.4 | Narrativa, validación, pitch |
 
 ---
 
@@ -210,27 +214,29 @@ Estos son los puntos de contacto entre módulos. Si cambian, se avisa antes en W
 
 | Contrato | Definido en | Lo respeta |
 |---|---|---|
-| `ConsoleEvent` (eventos del agente: tool_call, tool_result, assistant) | `src/agent/runner.ts` | UI consola (Mauricio) |
-| `RunAgentResult` (output final del agente) | `src/agent/runner.ts` | API route (Mauricio) |
-| Schema de cada tool (input zod + output) | `src/agent/tools/*.ts` | Frontend cuando renderiza resultados |
-| Endpoint `/api/agent` — POST con streaming SSE | TBD por Mauricio en `src/app/api/agent/route.ts` | Componente Chat (Mauricio), smoke test (Exequiel) |
-| Tabla `cases` en Supabase | `src/lib/supabase/schema.sql` (Mauricio define) | Cron de recordatorios (Mauricio), persistencia (Mauricio) |
-| Schema de `regulation_chunks` en pgvector | `src/lib/supabase/schema.sql` (Mauricio define) | Tool searchRegulation (Exequiel) |
+| `ConsoleEvent` (tool_call, tool_result, assistant) | `src/modules/agent/types/index.ts` | UI consola (Exequiel) |
+| `RunAgentResult` (output final del agente) | `src/modules/agent/types/index.ts` | API route + UI (Exequiel) |
+| Schema de cada tool (input zod + output) | `src/modules/tools/*/index.ts` | Frontend cuando renderiza resultados |
+| Endpoint `/api/agent` — POST con streaming SSE | `src/app/api/agent/route.ts` (Exequiel) | Chat (Exequiel), smoke test (Exequiel) |
+| `RegulatoryDiagnosis` — output de `classifyJurisdiction` | `src/modules/tools/classifyJurisdiction/types.ts` (Exequiel) | `modules/diagnosis` (Mauricio) |
+| `DeadlineSchedule` — output de `calculateDeadlines` | `src/modules/tools/calculateDeadlines/types.ts` (Exequiel) | `modules/diagnosis/components/TimelineDeadlines` (Mauricio) |
+| `ClaimDocument` — output de `draftClaim` | `src/modules/tools/draftClaim/types.ts` (Exequiel) | `modules/claim` (Mauricio) — preview + PDF |
+| Tabla `cases` en Supabase | `src/modules/reminders/schema/cases.sql` (Mauricio) | Cron de recordatorios (Mauricio), persistencia (Mauricio) |
+| Schema de `regulation_chunks` en pgvector | `src/modules/regulations/data/schema.sql` (Exequiel) | Tool searchRegulation (Exequiel) |
 
 ### 4.2 Mocks que cada uno mantiene para no bloquearse
 
 | Persona | Lo que mockea (porque depende del otro) | Para qué |
 |---|---|---|
-| **Mauricio** | `mockAgentStream()` — emite `ConsoleEvent`s falsos desde un caso de CASES.md | Desarrollar UI consola, chat, timeline sin necesidad del agente real |
-| **Mauricio** | `mockReclamoPDF()` — datos hardcodeados | Probar el PDF generator sin la tool draftClaim real |
 | **Exequiel** | Corpus mock en `data/corpus/fallback.ts` con 3-4 chunks de cada ley | Desarrollar tools antes de tener pgvector cargada |
 | **Exequiel** | Smoke CLI (`npm run smoke:agent`) | Validar agente sin UI |
-| **Sebastián** | Agente real vía CLI o consola → screenshots | Validar normativa sin depender de UI |
+| **Mauricio** | `mockDiagnosis()`, `mockDeadlineSchedule()`, `mockClaimDocument()` con datos basados en CASES.md | Desarrollar diagnosis/claim/reminders sin esperar a las tools reales |
+| **Sebastián** | Agente real vía CLI → screenshots | Validar normativa sin depender de UI |
 
 ### 4.3 Cómo verificás tu módulo sin los otros
 
-- **Exequiel**: `npm run smoke:agent` debe pasar verde con corpus mock + tool dummy + tools reales.
-- **Mauricio**: `npm run dev` debe levantar la UI con mocks que muestren un flujo completo simulado.
+- **Exequiel**: `npm run smoke:agent` y `npm run dev` ambos verdes — agente, landing, chat, consola levantando.
+- **Mauricio**: sus 3 módulos renderizando con mocks (diagnosis card, claim PDF, reminder form) — accesibles desde una ruta `/preview` que él mismo crea para ver sin depender del flujo principal.
 - **Sebastián**: leyendo CASES.md y verificando contra normativa real publicada en BCN/CMF.
 
 Cada módulo es **demo-able solo**. Si solo está mi parte, tengo que poder mostrarlo funcionando con stubs de las otras.
@@ -278,12 +284,12 @@ Cada hito tiene 30 min de buffer para fixes. Si un módulo no está listo, el hi
 |---|---|---|---|
 | 11:00 | Bienvenida — todos | | |
 | 11:30 | Mesa con reguladores — todos | | |
-| 12:30–15:30 | F1.1 + F1.2 + F1.4 (corpus + embeddings + Files API) | F1.3 schema + F3.1 layout + F3.2 chat + F6.1 deploy | F5.1 refinar casos + F5.2 draft ficha |
-| 15:30–18:30 | F2.1 + F2.2 + F2.6 (extract + search + system prompt) | F4.1 SSE + F3.3 consola + F3.4 timeline | F1.5 + F2.8 validación normativa |
-| 18:30–20:00 | F2.3 + F2.4 + F2.5 (classify + deadlines MCP + draft) | F4.3 PDF + F4.5 email cron | Mentor 15min Clay (sandbox + MCP propio) |
+| 12:30–15:30 | F3.1 landing + F1.1 corpus + F1.2 embeddings + F6.1 deploy Vercel | F3.4 timeline + F3.5 reclamo preview con mocks (`/preview`) | F5.1 refinar casos + F5.2 draft ficha |
+| 15:30–18:30 | F3.2 chat + F3.3 consola + F4.1 SSE + F2.1 + F2.2 + F2.6 | F4.3 PDF generator + F1.3 schema cases | F1.5 + F2.8 validación normativa |
+| 18:30–20:00 | F2.3 + F2.4 + F2.5 (classify + deadlines MCP + draft) | F4.4 persistencia cases + F4.5 cron email Resend | Mentor 15min Clay (sandbox + MCP propio) |
 | 20:00 | Cierre día 1 oficial | | |
-| 20:00–23:30 | Integración E2E | Integración E2E | F5.4 grabar video backup |
-| 23:30 | Merge `dev` → `main` + deploy | | F5.7 subir backup a Drive |
+| 20:00–23:30 | Integración E2E (chat ↔ agente real) | Integración (diagnosis/claim/reminders ↔ output real) | F5.4 grabar video backup |
+| 23:30 | Merge `dev` → `main` + deploy productivo | | F5.7 subir backup a Drive |
 
 ### Día 7 — jueves 7 mayo
 

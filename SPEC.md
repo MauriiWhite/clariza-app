@@ -39,7 +39,15 @@ El ciudadano que tiene un problema financiero **no sabe a quién reclamar**:
 Resultado: reclamos mal dirigidos, fuera de plazo, mal redactados — o directamente abandonados.
 
 ### 2.3 Segmento específico para demo
-Clientes de **AFP, seguros y créditos** que enfrentan cobros, negativas o cláusulas que no entienden y no distinguen competencia regulatoria. Es el caso donde la derivación multi-regulador brilla.
+Mapeamos a **3 de los 4 perfiles oficiales del Impact Lab**, cada uno con un caso demo distinto que muestra derivación multi-regulador:
+
+| Perfil oficial | Caso demo | Regulador competente |
+|---|---|---|
+| **El jubilado invisible** | Comisión adicional AFP no explicada | SUPEN |
+| **La emprendedora a ciegas** | Cláusula abusiva en crédito retail | SERNAC |
+| **La víctima del fraude** | Cobro indebido tarjeta de banco | CMF |
+
+El cuarto perfil ("la universitaria perdida") queda como caso secundario para post-Lab.
 
 ### 2.4 Canal concreto
 PWA liviana (web móvil-first, opera con conexión lenta) + export de reclamo en PDF firmable.
@@ -124,7 +132,8 @@ Considera feriados oficiales chilenos. Esta tool puede exponerse vía **MCP serv
 
 ### 4.4 Anti-alucinación (M2 sub-check A6)
 - Cada cita normativa que el agente menciona **debe venir de `buscar_normativa`** — el system prompt prohíbe afirmar normativa no devuelta por la tool.
-- Validación post-respuesta: regex extrae menciones a artículos/leyes y verifica que estén en las citas devueltas. Si no, se descarta y se vuelve a pedir.
+- **Citations nativas de Files API beta** (`citations: { enabled: true }`) cuando se referencian PDFs cargados (circulares CMF, leyes) — Claude devuelve atribución directa al documento y página. Es la primera línea anti-alucinación.
+- Validación post-respuesta como segunda capa: regex extrae menciones a artículos/leyes y verifica que estén en las citas devueltas. Si no, se descarta y se vuelve a pedir.
 - Si la confianza es baja, el agente lo dice: *"No tengo certeza suficiente — te recomiendo verificar directamente en CMF."*
 
 ---
@@ -162,13 +171,20 @@ Considera feriados oficiales chilenos. Esta tool puede exponerse vía **MCP serv
 | Frontend | Next.js 15 (App Router) + Tailwind | Stack del usuario, deploy 1-click |
 | UI agente | Streaming SSE con consola visible | Cumple M3 sub-check B3 |
 | Backend | Next.js Route Handlers + Anthropic SDK | Sin servidor extra |
-| Modelo | Claude Sonnet 4.6 (`claude-sonnet-4-6`) | Tool-use + costo razonable; Opus 4.7 para casos complejos opcional |
-| Prompt caching | Sí — corpus regulatorio cacheado | Crítico para latencia y costo |
+| Modelo principal | Claude Sonnet 4.6 (`claude-sonnet-4-6`) | Tool-use + costo razonable, contexto 1M |
+| Modelo razonamiento | Claude Opus 4.7 (`claude-opus-4-7`) con `thinking: adaptive` | Solo para `clasificar_competencia` en casos complejos |
+| Modelo rápido | Claude Haiku 4.5 (`claude-haiku-4-5`) | Para validaciones y clasificación previa |
+| Agent runtime | `toolRunner` del SDK + Agent SDK opcional | Loop manejado, hooks PreToolUse para auditoría |
+| Files API beta | `files-api-2025-04-14` con `citations: { enabled: true }` | Carga corpus regulatorio una vez, citations nativas |
+| Prompt caching | Sí — system prompt + corpus cacheados (TTL 1h) | Mínimo 2048 tokens en Sonnet 4.6; verificar `cache_read_input_tokens` |
 | Vector DB | Supabase + pgvector | Setup rápido, free tier |
-| OCR/Vision | Claude Vision (input multimodal) | Evita Tesseract, una sola API |
-| PDF output | `@react-pdf/renderer` o similar | Reclamo descargable |
+| Embeddings | OpenAI `text-embedding-3-small` | Estándar del Lab |
+| MCP server | `@modelcontextprotocol/sdk` para `calcular_plazos` | Suma puntos de "pensamiento agéntico" |
+| Vision | Claude Vision multimodal nativo | Evita Tesseract, una sola API |
+| PDF output | `@react-pdf/renderer` | Reclamo descargable |
 | Hosting | Vercel | Deploy automático, demo en la nube |
-| Auth | Ninguna en MVP | No agrega valor a la demo |
+| Auth | Magic link Supabase (solo para seguimiento) | Sin password, opcional |
+| Créditos | $2.000 USD Claude API por equipo | API key en backend, nunca en frontend |
 
 ---
 
@@ -283,7 +299,34 @@ Optimizamos contra rúbrica Fase 1:
 
 ---
 
-## 14. Out of scope (explícito)
+## 14. Impacto ciudadano y adopción (rúbrica pitch — 25%)
+
+### 14.1 Propuesta de valor (plantilla oficial Lab)
+
+> Para **el jubilado invisible, la emprendedora a ciegas y la víctima del fraude** que **pierden su derecho a restitución económica porque el lenguaje legal es una barrera y los plazos regulatorios son invisibles**, **Clariza** **traduce su relato en lenguaje sencillo a una denuncia formal tipificada, lo deriva al regulador competente y monitorea sus plazos hábiles** para que **nunca pierdan un reclamo por no saber qué decir o cuándo actuar** — llegando vía **acuerdo con CMF y SERNAC para distribución en sus canales oficiales (B2G), con presencia complementaria en cooperativas y ONGs (B2NGO)**.
+
+### 14.2 Canal de adopción
+
+**Primario — B2G (Regulador adopta en programa público):**
+- CMF tiene interés explícito (publicó el tip oficial que ejecutamos).
+- SERNAC reduce volumen de reclamos mal dirigidos si los ciudadanos llegan correctamente derivados.
+
+**Secundario — B2NGO:**
+- Fundación ChileMujeres, ASECH, FINCA, Coopeuch, Oriencoop atienden población vulnerable que reclama poco por desconocimiento.
+
+**Terciario — B2C directo (PWA pública):**
+- Acceso libre desde cualquier smartphone, sin descarga.
+
+### 14.3 Plan post-Lab (target nivel 4-5 en rúbrica)
+
+- **Días 0-15:** contacto con CMF (área de educación financiera y reclamos) presentando los datos del piloto.
+- **Días 15-30:** propuesta formal de piloto con SERNAC Financiero.
+- **Días 30-60:** integración con cooperativas Coopeuch / Oriencoop en programa de educación financiera.
+- **Mantención:** corpus normativo se actualiza con scraping mensual de nuevas circulares CMF.
+
+---
+
+## 15. Out of scope (explícito)
 
 - Login con contraseña / cuenta tradicional — el seguimiento se activa con email simple sin password (link mágico opcional).
 - Envío automático del reclamo al canal oficial — solo generamos el documento, el usuario lo presenta.

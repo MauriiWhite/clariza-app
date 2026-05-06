@@ -106,13 +106,13 @@ export async function POST(req: Request) {
           // Camino real: runAgent con tools + extractEvidence con archivo.
           await runAgent({ userMessage, attachment, onEvent: send });
         } else {
-          // Camino mock: simulamos flujo del Caso 1 — Maria/SUPEN.
+          // Camino mock: el mock detecta keywords y elige uno de los 4 casos.
           send({ type: "user", text: userMessage });
           const demoNote = attachment
-            ? `Modo demo: vi tu archivo "${attachment.filename ?? "adjunto"}" pero no hay API key todavía. Te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.`
-            : "Modo demo: no hay API key configurada todavía, te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.";
+            ? `Modo demo (sin API key todavía): vi tu archivo "${attachment.filename ?? "adjunto"}" y mapeé tu mensaje a un caso de ejemplo. Cuando llegue la key del Lab te respondo con tus datos reales.`
+            : "Modo demo (sin API key todavía): mapeé tu mensaje a un caso de ejemplo similar. Cuando llegue la key del Lab te respondo con tus datos reales.";
           send({ type: "assistant", text: demoNote });
-          for await (const event of getAgentStream()) {
+          for await (const event of getAgentStream(userMessage)) {
             // Saltamos el user del mock (ya emitimos uno arriba con el mensaje real).
             if (event.type === "user") continue;
             send(event);

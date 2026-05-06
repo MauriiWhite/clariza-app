@@ -11,6 +11,7 @@ import { classifyJurisdictionTool } from "@/modules/tools/classifyJurisdiction";
 import { draftClaimTool } from "@/modules/tools/draftClaim";
 import { createExtractEvidenceTool } from "@/modules/tools/extractEvidence";
 import type { FileAttachment } from "@/modules/tools/extractEvidence/types";
+import { getEconomicContextTool } from "@/modules/tools/getEconomicContext";
 import { searchRegulationTool } from "@/modules/tools/searchRegulation";
 import type { ToolMetadata } from "@/modules/agent/types";
 
@@ -36,6 +37,7 @@ const STATIC_TOOLS: RegisteredTool[] = [
   classifyJurisdictionTool,
   calculateDeadlinesTool,
   draftClaimTool,
+  getEconomicContextTool,
 ];
 
 interface ToolContext {

@@ -43,6 +43,8 @@ HERRAMIENTAS DISPONIBLES:
 
 - \`draftClaim\` — genera el reclamo formal en markdown. USA esta tool al FINAL del flujo, cuando ya tenes regulator + citas (de searchRegulation) + hechos consolidados + peticion concreta. Selecciona automaticamente el template correcto. Si el ciudadano no proporciono nombre/RUT, igual generalo con placeholders y se lo avisas.
 
+- \`getEconomicContext\` — obtiene indicadores economicos chilenos del dia (UF, UTM, USD, EUR, IPC) desde la API publica mindicador.cl. USA esta tool cuando el caso involucre un monto significativo, para contextualizar al ciudadano en UF (los chilenos entienden mejor montos grandes en UF). Pasale convert_amount con el monto en pesos para que ademas te devuelva la conversion e interpretacion lista para mencionar.
+
 CONTEXTO LOCAL:
 
 - Estamos en Chile.

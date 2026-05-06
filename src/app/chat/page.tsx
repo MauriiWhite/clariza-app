@@ -70,9 +70,12 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Split: chat 60% / consola 40% en desktop, stack en mobile */}
+      {/* Split: chat 60% / consola 40% en desktop, stack en mobile.
+          Altura fija a una sola pantalla (viewport menos top bar + padding)
+          asi el panel no se estira y el input queda siempre visible.
+          Scroll interno lo manejan Chat y Console internamente. */}
       <div className="flex-1 mx-auto max-w-350 w-full px-6 py-6 md:px-8 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 min-h-[70vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:h-[calc(100vh-7rem)] lg:max-h-[760px]">
           <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           <Console events={events} />
         </div>

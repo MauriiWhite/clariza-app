@@ -118,6 +118,53 @@ shadow     → 0 2px 8px rgba(26,31,46,0.08)   /* cards elevadas */
 
 **Cero `shadow-lg`, `shadow-xl`** — si lo necesitás, repensá el contraste con color en lugar de sombras pesadas.
 
+Para superficies flotantes (panels glass, console) usar la sombra ambiental:
+```
+shadow-[0_8px_32px_rgba(26,31,46,0.04)]      /* glass claro */
+shadow-[0_8px_32px_rgba(15,19,32,0.12)]      /* glass oscuro */
+```
+
+---
+
+## 5.b. Glassmorphism (estratégico, no decorativo)
+
+Clariza es **minimalista vanguardista**: el glass se usa **solo en superficies flotantes** sobre el fondo cremoso. Si lo metés en todos lados pierde efecto y satura.
+
+### Cuándo SÍ usarlo
+- **Top bars** (`<header sticky>`) — el contenido pasa por debajo y se ve borroso.
+- **Panel de la consola** del agente (clave demo M3).
+- **Modales y overlays** — para desenfocar lo de atrás.
+
+### Cuándo NO usarlo
+- Cards de contenido dentro de una sección normal — usá `bg-paper` plano.
+- Botones — siempre sólidos.
+- Texto largo — afecta legibilidad sobre fondos variables.
+
+### Utilidades
+
+```css
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+.glass-dark {
+  background: rgba(15, 19, 32, 0.7);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+```
+
+Definidas en `globals.css`. Uso:
+```tsx
+<header className="sticky top-0 z-50 glass">...</header>
+<aside className="glass-dark rounded-lg shadow-[0_8px_32px_rgba(15,19,32,0.12)]">...</aside>
+```
+
+### Ambient gradient (fondo)
+Hay un gradiente sutil radial en `body::before` con `clay` (8% opacidad) en esquina superior derecha y `accent-soft` (4%) en esquina inferior izquierda. **No tocar.** Da profundidad sin saturar.
+
 ---
 
 ## 6. Foco (accesibilidad)

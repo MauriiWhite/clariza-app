@@ -31,7 +31,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-paper rounded-lg border border-border">
+    <div className="flex flex-col h-full glass rounded-lg shadow-[0_8px_32px_rgba(26,31,46,0.04)]">
       {/* Hilo de mensajes */}
       <div className="flex-1 overflow-y-auto p-8 space-y-4">
         {messages.length === 0 && !isStreaming ? (

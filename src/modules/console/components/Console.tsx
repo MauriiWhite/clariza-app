@@ -18,9 +18,9 @@ export function Console({ events }: ConsoleProps) {
   );
 
   return (
-    <aside className="flex flex-col h-full bg-[#0f1320] text-border rounded-lg overflow-hidden">
-      <header className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-        <span className="inline-block w-2 h-2 rounded-full bg-success" />
+    <aside className="flex flex-col h-full glass-dark text-border rounded-lg overflow-hidden shadow-[0_8px_32px_rgba(15,19,32,0.12)]">
+      <header className="px-4 py-3 border-b border-white/10 flex items-center gap-2 backdrop-blur-md">
+        <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse" />
         <h2 className="text-sm font-semibold tracking-wide uppercase">
           Consola del agente
         </h2>

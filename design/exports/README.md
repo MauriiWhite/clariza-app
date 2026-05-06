@@ -12,6 +12,7 @@ Diseñadas en Pencil siguiendo el spec de [`entregables/04-slides.md`](../../ent
 | 4 | **Demo screenshot** | `yuOCj` | Mockup chat + consola con tools visibles |
 | 5 | **Diferenciador** | `K70Wpf` | 3 pilares con números clay |
 | 6 | **Cierre** | `G90k7o` | "Clariza no traduce la ley..." + CTA |
+| **+** | **Mockup /preview/diagnosis** | `J0AZb` | Selector + relato + DiagnosisCard + Timeline (caso María) |
 
 ## Cómo exportar desde Pencil
 

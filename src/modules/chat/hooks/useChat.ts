@@ -38,20 +38,31 @@ export function useChat() {
     setState((prev) => ({ ...prev, events: [...prev.events, event] }));
   }, []);
 
-  /** Inicia un turno: llama a /api/agent y consume el stream SSE. */
+  /** Inicia un turno: llama a /api/agent y consume el stream SSE.
+   *  Si hay archivo, lo manda como multipart/form-data para que la tool
+   *  extractEvidence lo procese con Claude Vision. */
   const startTurn = useCallback(
-    async (userMessage: string, _file?: File | null) => {
-      // _file todavia no se sube (lo tomara extractEvidence cuando exista).
-      void _file;
-
+    async (userMessage: string, file?: File | null) => {
       setState({ events: [], isStreaming: true, error: null });
 
       try {
-        const res = await fetch("/api/agent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userMessage }),
-        });
+        // Cuando hay archivo, multipart. Cuando no, JSON simple (mas liviano).
+        let res: Response;
+        if (file) {
+          const formData = new FormData();
+          formData.append("userMessage", userMessage);
+          formData.append("file", file);
+          res = await fetch("/api/agent", {
+            method: "POST",
+            body: formData,
+          });
+        } else {
+          res = await fetch("/api/agent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userMessage }),
+          });
+        }
 
         if (!res.ok || !res.body) {
           throw new Error(`API respondió HTTP ${res.status}`);

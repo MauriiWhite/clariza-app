@@ -1,17 +1,22 @@
 // API route SSE para ejecutar un turno del agente Clariza.
 //
-// POST /api/agent — body: { userMessage: string }
-// Response: text/event-stream con eventos del agente (ConsoleEvent JSON)
+// POST /api/agent — acepta:
+//   1) JSON: { userMessage: string }
+//   2) multipart/form-data: campo userMessage + campo file (foto, PDF)
+//      con esto la tool extractEvidence puede usar Claude Vision.
+//
+// Response: text/event-stream con eventos del agente (ConsoleEvent JSON).
 //
 // Comportamiento:
-//   - Si ANTHROPIC_API_KEY esta configurada → ejecuta el agente real
-//     (runAgent → toolRunner SDK → tools reales).
+//   - Si ANTHROPIC_API_KEY esta configurada → ejecuta el agente real con
+//     los 5 tools registrados, incluyendo extractEvidence con el archivo.
 //   - Si NO esta → fallback al mock para que la demo no se rompa.
-//     Util mientras esperamos la key del Lab o para iterar UI sin gastar
-//     creditos de la API.
 
 import { runAgent } from "@/modules/agent/services/runner";
-import type { ConsoleEvent } from "@/modules/agent/types";
+import type {
+  AgentAttachment,
+  ConsoleEvent,
+} from "@/modules/agent/types";
 import { getAgentStream } from "@/modules/chat/services/mockAgentStream";
 
 // Forzamos runtime Node porque el SDK de Anthropic usa Node APIs.
@@ -19,22 +24,72 @@ import { getAgentStream } from "@/modules/chat/services/mockAgentStream";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-interface AgentRequestBody {
-  userMessage?: unknown;
+// Limite del archivo a procesar — protege la API y costos de Vision.
+// 10 MB cubre fotos de cartolas/contratos sin problema.
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+
+interface AgentRequest {
+  userMessage: string;
+  attachment: AgentAttachment | null;
+}
+
+/** Lee la request y devuelve userMessage + attachment opcional. */
+async function parseRequest(req: Request): Promise<AgentRequest | { error: string }> {
+  const contentType = req.headers.get("content-type") ?? "";
+
+  // Caso 1: JSON simple sin archivo.
+  if (contentType.includes("application/json")) {
+    const body = (await req.json().catch(() => ({}))) as {
+      userMessage?: unknown;
+    };
+    const userMessage =
+      typeof body.userMessage === "string" ? body.userMessage.trim() : "";
+    if (!userMessage) return { error: "userMessage requerido" };
+    return { userMessage, attachment: null };
+  }
+
+  // Caso 2: multipart/form-data con archivo opcional.
+  if (contentType.includes("multipart/form-data")) {
+    const form = await req.formData();
+    const userMessageRaw = form.get("userMessage");
+    const userMessage =
+      typeof userMessageRaw === "string" ? userMessageRaw.trim() : "";
+    if (!userMessage) return { error: "userMessage requerido" };
+
+    const file = form.get("file");
+    if (!(file instanceof File) || file.size === 0) {
+      return { userMessage, attachment: null };
+    }
+
+    if (file.size > MAX_FILE_BYTES) {
+      return {
+        error: `Archivo demasiado grande (${Math.round(file.size / 1024 / 1024)} MB). Máximo 10 MB.`,
+      };
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const attachment: AgentAttachment = {
+      base64: buffer.toString("base64"),
+      mediaType: file.type || "application/octet-stream",
+      filename: file.name,
+    };
+    return { userMessage, attachment };
+  }
+
+  return { error: `Content-Type no soportado: ${contentType}` };
 }
 
 export async function POST(req: Request) {
-  const body: AgentRequestBody = await req.json().catch(() => ({}));
-  const userMessage =
-    typeof body.userMessage === "string" ? body.userMessage.trim() : "";
+  const parsed = await parseRequest(req);
 
-  if (!userMessage) {
-    return new Response(
-      JSON.stringify({ error: "userMessage requerido" }),
-      { status: 400, headers: { "Content-Type": "application/json" } },
-    );
+  if ("error" in parsed) {
+    return new Response(JSON.stringify({ error: parsed.error }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
+  const { userMessage, attachment } = parsed;
   const useRealAgent = !!process.env.ANTHROPIC_API_KEY;
 
   const encoder = new TextEncoder();
@@ -48,18 +103,15 @@ export async function POST(req: Request) {
 
       try {
         if (useRealAgent) {
-          // Camino real: runAgent emite user + tool_call/result + assistant.
-          await runAgent({ userMessage, onEvent: send });
+          // Camino real: runAgent con tools + extractEvidence con archivo.
+          await runAgent({ userMessage, attachment, onEvent: send });
         } else {
           // Camino mock: simulamos flujo del Caso 1 — Maria/SUPEN.
-          // Emitimos user con el mensaje real del ciudadano, luego
-          // un assistant que avisa que estamos en demo, y despues el
-          // stream del Caso 1 completo.
           send({ type: "user", text: userMessage });
-          send({
-            type: "assistant",
-            text: "Modo demo: no hay API key configurada todavía, te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.",
-          });
+          const demoNote = attachment
+            ? `Modo demo: vi tu archivo "${attachment.filename ?? "adjunto"}" pero no hay API key todavía. Te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.`
+            : "Modo demo: no hay API key configurada todavía, te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.";
+          send({ type: "assistant", text: demoNote });
           for await (const event of getAgentStream()) {
             // Saltamos el user del mock (ya emitimos uno arriba con el mensaje real).
             if (event.type === "user") continue;
@@ -80,7 +132,6 @@ export async function POST(req: Request) {
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",
-      // Hint para proxies/CDN que no buffereen SSE.
       "X-Accel-Buffering": "no",
     },
   });

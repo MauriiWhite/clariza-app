@@ -7,9 +7,9 @@
 // rubrica del Lab: >=3 mensajes visibles en la ventana durante la demo).
 
 import type { BetaTool } from "@anthropic-ai/sdk/resources/beta/messages";
-import { getAnthropicClient, MODELS } from "@/lib/anthropic/client";
-import { CLARIZA_SYSTEM_PROMPT } from "@/agent/prompts/system";
-import { echoTool } from "@/agent/tools/echo";
+import { getAnthropicClient, MODELS } from "@/modules/agent/lib/client";
+import { CLARIZA_SYSTEM_PROMPT } from "@/modules/agent/prompts/system";
+import { echoTool } from "@/modules/agent/tools/echo";
 
 // Eventos que el runner emite para que UI / scripts los muestren en consola.
 export type ConsoleEvent =
@@ -107,8 +107,8 @@ export async function runAgent(
     // Mensaje final del assistant: cuando la iteracion termina, runner.done()
     // devuelve la respuesta consolidada sin tool_use pendientes.
     const finalMessage = await runner.done();
-    const finalText = finalMessage.content
-      .map((b) => (b.type === "text" ? b.text : ""))
+    const finalText = (finalMessage.content as Array<{ type: string; text?: string }>)
+      .map((b) => (b.type === "text" ? (b.text ?? "") : ""))
       .join("\n")
       .trim();
 

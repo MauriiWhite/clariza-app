@@ -9,7 +9,10 @@
 // - los eventos de consola se emiten en orden
 
 import "dotenv/config";
-import { runAgent, type ConsoleEvent } from "../src/agent/runner";
+import {
+  runAgent,
+  type ConsoleEvent,
+} from "../src/modules/agent/services/runner";
 
 // Colores ANSI minimos para que la consola se lea agradable en terminal.
 const colors = {

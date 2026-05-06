@@ -34,20 +34,88 @@ gh pr create --base dev --head dev-tuya --title "feat: lo que hiciste"
 
 ---
 
-## 2. Zonas de propiedad (evita merge conflicts)
+## 2. Estructura modular del repo
 
-| Zona | Owner | Quién más toca |
+Adoptamos el patrón de **feature folders / modular monolith**. Cada módulo es autocontenido (components, hooks, services, lib, utils) y tiene un único dueño. Trabajamos en paralelo, integramos al final.
+
+```
+src/
+├── app/                    ← Next.js routing + API routes        [Mauricio]
+└── modules/
+    ├── core/               ← design system + UI primitives        [Mauricio]
+    │   ├── components/
+    │   ├── design-system/
+    │   ├── hooks/
+    │   ├── lib/            (supabase client compartido)
+    │   └── utils/
+    ├── agent/              ← orquestación del agente Claude       [Exequiel]
+    │   ├── lib/            (cliente Anthropic + IDs de modelos)
+    │   ├── prompts/        (system prompt y plantillas)
+    │   ├── services/       (runner, agent loop)
+    │   ├── tools/          (tools utilitarias: echo, helpers)
+    │   └── types/          (ConsoleEvent, RunAgentResult)
+    ├── tools/              ← las 5 tools reales del producto      [Exequiel]
+    │   ├── extractEvidence/
+    │   ├── searchRegulation/
+    │   ├── classifyJurisdiction/
+    │   ├── calculateDeadlines/
+    │   └── draftClaim/
+    ├── regulations/        ← corpus regulatorio + RAG             [Exequiel]
+    │   ├── services/       (ingest, search)
+    │   ├── lib/            (BCN API, embeddings)
+    │   ├── data/           (corpus markdown, fallback)
+    │   └── utils/
+    ├── chat/               ← UI conversacional                    [Mauricio]
+    │   ├── components/     (Chat, MessageList, FileUpload)
+    │   ├── hooks/          (useChat, useStream)
+    │   ├── services/       (cliente SSE)
+    │   └── states/
+    ├── console/            ← consola con tool calls visibles      [Mauricio]
+    │   ├── components/     (Console, ToolCallBlock, ToolResultBlock)
+    │   └── hooks/
+    ├── diagnosis/          ← cards de diagnóstico + timeline      [Mauricio]
+    │   ├── components/     (DiagnosisCard, TimelineDeadlines)
+    │   └── hooks/
+    ├── claim/              ← reclamo formal + PDF                 [Mauricio]
+    │   ├── components/     (ReclamoPreview, DownloadButton)
+    │   ├── services/       (PDFGenerator)
+    │   └── templates/      (formato por regulador)
+    └── reminders/          ← email + cron + persistencia casos    [Mauricio]
+        ├── services/       (email, cron, casesRepo)
+        ├── lib/            (Resend, supabase queries)
+        └── schema/         (cases table SQL)
+```
+
+### Tabla de owners por módulo
+
+| Módulo | Owner | Cuántos componentes esperados |
 |---|---|---|
-| `src/agent/**` | **Exequiel** | nadie |
-| `src/lib/anthropic/**` · `src/lib/regulators/**` | **Exequiel** | nadie |
-| `data/corpus/**` · `scripts/**` | **Exequiel** | nadie |
-| `src/app/**` | **Mauricio** | nadie |
-| `src/components/**` | **Mauricio** | nadie |
-| `src/lib/supabase/**` · `src/lib/mcp/**` (envoltura) | **Mauricio** | nadie |
-| `CASES.md` · sección impacto del SPEC · `_briefing/` | **Sebastián** | nadie |
-| Pitch · ficha cívica · guion video | **Sebastián** | Exequiel revisa técnica |
-| `package.json` · `.env.example` | **compartido** | avisar por WhatsApp antes de tocar |
-| `README.md` · `SPEC.md` · `DIAGRAMS.md` · `WORKFLOW.md` | **compartido** | secciones distintas |
+| `app/` | **Mauricio** | 2-3 routes + 2 API handlers |
+| `modules/core/` | **Mauricio** | design system + 4-5 primitives |
+| `modules/agent/` | **Exequiel** | runner + prompts + types (la base) |
+| `modules/tools/` | **Exequiel** | 5 tools (las del SPEC §4.2) |
+| `modules/regulations/` | **Exequiel** | ingest + search + BCN API |
+| `modules/chat/` | **Mauricio** | UI conversacional principal |
+| `modules/console/` | **Mauricio** | la consola visible (clave demo) |
+| `modules/diagnosis/` | **Mauricio** | output del agente |
+| `modules/claim/` | **Mauricio** | reclamo + PDF |
+| `modules/reminders/` | **Mauricio** | persistencia + email |
+
+### Zonas compartidas (avisar antes de tocar)
+
+| Archivo | Quién más toca |
+|---|---|
+| `package.json` · `.env.example` | avisar por WhatsApp |
+| `README.md` · `SPEC.md` · `DIAGRAMS.md` · `WORKFLOW.md` · `CASES.md` | secciones distintas |
+| `tsconfig.json` · `next.config.ts` · `eslint.config.mjs` | raramente — coordinar |
+| `_briefing/` | Sebastián (gitignored) |
+| Pitch · ficha cívica · guion video | Sebastián (Exequiel revisa técnica) |
+
+### Carga aproximada
+
+- **Exequiel** — 3 módulos (`agent`, `tools`, `regulations`) — el cerebro.
+- **Mauricio** — 7 módulos (`app`, `core`, `chat`, `console`, `diagnosis`, `claim`, `reminders`) — la app que envuelve el cerebro.
+- **Sebastián** — 0 módulos de código, dueño de docs (CASES, ficha, pitch, video) y QA contra la app real.
 
 **Regla de oro:** si tocás algo fuera de tu zona, avisás antes y mergeás chico inmediatamente.
 

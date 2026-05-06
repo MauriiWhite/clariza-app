@@ -21,11 +21,15 @@ export function useChat() {
     error: null,
   });
 
-  // Inicia un turno con el mensaje del usuario.
-  // En produccion esto va a llamar al endpoint SSE real con fetch + ReadableStream.
-  const startTurn = useCallback(async (_userMessage: string) => {
-    // Por ahora ignoramos el userMessage — el mock siempre reproduce Caso 1.
+  // Inicia un turno con el mensaje del usuario y opcionalmente un archivo.
+  // En produccion esto va a llamar al endpoint SSE real con fetch + FormData.
+  const startTurn = useCallback(async (
+    _userMessage: string,
+    _file?: File | null,
+  ) => {
+    // Por ahora ignoramos el userMessage y el archivo — el mock siempre reproduce Caso 1.
     void _userMessage;
+    void _file;
     setState({ events: [], isStreaming: true, error: null });
 
     try {

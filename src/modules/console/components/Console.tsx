@@ -18,7 +18,7 @@ export function Console({ events }: ConsoleProps) {
   );
 
   return (
-    <aside className="flex flex-col h-full glass-dark text-border rounded-lg overflow-hidden shadow-[0_8px_32px_rgba(15,19,32,0.12)]">
+    <aside className="flex flex-col h-full glass-dark text-white rounded-lg overflow-hidden shadow-[0_8px_32px_rgba(15,19,32,0.12)]">
       <header className="px-4 py-3 border-b border-white/10 flex items-center gap-2 backdrop-blur-md">
         <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse" />
         <h2 className="text-sm font-semibold tracking-wide uppercase">
@@ -49,7 +49,7 @@ function ConsoleBlock({ event }: { event: ConsoleEvent }) {
           <span>🔧</span>
           <span className="font-semibold">{event.name}</span>
         </div>
-        <pre className="pl-6 text-white/70 whitespace-pre-wrap wrap-break-word text-[12px]">
+        <pre className="pl-6 text-white/90 whitespace-pre-wrap wrap-break-word text-[12px]">
           {JSON.stringify(event.input, null, 2)}
         </pre>
       </div>
@@ -63,7 +63,7 @@ function ConsoleBlock({ event }: { event: ConsoleEvent }) {
           <span>✓</span>
           <span className="font-semibold">{event.name}</span>
         </div>
-        <pre className="text-white/70 whitespace-pre-wrap wrap-break-word text-[12px]">
+        <pre className="text-white/90 whitespace-pre-wrap wrap-break-word text-[12px]">
           {JSON.stringify(event.output, null, 2)}
         </pre>
       </div>

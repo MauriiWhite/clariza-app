@@ -93,10 +93,10 @@ body > * {
 }
 
 .glass-dark {
-  background: rgba(15, 19, 32, 0.7);
+  background: rgba(10, 13, 24, 0.92);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Foco visible accesible (WCAG AA) en todo lo interactivo */

@@ -9,7 +9,12 @@
 
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import {
+  extractClaim,
+  extractDiagnosis,
+  extractSchedule,
+} from "@/modules/agent/services/extractArtifacts";
 import type { ConsoleEvent } from "@/modules/agent/types";
 import { getAgentStream } from "@/modules/chat/services/mockAgentStream";
 
@@ -113,11 +118,27 @@ export function useChat() {
 
   const reset = useCallback(() => setState(INITIAL_STATE), []);
 
+  // Artefactos derivados del stream — leidos del ultimo tool_result de cada
+  // tool relevante. Mauricio's cards consumen estos sin importar si el stream
+  // viene del agente real o del mock.
+  const diagnosis = useMemo(
+    () => extractDiagnosis(state.events),
+    [state.events],
+  );
+  const schedule = useMemo(
+    () => extractSchedule(state.events),
+    [state.events],
+  );
+  const claim = useMemo(() => extractClaim(state.events), [state.events]);
+
   return {
     events: state.events,
     isStreaming: state.isStreaming,
     error: state.error,
     startTurn,
     reset,
+    diagnosis,
+    schedule,
+    claim,
   };
 }

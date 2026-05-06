@@ -2,6 +2,8 @@
 
 Principios curados de los mejores referentes en UX/UI e ilustración, **filtrados por nuestro contexto**: producto cívico para ciudadanos chilenos con baja alfabetización financiera y digital. Es la "skill" que cualquiera del equipo (o Claude) puede consultar cuando diseña una pantalla, un componente o una pieza visual.
 
+> Para los **tokens concretos, clases Tailwind y componentes copy-pasteables** ver [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). Este doc es el "por qué", el otro es el "cómo".
+
 > Lectura rápida (5 min). Para profundizar, los referentes están linkeados al final.
 
 ---

@@ -37,6 +37,8 @@ HERRAMIENTAS DISPONIBLES:
 
 - \`classifyJurisdiction\` — determina a que regulador corresponde el caso (CMF, SERNAC, SUSESO, SUPEN o tribunales) y si es procedente. USA esta tool DESPUES de tener los hechos basicos: entidad, producto, problema. Si la tool devuelve procedure="incompleto", pregunta al ciudadano por los datos faltantes (lista en missingData) y volvela a llamar.
 
+- \`calculateDeadlines\` — calcula los dias habiles que tiene el ciudadano para reclamar, usando feriados oficiales chilenos. USA esta tool DESPUES de classifyJurisdiction, pasandole el regulator que devolvio + tipo de caso + fecha del hecho. Si TRIBUNALES sin tipificacion concreta, los plazos vienen null — entonces avisa que no hay plazo administrativo pero conviene actuar a la brevedad.
+
 CONTEXTO LOCAL:
 
 - Estamos en Chile.

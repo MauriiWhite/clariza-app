@@ -70,6 +70,9 @@ Abrir http://localhost:3000.
 - [SPEC.md](SPEC.md) — detalle técnico, plan 48h y rúbrica de evaluación
 - [DIAGRAMS.md](DIAGRAMS.md) — flujos del producto, agent loop y arquitectura
 - [CASES.md](CASES.md) — 4 casos de uso reales (1 por perfil oficial del Lab)
+- [WORKFLOW.md](WORKFLOW.md) — cómo trabaja el equipo (zonas, contratos, hitos)
+- [design/DESIGN-SYSTEM.md](design/DESIGN-SYSTEM.md) — tokens, fuentes y componentes (referencia operacional)
+- [design/DESIGN-SKILL.md](design/DESIGN-SKILL.md) — principios visuales (referencia conceptual)
 
 ## Equipo
 

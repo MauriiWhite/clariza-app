@@ -48,10 +48,14 @@ export async function runAgentViaOpenRouter(
   const openAITools: ChatCompletionTool[] = registeredTools.map(toOpenAITool);
   const toolRunnerMap = buildToolRunnerMap(registeredTools);
 
+  // System + historia previa + nuevo turno del usuario.
   const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: CLARIZA_SYSTEM_PROMPT },
-    { role: "user", content: userMessage },
   ];
+  for (const turn of options.conversationHistory ?? []) {
+    messages.push({ role: turn.role, content: turn.content });
+  }
+  messages.push({ role: "user", content: userMessage });
 
   let finalText = "";
 

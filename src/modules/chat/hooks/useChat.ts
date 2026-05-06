@@ -15,8 +15,23 @@ import {
   extractDiagnosis,
   extractSchedule,
 } from "@/modules/agent/services/extractArtifacts";
-import type { ConsoleEvent } from "@/modules/agent/types";
+import type {
+  ConsoleEvent,
+  ConversationMessage,
+} from "@/modules/agent/types";
 import { getAgentStream } from "@/modules/chat/services/mockAgentStream";
+
+/** Construye el historial de conversacion previa a partir de los events
+ *  acumulados, para mandarlo al endpoint y que el agente recuerde. */
+function buildHistory(events: ConsoleEvent[]): ConversationMessage[] {
+  const history: ConversationMessage[] = [];
+  for (const e of events) {
+    if (e.type === "user") history.push({ role: "user", content: e.text });
+    else if (e.type === "assistant")
+      history.push({ role: "assistant", content: e.text });
+  }
+  return history;
+}
 
 interface UseChatState {
   events: ConsoleEvent[];
@@ -45,6 +60,11 @@ export function useChat() {
    *  pantalla turno a turno, asi el ciudadano ve la conversacion completa. */
   const startTurn = useCallback(
     async (userMessage: string, file?: File | null) => {
+      // Snapshot de events ANTES del nuevo turno — eso es la historia previa
+      // que mandamos al agente. No incluye el userMessage que estamos enviando
+      // ahora (el endpoint lo agrega al final).
+      const history = buildHistory(state.events);
+
       // Preservamos events; solo seteamos streaming + limpiamos error.
       setState((prev) => ({ ...prev, isStreaming: true, error: null }));
 
@@ -54,6 +74,7 @@ export function useChat() {
         if (file) {
           const formData = new FormData();
           formData.append("userMessage", userMessage);
+          formData.append("conversationHistory", JSON.stringify(history));
           formData.append("file", file);
           res = await fetch("/api/agent", {
             method: "POST",
@@ -63,7 +84,10 @@ export function useChat() {
           res = await fetch("/api/agent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userMessage }),
+            body: JSON.stringify({
+              userMessage,
+              conversationHistory: history,
+            }),
           });
         }
 
@@ -127,7 +151,7 @@ export function useChat() {
         setState((prev) => ({ ...prev, isStreaming: false }));
       }
     },
-    [appendEvent],
+    [appendEvent, state.events],
   );
 
   const reset = useCallback(() => setState(INITIAL_STATE), []);

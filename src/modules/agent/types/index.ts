@@ -22,12 +22,21 @@ export interface AgentAttachment {
   filename?: string;
 }
 
+/** Mensaje individual en la conversacion entre ciudadano y agente. */
+export interface ConversationMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 /**
  * Opciones para ejecutar un turno del agente.
  */
 export interface RunAgentOptions {
-  // Mensaje del ciudadano en lenguaje natural.
+  // Mensaje del ciudadano en lenguaje natural (ultimo turno).
   userMessage: string;
+  // Historial previo de la conversacion (sin el userMessage actual).
+  // Si esta presente, el agente lo usa como contexto para mantener memoria.
+  conversationHistory?: ConversationMessage[];
   // Archivo adjunto opcional (foto, PDF, screenshot).
   attachment?: AgentAttachment | null;
   // Callback opcional para streamear eventos a la consola visible.

@@ -51,6 +51,13 @@ export async function runAgent(
     // entre turnos (cambia solo si editamos system.ts), entonces Anthropic
     // lo cachea por 5 min default. Cache hit = ~0.1x del costo input.
     // Verificar con response.usage.cache_read_input_tokens > 0.
+    // Construye messages con historia previa + nuevo turno del usuario.
+    // Asi el agente recuerda lo que ya conversamos.
+    const conversationMessages = (options.conversationHistory ?? []).map(
+      (m) => ({ role: m.role, content: m.content }),
+    );
+    conversationMessages.push({ role: "user", content: userMessage });
+
     const runner = client.beta.messages.toolRunner({
       model: MODELS.primary,
       max_tokens: 2048,
@@ -64,7 +71,7 @@ export async function runAgent(
       tools: getRegisteredTools({
         attachment: options.attachment ?? null,
       }) as unknown as BetaTool[],
-      messages: [{ role: "user", content: userMessage }],
+      messages: conversationMessages,
     });
 
     // Iteramos manualmente sobre el runner para capturar tool calls,

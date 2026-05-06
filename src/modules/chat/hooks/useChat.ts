@@ -40,10 +40,13 @@ export function useChat() {
 
   /** Inicia un turno: llama a /api/agent y consume el stream SSE.
    *  Si hay archivo, lo manda como multipart/form-data para que la tool
-   *  extractEvidence lo procese con Claude Vision. */
+   *  extractEvidence lo procese con Claude Vision.
+   *  Importante: NO borra eventos previos — el historial se acumula en
+   *  pantalla turno a turno, asi el ciudadano ve la conversacion completa. */
   const startTurn = useCallback(
     async (userMessage: string, file?: File | null) => {
-      setState({ events: [], isStreaming: true, error: null });
+      // Preservamos events; solo seteamos streaming + limpiamos error.
+      setState((prev) => ({ ...prev, isStreaming: true, error: null }));
 
       try {
         // Cuando hay archivo, multipart. Cuando no, JSON simple (mas liviano).

@@ -8,6 +8,7 @@
 import { echoTool } from "@/modules/agent/tools/echo";
 import { calculateDeadlinesTool } from "@/modules/tools/calculateDeadlines";
 import { classifyJurisdictionTool } from "@/modules/tools/classifyJurisdiction";
+import { draftClaimTool } from "@/modules/tools/draftClaim";
 import { searchRegulationTool } from "@/modules/tools/searchRegulation";
 import type { ToolMetadata } from "@/modules/agent/types";
 
@@ -19,21 +20,22 @@ type RegisteredTool = unknown;
 /**
  * Tools activas en este turno del agente.
  *
- * Estado actual (Paso 7):
+ * Estado actual (Paso 8):
  *   - echoTool — dummy. Lo dejamos para tests del runner.
  *   - searchRegulationTool — busqueda sobre corpus regulatorio chileno (8 fuentes).
  *   - classifyJurisdictionTool — derivacion CMF/SERNAC/SUSESO/SUPEN/tribunales.
  *   - calculateDeadlinesTool — plazos habiles con feriados oficiales (Nager API).
+ *   - draftClaimTool — generacion del reclamo formal con templates por regulador.
  *
  * Por venir:
  *   - extractEvidenceTool — Vision sobre PDFs/imagenes.
- *   - draftClaimTool — generacion del reclamo formal.
  */
 const registeredTools: RegisteredTool[] = [
   echoTool,
   searchRegulationTool,
   classifyJurisdictionTool,
   calculateDeadlinesTool,
+  draftClaimTool,
 ];
 
 /**

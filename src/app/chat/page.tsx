@@ -75,7 +75,7 @@ export default function ChatPage() {
           asi el panel no se estira y el input queda siempre visible.
           Scroll interno lo manejan Chat y Console internamente. */}
       <div className="flex-1 mx-auto max-w-350 w-full px-6 py-6 md:px-8 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:h-[calc(100vh-7rem)] lg:max-h-[760px]">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:h-[calc(100vh-7rem)] lg:max-h-190">
           <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           <Console events={events} />
         </div>

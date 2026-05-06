@@ -108,9 +108,9 @@ export function useChat() {
           appendEvent({ type: "user", text: userMessage });
           appendEvent({
             type: "assistant",
-            text: "Conexión con el servidor falló. Te muestro el Caso 1 desde el cliente.",
+            text: "Conexión con el servidor falló. Te muestro un caso de ejemplo desde el cliente.",
           });
-          for await (const event of getAgentStream()) {
+          for await (const event of getAgentStream(userMessage)) {
             if (event.type === "user") continue;
             appendEvent(event);
           }

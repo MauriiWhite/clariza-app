@@ -6,6 +6,7 @@
 // unico punto de verdad sobre que tools estan activas.
 
 import { echoTool } from "@/modules/agent/tools/echo";
+import { classifyJurisdictionTool } from "@/modules/tools/classifyJurisdiction";
 import { searchRegulationTool } from "@/modules/tools/searchRegulation";
 import type { ToolMetadata } from "@/modules/agent/types";
 
@@ -17,17 +18,21 @@ type RegisteredTool = unknown;
 /**
  * Tools activas en este turno del agente.
  *
- * Estado actual (Paso 5):
+ * Estado actual (Paso 6):
  *   - echoTool — dummy. Lo dejamos para tests del runner.
  *   - searchRegulationTool — busqueda sobre corpus regulatorio chileno (8 fuentes).
+ *   - classifyJurisdictionTool — derivacion CMF/SERNAC/SUSESO/SUPEN/tribunales.
  *
  * Por venir:
  *   - extractEvidenceTool — Vision sobre PDFs/imagenes.
- *   - classifyJurisdictionTool — derivacion CMF/SERNAC/SUSESO/SUPEN/tribunales.
  *   - calculateDeadlinesTool — MCP server con plazos habiles.
  *   - draftClaimTool — generacion del reclamo formal.
  */
-const registeredTools: RegisteredTool[] = [echoTool, searchRegulationTool];
+const registeredTools: RegisteredTool[] = [
+  echoTool,
+  searchRegulationTool,
+  classifyJurisdictionTool,
+];
 
 /**
  * Devuelve todas las tools registradas para que el runner las pase al SDK.

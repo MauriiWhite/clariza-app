@@ -48,7 +48,11 @@ El agente expone 4 tools que el usuario ve operar en una consola en vivo:
 
 ## Equipo
 
-**Cruzaders** — 3 personas, primer Impact Lab de Anthropic en LATAM.
+**Cruzaders** — primer Impact Lab de Anthropic en LATAM.
+
+- Exequiel Alvarado
+- Mauricio Blanco
+- Sebastián Fuentes
 
 ## Licencia
 

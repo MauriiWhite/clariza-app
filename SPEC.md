@@ -213,13 +213,17 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 
 ---
 
-## 11. Equipo y roles (POR CONFIRMAR)
+## 11. Equipo y roles
+
+**Cruzaders** — 3 integrantes.
 
 | Rol | Persona | Foco |
 |---|---|---|
-| Lead técnico + Frontend + Demo | Exequiel | Next.js, UX, video, pitch |
-| Backend + Tools | TBD | Ingesta corpus, RAG, tools, agent loop |
-| Datos + QA + Pitch coach | TBD | Casos demo, validación normativa, ensayos |
+| Lead técnico + Frontend + Demo | Exequiel Alvarado | Next.js, UX, video, pitch |
+| Backend + Tools | Mauricio Blanco | Ingesta corpus, RAG, tools, agent loop |
+| Datos + QA + Pitch coach | Sebastián Fuentes | Casos demo, validación normativa, ensayos |
+
+> Stacks específicos por integrante por confirmar — ajustar foco según fortalezas reales.
 
 ---
 

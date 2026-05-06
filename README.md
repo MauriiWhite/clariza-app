@@ -30,7 +30,7 @@ Clariza democratiza la justicia financiera.
 
 - Claude Sonnet 4.6 con tool-use + prompt caching del corpus regulatorio
 - MCP para conectar con bases CMF y SERNAC en tiempo real
-- Next.js 15 (PWA) + Tailwind
+- Next.js 16 (App Router) + Tailwind v4
 - Supabase + pgvector (RAG sobre normativa CMF)
 - Claude Vision para OCR de documentos
 - Vercel para deploy
@@ -39,11 +39,29 @@ Clariza democratiza la justicia financiera.
 
 El agente expone 5 tools que el usuario ve operar en una consola en vivo:
 
-- `extraer_antecedentes` — extrae info estructurada de PDFs/imágenes
-- `buscar_normativa` — RAG sobre el corpus regulatorio chileno
-- `clasificar_competencia` — decide CMF / SERNAC / SUSESO / SUPEN / tribunales
-- `calcular_plazos` — días hábiles restantes + hitos críticos (vía MCP)
-- `generar_reclamo` — produce el documento formal según canal destino
+- `extractEvidence` — extrae info estructurada de PDFs/imágenes
+- `searchRegulation` — RAG sobre el corpus regulatorio chileno
+- `classifyJurisdiction` — decide CMF / SERNAC / SUSESO / SUPEN / tribunales
+- `calculateDeadlines` — días hábiles restantes + hitos críticos (vía MCP)
+- `draftClaim` — produce el documento formal según canal destino
+
+## Setup local
+
+Requisitos: Node 20+ y npm.
+
+```bash
+# 1) Instalar dependencias
+npm install
+
+# 2) Configurar variables de entorno
+cp .env.example .env.local
+# Editar .env.local con las keys reales (la API key de Anthropic la entrega el Lab al inicio)
+
+# 3) Levantar dev server
+npm run dev
+```
+
+Abrir http://localhost:3000.
 
 ## Estado
 
@@ -57,9 +75,9 @@ El agente expone 5 tools que el usuario ve operar en una consola en vivo:
 
 **Cruzaders** — primer Impact Lab de Anthropic en LATAM.
 
-- Exequiel Alvarado
-- Mauricio Blanco
-- Sebastián Fuentes
+- Exequiel Alvarado · AI Builder
+- Mauricio Blanco · Vibecoder
+- Sebastián Fuentes · Comercial / Producto
 
 ## Licencia
 

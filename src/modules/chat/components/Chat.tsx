@@ -33,13 +33,21 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
   return (
     <div className="flex flex-col h-full bg-paper rounded-lg border border-border">
       {/* Hilo de mensajes */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-8 space-y-4">
         {messages.length === 0 && !isStreaming ? (
-          <div className="text-center text-ink-3 py-12">
-            <p className="text-base mb-2">Contame qué te pasó.</p>
-            <p className="text-sm">
-              Para esta demo podés enviar cualquier mensaje y verás el caso de
-              María (jubilada con cobro indebido en su AFP).
+          // Empty state editorial — espejo del wireframe en design/pen/clariza.pen.
+          // Serif grande para el title, sans body para el help.
+          <div className="py-8 space-y-4">
+            <h2 className="font-serif text-2xl md:text-[28px] font-medium leading-tight tracking-tight">
+              Contame qué te pasó.
+            </h2>
+            <p className="text-base leading-relaxed text-ink-2 max-w-prose">
+              Escribí en lenguaje natural. Podés adjuntar contratos, cartolas o
+              capturas. Todo queda local hasta que toques Enviar.
+            </p>
+            <p className="text-sm text-ink-3 pt-4">
+              En esta demo verás el Caso 1: María, jubilada con cobro indebido
+              en su AFP.
             </p>
           </div>
         ) : null}

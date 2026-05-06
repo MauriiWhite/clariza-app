@@ -2,6 +2,7 @@
 // Para gente con prisa: una sola decision visible (Empezar), mensaje
 // directo, glassmorphism estrategico, ritmo respirado.
 
+import Link from "next/link";
 import { Button } from "@/modules/core/design-system/Button";
 
 export default function Home() {
@@ -92,6 +93,17 @@ export default function Home() {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Link discreto a casos de ejemplo */}
+        <div className="mt-12">
+          <Link
+            href="/casos"
+            className="inline-flex items-center gap-2 text-sm font-medium text-clay hover:underline"
+          >
+            Ver casos de ejemplo
+            <span aria-hidden>→</span>
+          </Link>
         </div>
 
         {/* CTA final, single */}

@@ -1,9 +1,10 @@
 # Clariza — Spec v0.1
 
-**Hackathon:** Claude Impact Lab Chile 2026 · 6–7 mayo · Espacio Riesco
-**Equipo:** Cruzaders (3 personas)
+**Hackathon:** Claude Impact Lab Chile 2026 · 6–7 mayo · Espacio Riesco · Chile Fintech Forum 2026
+**Equipo:** Cruzaders (3 personas) — modalidad **AI Builder**
 **Track:** Línea 01 — Inclusión Financiera
 **Tip de regulador:** CMF — Asistente Inteligente de Consultas y Reclamaciones Financieras
+**Ventana de construcción válida:** 2026-05-06 00:00 a 2026-05-07 23:59 hora Chile (UTC-4). Commits fuera de ventana = score técnico 0.
 
 ---
 
@@ -140,14 +141,18 @@ Considera feriados oficiales chilenos. Esta tool puede exponerse vía **MCP serv
 
 ## 5. Datos (M2 — 20%)
 
-### 5.1 Fuentes regulatorias (≥2 según rúbrica — vamos con 6)
-1. RAN — CMF
-2. Circulares CMF
-3. Ley 19.496 — SERNAC base
-4. Ley 21.521 — Fintech
-5. Ley 21.234 — Fraudes
-6. Ley 21.680 — REDEC
-7. (Bonus) Registro de entidades fiscalizadas CMF para verificación de fraude
+### 5.1 Fuentes regulatorias (≥2 según rúbrica — vamos con 9)
+1. **RAN — CMF** (Recopilación Actualizada de Normas)
+2. **NCG 502** — Registro y obligaciones prestadores Fintec (CMF, ene 2024)
+3. **NCG 514** — Sistema de Finanzas Abiertas / Open Finance (CMF, jul 2024)
+4. **Ley 21.521** — Fintec
+5. **Ley 19.496** — Derechos del consumidor (SERNAC base)
+6. **Ley 20.555** — SERNAC Financiero
+7. **Ley 21.398** — Pro Consumidor (certificados de deuda 5 días hábiles, etc.)
+8. **Ley 21.234** — Fraudes con tarjetas
+9. **Ley 21.680** — REDEC (Registro Consolidado de Deudas)
+10. **BCN API Ley Fácil** (https://www.bcn.cl/api-leyfacil/) — JSON gratuito, ideal para explicar normas a ciudadanos
+11. (Bonus) **Registro Prestadores Fintec (RPSF) CMF** — verificación entidad autorizada vs no autorizada
 
 ### 5.2 Pipeline
 1. Scrape/descarga del corpus desde fuentes oficiales (script one-shot pre-hackathon legal: el corpus es público).
@@ -201,9 +206,19 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 
 ---
 
-## 8. Demo (M4 — 25%, video 3–5 min)
+## 8. Demo y entregables técnicos
 
-### 8.1 Estructura del video
+**Tres entregables oficiales:**
+
+1. **Ficha cívica** (deadline 7 mayo 10:00): formulario con línea, problema, segmento, propuesta de valor, canal de adopción, datos usados. Sebastián + Exequiel la redactan desde la §1.1 y §14.
+2. **Entregable técnico** (deadline 7 mayo 17:00):
+   - Obligatorio: **demo video 3-5 min** + **screenshot consola Claude** con tool calls + **system prompt principal** (texto).
+   - Bonus: **repo público** (ya lo tenemos), **tools schema**, herramientas Anthropic declaradas (**MCP**, **Agent SDK**, **Extended Thinking**, **Files API** — todas en uso).
+3. **Pitch en vivo** (7 mayo tarde, solo si pasamos Top 6): 3 min + 2 min Q&A.
+
+### 8.0 Video demo (M4 — 15%, video 3–5 min)
+
+### 8.1 Estructura del video demo
 - **0:00–0:30** — hook: "Miles de chilenos pierden plata no por no tener razón, sino porque se les vence el plazo. Esto es Clariza."
 - **0:30–1:30** — caso A en vivo: usuario sube cartola banco, agente analiza, deriva a CMF, genera reclamo.
 - **1:30–2:15** — timeline de plazos hábiles aparece: "te quedan 18 días hábiles, te avisamos a los 7, 3 y 1".
@@ -220,25 +235,36 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 
 ## 9. Plan 48h
 
-### Día 6 mayo — 09:00 a 23:59
+> **Ventana válida**: 06-mayo 00:00 a 07-mayo 23:59 (UTC-4). Nada de commits previos.
 
-| Bloque | Hora | Responsable | Entregable |
+### Día 6 mayo — miércoles
+
+| Hora | Actividad oficial | Responsable | Entregable |
 |---|---|---|---|
-| Kickoff + setup repos | 09:00–10:00 | Todos | Repo, .env, accesos |
-| Inauguración oficial | 11:00 | — | Asistir |
-| Ingesta corpus regulatorio | 10:00–13:00 | Mauricio | RAN + 4 leyes en pgvector |
-| Tools: `buscar_normativa` + `extraer_antecedentes` | 13:00–16:00 | Mauricio | 2 tools verdes |
-| Tools: `clasificar_competencia` + `generar_reclamo` + `calcular_plazos` | 16:00–19:00 | Mauricio | 5 tools verdes |
-| Frontend: chat + consola + timeline plazos | 13:00–19:00 | Exequiel | UI funcional |
-| Casos demo + validación normativa | 13:00–19:00 | Sebastián | 3 casos curados |
-| Integración + recordatorio email (cron simple) | 19:00–21:00 | Todos | E2E funcionando |
-| Grabación video demo | 21:00–22:30 | Exequiel | MP4 listo |
-| Submit corte mentor | antes 23:59 | Líder | Form completo |
+| 11:00 | Bienvenida + apertura oficial | Todos | Asistir |
+| 11:30 | Mesa Pública-Privada con reguladores | Todos | Tomar notas |
+| 12:30 | Kick-off de construcción | — | — |
+| 12:30–15:30 | Ingesta corpus regulatorio + Files API beta | Mauricio | Leyes y NCG cargadas con citations |
+| 12:30–15:30 | Wireframes + scaffold Next.js | Exequiel | Repo deployado en Vercel |
+| 12:30–15:30 | 3 casos demo guionados | Sebastián | Casos validados con normativa real |
+| 15:30–18:30 | Tools: `extraer_antecedentes` + `buscar_normativa` | Mauricio | 2 tools verdes |
+| 15:30–18:30 | UI chat + consola en vivo | Exequiel | Streaming SSE funcionando |
+| 18:30–20:00 | Tools: `clasificar_competencia` + `calcular_plazos` (MCP) + `generar_reclamo` | Mauricio | 5 tools verdes |
+| 20:00 | **Cierre día 1 oficial** | — | — |
+| Noche | Integración E2E + recordatorios email | Todos | Flujo completo funcionando |
 
-### Día 7 mayo — solo si pasamos preselección
-- 09:00 — leaderboard de finalistas.
-- 09:00–11:30 — pulir pitch 3 min, ensayos, ajustar lo que mentor pidió.
-- 12:00 — pitch final.
+### Día 7 mayo — jueves
+
+| Hora | Actividad | Responsable | Entregable |
+|---|---|---|---|
+| 09:00 | Check-in | Todos | — |
+| 09:30 | Mentoría de refinamiento | Todos | Feedback aplicado |
+| **10:00** | **Deadline ficha cívica** | Sebastián + Exequiel | Form enviado |
+| 10:00–14:00 | Pulido demo + grabación video 3-5 min | Exequiel | MP4 + screenshot consola + system prompt |
+| 14:00–16:30 | Ensayos pitch 3 min + Q&A 2 min | Todos | Pitch fluido |
+| **17:00** | **Deadline técnico + preselección Top 6** | Líder | Repo + ficha técnica enviados |
+| Tarde | Si pasamos: pitches finales | Exequiel | Pitch en vivo |
+| Tarde | Premiación + networking | Todos | — |
 
 ---
 
@@ -274,14 +300,20 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 
 ---
 
-## 12. Métricas de éxito (mentor day 6)
+## 12. Métricas de éxito vs rúbrica oficial
 
-Optimizamos contra rúbrica Fase 1:
+Rúbrica final (5 criterios + bonus, escala 1-5):
 
-- ✅ M1 — segmento (clientes AFP/seguros/créditos), canal (PWA + PDF), impacto (28.000 reclamos/año).
-- ✅ M2 — 6 fuentes regulatorias reales, validador anti-alucinación.
-- ✅ M3 — system prompt específico, 4 tools, consola visible con tool calls en vivo.
-- ✅ M4 — video 3–5 min con 3 casos end-to-end.
+| # | Criterio | Peso | Cómo lo cumplimos |
+|---|---|---|---|
+| 1 | Impacto ciudadano | 25% | Mapeo a 3/4 perfiles oficiales + canal B2G CMF/SERNAC + plan post-Lab 60d |
+| 2 | Datos responsables | 20% | 9+ fuentes regulatorias reales, Files API citations, validador anti-alucinación |
+| 3 | Uso de Claude + agéntico | 25% | 5 tools, MCP server propio, Agent SDK, Extended Thinking, prompt caching, consola visible |
+| 4 | Funciona | 15% | Demo video 3-5 min E2E, deploy Vercel, casos pre-grabados como respaldo |
+| 5 | Pitch y narrativa | 15% | Hook plazos invisibles + 3 perfiles + cierre accionable |
+| — | Bonus agéntico | +5 | MCP + Agent SDK + tool-use multinivel declarados |
+
+Mentoría día 6 es para **refinar**, no es preselección — la preselección Top 6 por línea es **día 7 a las 17:00**.
 
 ---
 

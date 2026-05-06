@@ -184,20 +184,38 @@ Nuestro segmento principal abre Clariza desde celular en una micro o cola de ban
 - **Tailwind v4** en `src/modules/core/design-system/` — implementación.
 - **Tokens compartidos** entre Pencil y Tailwind: definir variables en Pencil con los mismos nombres que las CSS custom properties (ej: `--color-accent`, `--font-size-body`).
 
-### Paleta inicial propuesta
+### Paleta inicial — inspirada en el lenguaje público de Anthropic
 ```
---bg-primary:   #FAF7F2   /* crema cálida */
---bg-secondary: #FFFFFF
---text-primary: #1A1F2E   /* azul casi negro */
---text-secondary: #475569
---text-muted:   #6B7280
---accent:       #1A1F2E   /* primario */
---accent-soft:  #2563EB   /* azul para links */
---success:      #059669
---warning:      #D97706
---error:        #DC2626
---border:       #E5E7EB
+--cream:           #FAF7F2   /* fondo principal cálido */
+--paper:           #FFFFFF   /* superficies elevadas */
+--ink:             #1A1F2E   /* texto primario */
+--ink-2:           #475569   /* texto secundario */
+--ink-3:           #6B7280   /* texto muted */
+--clay:            #CC785C   /* acento terracota (estilo Anthropic) */
+--clay-soft:       #E8A88E   /* clay más claro */
+--accent-soft:     #2563EB   /* azul para links */
+--success:         #059669
+--warning:         #D97706
+--error:           #DC2626
+--border:          #E5E7EB
+--border-strong:   #D1D5DB
 ```
+
+### Tipografía
+- **Sans (UI + cuerpo)**: Inter — neutra, legible a todo tamaño, latin extended para acentos y ñ.
+- **Serif (titulares editoriales)**: Newsreader — alternativa libre a Tiempos Headline (la serif que usa Anthropic). Le da a los H1/H2 un peso editorial sin perder modernidad.
+- Combinación: serif solo en títulos y números grandes (ej: `01`, `02`, `03` en steps). Cuerpo y UI siempre sans.
+
+## 11. Lenguaje visual de Anthropic — referencia clave
+
+Mirar claude.ai y anthropic.com como faro. Lo que tomamos:
+
+- **Cream cálido** como fondo dominante (no blanco estéril).
+- **Serif editorial en titulares** — da peso, autoridad y humanidad. Importante en un producto cívico.
+- **Clay terracota** como único accent color cromático. No usar azul o verde para llamar atención — usar clay.
+- **Ritmo editorial generoso**: padding vertical 96-128px en secciones, leading 1.5+ en cuerpo, max-width ~700px en párrafos largos.
+- **Cero gradientes saturados**, cero sombras pesadas, cero bordes gruesos. Diseño que respeta al lector.
+- **Ilustraciones con calidez humana**, no iconos planos genéricos. Si no tenemos tiempo de ilustrar, mejor un emoji bien usado o un símbolo unicode que un icono "tech" estéril.
 
 ---
 

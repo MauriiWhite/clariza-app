@@ -1,6 +1,7 @@
 // Pagina principal del flujo conversacional.
 // Layout split: Chat (izquierda) + Consola del agente (derecha).
-// Top bar glass + console glass-dark — minimalista vanguardista.
+// Cuando el agente termina, aparecen DiagnosisCard + TimelineDeadlines
+// debajo (componentes diseñados por Mauricio, integrados al flujo).
 
 "use client";
 
@@ -8,9 +9,22 @@ import Link from "next/link";
 import { Chat } from "@/modules/chat/components/Chat";
 import { useChat } from "@/modules/chat/hooks/useChat";
 import { Console } from "@/modules/console/components/Console";
+import { DiagnosisCard } from "@/modules/diagnosis/components/DiagnosisCard";
+import { TimelineDeadlines } from "@/modules/diagnosis/components/TimelineDeadlines";
+import {
+  mockDiagnoses,
+  mockSchedules,
+} from "@/modules/diagnosis/utils/mocks";
 
 export default function ChatPage() {
   const { events, isStreaming, startTurn } = useChat();
+
+  // Por ahora la demo muestra el Caso 1 (Maria). Cuando el agente real
+  // emita un tool_result de classifyJurisdiction, derivamos el diagnosis
+  // y el schedule reales del stream y reemplazamos estos mocks.
+  const hasFinishedTurn = !isStreaming && events.length > 0;
+  const diagnosis = hasFinishedTurn ? mockDiagnoses.caso1 : null;
+  const schedule = hasFinishedTurn ? mockSchedules.caso1 : null;
 
   return (
     <div className="flex-1 flex flex-col">
@@ -57,11 +71,23 @@ export default function ChatPage() {
       </header>
 
       {/* Split: chat 60% / consola 40% en desktop, stack en mobile */}
-      <div className="flex-1 mx-auto max-w-350 w-full px-6 py-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 h-full min-h-[calc(100vh-7rem)]">
+      <div className="flex-1 mx-auto max-w-350 w-full px-6 py-6 md:px-8 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 min-h-[70vh]">
           <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           <Console events={events} />
         </div>
+
+        {/* Resultados del agente: Diagnostico + Plazos.
+            Aparecen cuando el turno termina. Diseño de Mauricio integrado al flujo. */}
+        {diagnosis && schedule && (
+          <section
+            aria-label="Resultados del análisis"
+            className="grid grid-cols-1 gap-6 lg:grid-cols-2 animate-in fade-in duration-500"
+          >
+            <DiagnosisCard diagnosis={diagnosis} />
+            <TimelineDeadlines schedule={schedule} />
+          </section>
+        )}
       </div>
     </div>
   );

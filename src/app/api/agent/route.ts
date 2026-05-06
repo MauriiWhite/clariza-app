@@ -12,6 +12,7 @@
 //     los 5 tools registrados, incluyendo extractEvidence con el archivo.
 //   - Si NO esta → fallback al mock para que la demo no se rompa.
 
+import { runAgentViaOpenRouter } from "@/modules/agent/services/openRouterRunner";
 import { runAgent } from "@/modules/agent/services/runner";
 import type {
   AgentAttachment,
@@ -90,7 +91,17 @@ export async function POST(req: Request) {
   }
 
   const { userMessage, attachment } = parsed;
-  const useRealAgent = !!process.env.ANTHROPIC_API_KEY;
+
+  // Provider routing:
+  // 1. Si hay ANTHROPIC_API_KEY → usar Anthropic SDK (camino preferido).
+  // 2. Si no, pero hay OPENROUTER_API_KEY → usar OpenAI SDK contra OpenRouter.
+  // 3. Si ninguna, fallback al mock dinamico.
+  const provider: "anthropic" | "openrouter" | "mock" = process.env
+    .ANTHROPIC_API_KEY
+    ? "anthropic"
+    : process.env.OPENROUTER_API_KEY
+      ? "openrouter"
+      : "mock";
 
   const encoder = new TextEncoder();
 
@@ -102,9 +113,17 @@ export async function POST(req: Request) {
       };
 
       try {
-        if (useRealAgent) {
-          // Camino real: runAgent con tools + extractEvidence con archivo.
+        if (provider === "anthropic") {
+          // Camino real Anthropic: runAgent + toolRunner SDK + 6 tools.
           await runAgent({ userMessage, attachment, onEvent: send });
+        } else if (provider === "openrouter") {
+          // Camino OpenRouter: OpenAI SDK con baseURL OpenRouter, modelos Claude.
+          // Loop tool-use manual (sin toolRunner helper).
+          await runAgentViaOpenRouter({
+            userMessage,
+            attachment,
+            onEvent: send,
+          });
         } else {
           // Camino mock: el mock detecta keywords y elige uno de los 4 casos.
           send({ type: "user", text: userMessage });

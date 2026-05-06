@@ -375,4 +375,12 @@ Mentoría día 6 es para **refinar**, no es preselección — la preselección T
 
 ---
 
-*Última actualización: 2026-05-06 · Doc vivo, se ajusta tras feedback del mentor.*
+## 16. Decisiones técnicas tomadas
+
+| Fecha | Decisión | Alternativa descartada | Motivo |
+|---|---|---|---|
+| 2026-05-05 | Construir MCP server con `@modelcontextprotocol/sdk` oficial | `mcify` (npx @mcify/cli@alpha) | mcify es alpha y open source válido, pero la vía oficial documentada por el Lab es más segura para demo en vivo y no agrega dependencias inestables. Si fallara, mcify queda como fallback de scaffolding. |
+
+---
+
+*Última actualización: 2026-05-05 · Doc vivo, se ajusta tras feedback del mentor.*

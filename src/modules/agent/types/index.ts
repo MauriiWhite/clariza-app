@@ -13,12 +13,23 @@ export type ConsoleEvent =
   | { type: "assistant"; text: string }
   | { type: "error"; message: string };
 
+/** Archivo adjunto opcional que el ciudadano sube con su mensaje.
+ *  El base64 va a la tool extractEvidence via closure cuando se construye
+ *  el toolRegistry para este turno. */
+export interface AgentAttachment {
+  base64: string;
+  mediaType: string;
+  filename?: string;
+}
+
 /**
  * Opciones para ejecutar un turno del agente.
  */
 export interface RunAgentOptions {
   // Mensaje del ciudadano en lenguaje natural.
   userMessage: string;
+  // Archivo adjunto opcional (foto, PDF, screenshot).
+  attachment?: AgentAttachment | null;
   // Callback opcional para streamear eventos a la consola visible.
   onEvent?: (event: ConsoleEvent) => void;
 }

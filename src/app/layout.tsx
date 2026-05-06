@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 
@@ -24,6 +24,10 @@ export const metadata: Metadata = {
     "Clariza traduce tu problema financiero, lo deriva al regulador correcto (CMF, SERNAC, SUSESO, SUPEN o tribunales) y te avisa antes de que se venza el plazo.",
   applicationName: "Clariza",
   authors: [{ name: "Cruzaders" }],
+};
+
+// En Next 16 themeColor va en el export viewport, no en metadata.
+export const viewport: Viewport = {
   themeColor: "#FAF7F2",
 };
 

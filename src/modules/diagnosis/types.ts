@@ -1,21 +1,22 @@
-export interface RegulatoryDiagnosis {
-  ente_competente: "CMF" | "SERNAC" | "SUSESO" | "SUPEN" | "TRIBUNALES" | "CMF + PDI";
-  procedencia: "procedente" | "improcedente" | "incompleto" | "mixto";
-  gravedad: "alta" | "media" | "baja";
-  canal_oficial: string;
-  plazo_legal_dias: number;
-  motivo_derivacion: string;
-}
+// Re-export de los tipos canonicos que consume modules/diagnosis.
+//
+// La fuente de verdad vive en los modulos de las tools que los emiten:
+//   - RegulatoryDiagnosis → @/modules/tools/classifyJurisdiction/types
+//   - DeadlineSchedule    → @/modules/tools/calculateDeadlines/types
+//
+// Lo re-exportamos aca para que los components de modules/diagnosis hagan
+// un solo import desde su propio modulo, sin tener que conocer la
+// implementacion de las tools.
 
-export interface DeadlineSchedule {
-  plazo_total_dias_habiles: number | null; // null para casos sin plazo legal definido
-  dias_transcurridos: number;
-  dias_restantes: number | null;
-  fecha_limite: string | null; // ISO string (YYYY-MM-DD)
-  hitos: Array<{
-    fecha: string; // ISO string
-    accion: string;
-    critico: boolean;
-  }>;
-  feriados_considerados: string[];
-}
+export type {
+  OfficialChannel,
+  Procedure,
+  Regulator,
+  RegulatoryDiagnosis,
+  Severity,
+} from "@/modules/tools/classifyJurisdiction/types";
+
+export type {
+  DeadlineMilestone,
+  DeadlineSchedule,
+} from "@/modules/tools/calculateDeadlines/types";

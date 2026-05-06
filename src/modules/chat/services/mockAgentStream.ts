@@ -2,18 +2,22 @@
 // Reproduce el Caso 1 — Maria Rojas (jubilada · AFP comision adicional · SUPEN)
 // tal como esta documentado en CASES.md.
 //
-// Cuando el endpoint /api/agent este listo, lo reemplazamos por un cliente SSE
-// real. La firma de getAgentStream() se mantiene para que la UI no cambie.
+// Importante: emite los outputs de tool_result en las shapes CANONICAS
+// (RegulatoryDiagnosis, DeadlineSchedule, ClaimDocument) para que
+// extractArtifacts.ts pueda derivarlos identico que del agente real.
 
 import type { ConsoleEvent } from "@/modules/agent/types";
+import { mockClaims } from "@/modules/claim/utils/mocks";
+import {
+  mockDiagnoses,
+  mockSchedules,
+} from "@/modules/diagnosis/utils/mocks";
 
 interface MockEvent {
   delayMs: number;
   event: ConsoleEvent;
 }
 
-// Eventos del Caso 1 con timing aproximado al de la demo.
-// Cada delayMs es desde el evento anterior, no acumulado.
 const CASO_MARIA: MockEvent[] = [
   {
     delayMs: 0,
@@ -68,13 +72,18 @@ const CASO_MARIA: MockEvent[] = [
       output: {
         citations: [
           {
+            sourceId: "DL_3500",
             source: "DL 3.500",
             article: "Art. 29",
             relevance: "alta",
+            url: "https://www.bcn.cl/leychile/navegar?idNorma=7147",
           },
           {
-            source: "Circular SUPEN 1.998",
+            sourceId: "CIRCULAR_SUPEN_1998",
+            source: "Circular SUPEN",
+            article: "N° 1.998",
             relevance: "media",
+            url: "https://www.spensiones.cl/portal/institucional/594/w3-channel.html",
           },
         ],
       },
@@ -97,13 +106,8 @@ const CASO_MARIA: MockEvent[] = [
     event: {
       type: "tool_result",
       name: "classifyJurisdiction",
-      output: {
-        regulator: "SUPEN",
-        applicable: "procedente",
-        severity: "media",
-        reason:
-          "AFP Habitat es una administradora de fondos de pensiones, fiscalizada por la Superintendencia de Pensiones (SUPEN), no por CMF.",
-      },
+      // Shape canonica: RegulatoryDiagnosis
+      output: mockDiagnoses.caso1,
     },
   },
   {
@@ -113,8 +117,8 @@ const CASO_MARIA: MockEvent[] = [
       name: "calculateDeadlines",
       input: {
         regulator: "SUPEN",
-        caseType: "cobro-indebido",
-        firstChargeDate: "2026-01-15",
+        case_type: "cobro indebido AFP",
+        fact_date: "2026-05-02",
       },
     },
   },
@@ -123,27 +127,50 @@ const CASO_MARIA: MockEvent[] = [
     event: {
       type: "tool_result",
       name: "calculateDeadlines",
-      output: {
-        totalBusinessDays: 18,
-        elapsedBusinessDays: 0,
-        remainingBusinessDays: 18,
-        deadlineDate: "2026-05-30",
-        criticalMilestones: ["7 dias antes", "3 dias antes", "1 dia antes"],
+      // Shape canonica: DeadlineSchedule
+      output: mockSchedules.caso1,
+    },
+  },
+  {
+    delayMs: 1200,
+    event: {
+      type: "assistant",
+      text: "Tu caso es competencia de la Superintendencia de Pensiones (SUPEN), no de la CMF. Tenés 18 días hábiles para reclamar formalmente — el plazo vence el 30 de mayo de 2026.\n\nLas AFP solo pueden cobrar comisión por administrar tu cuenta. Si no te explicaron este cobro adicional, podés exigir devolución bajo el DL 3.500 Art. 29.\n\nDejame armarte el reclamo formal.",
+    },
+  },
+  {
+    delayMs: 700,
+    event: {
+      type: "tool_call",
+      name: "draftClaim",
+      input: {
+        regulator: "SUPEN",
+        claimant: { fullName: "María Rojas" },
+        respondent: { entity: "AFP Habitat" },
       },
     },
   },
   {
-    delayMs: 1500,
+    delayMs: 1000,
+    event: {
+      type: "tool_result",
+      name: "draftClaim",
+      // Shape canonica: ClaimDocument
+      output: mockClaims.caso1,
+    },
+  },
+  {
+    delayMs: 800,
     event: {
       type: "assistant",
-      text: "Tu caso es competencia de la Superintendencia de Pensiones (SUPEN), no de la CMF. Tenés 18 días hábiles para reclamar formalmente — el plazo vence el 30 de mayo de 2026.\n\nLas AFP solo pueden cobrar comisión por administrar tu cuenta. Si no te explicaron este cobro adicional, podés exigir devolución bajo el DL 3.500 Art. 29.\n\nCuando quieras, te genero el reclamo formal listo para enviar.",
+      text: "Listo. El reclamo formal está abajo, dirigido a SUPEN, citando DL 3.500 Art. 29 y la Circular SUPEN 1.998. Cuando lo descargues podés presentarlo en el portal oficial.",
     },
   },
 ];
 
 /**
- * Devuelve un AsyncIterable de eventos del agente, simulando el stream real.
- * Llama callback opcional onEvent en cada emision (ergonomia tipo runner).
+ * Devuelve un AsyncGenerator de eventos del agente, simulando el stream real.
+ * Llama callback opcional onEvent en cada emision.
  */
 export async function* getAgentStream(
   onEvent?: (event: ConsoleEvent) => void,

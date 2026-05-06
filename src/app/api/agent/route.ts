@@ -1,0 +1,138 @@
+// API route SSE para ejecutar un turno del agente Clariza.
+//
+// POST /api/agent — acepta:
+//   1) JSON: { userMessage: string }
+//   2) multipart/form-data: campo userMessage + campo file (foto, PDF)
+//      con esto la tool extractEvidence puede usar Claude Vision.
+//
+// Response: text/event-stream con eventos del agente (ConsoleEvent JSON).
+//
+// Comportamiento:
+//   - Si ANTHROPIC_API_KEY esta configurada → ejecuta el agente real con
+//     los 5 tools registrados, incluyendo extractEvidence con el archivo.
+//   - Si NO esta → fallback al mock para que la demo no se rompa.
+
+import { runAgent } from "@/modules/agent/services/runner";
+import type {
+  AgentAttachment,
+  ConsoleEvent,
+} from "@/modules/agent/types";
+import { getAgentStream } from "@/modules/chat/services/mockAgentStream";
+
+// Forzamos runtime Node porque el SDK de Anthropic usa Node APIs.
+// Edge runtime no soporta el SDK completo.
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+// Limite del archivo a procesar — protege la API y costos de Vision.
+// 10 MB cubre fotos de cartolas/contratos sin problema.
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+
+interface AgentRequest {
+  userMessage: string;
+  attachment: AgentAttachment | null;
+}
+
+/** Lee la request y devuelve userMessage + attachment opcional. */
+async function parseRequest(req: Request): Promise<AgentRequest | { error: string }> {
+  const contentType = req.headers.get("content-type") ?? "";
+
+  // Caso 1: JSON simple sin archivo.
+  if (contentType.includes("application/json")) {
+    const body = (await req.json().catch(() => ({}))) as {
+      userMessage?: unknown;
+    };
+    const userMessage =
+      typeof body.userMessage === "string" ? body.userMessage.trim() : "";
+    if (!userMessage) return { error: "userMessage requerido" };
+    return { userMessage, attachment: null };
+  }
+
+  // Caso 2: multipart/form-data con archivo opcional.
+  if (contentType.includes("multipart/form-data")) {
+    const form = await req.formData();
+    const userMessageRaw = form.get("userMessage");
+    const userMessage =
+      typeof userMessageRaw === "string" ? userMessageRaw.trim() : "";
+    if (!userMessage) return { error: "userMessage requerido" };
+
+    const file = form.get("file");
+    if (!(file instanceof File) || file.size === 0) {
+      return { userMessage, attachment: null };
+    }
+
+    if (file.size > MAX_FILE_BYTES) {
+      return {
+        error: `Archivo demasiado grande (${Math.round(file.size / 1024 / 1024)} MB). Máximo 10 MB.`,
+      };
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const attachment: AgentAttachment = {
+      base64: buffer.toString("base64"),
+      mediaType: file.type || "application/octet-stream",
+      filename: file.name,
+    };
+    return { userMessage, attachment };
+  }
+
+  return { error: `Content-Type no soportado: ${contentType}` };
+}
+
+export async function POST(req: Request) {
+  const parsed = await parseRequest(req);
+
+  if ("error" in parsed) {
+    return new Response(JSON.stringify({ error: parsed.error }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { userMessage, attachment } = parsed;
+  const useRealAgent = !!process.env.ANTHROPIC_API_KEY;
+
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (event: ConsoleEvent) => {
+        const payload = `data: ${JSON.stringify(event)}\n\n`;
+        controller.enqueue(encoder.encode(payload));
+      };
+
+      try {
+        if (useRealAgent) {
+          // Camino real: runAgent con tools + extractEvidence con archivo.
+          await runAgent({ userMessage, attachment, onEvent: send });
+        } else {
+          // Camino mock: simulamos flujo del Caso 1 — Maria/SUPEN.
+          send({ type: "user", text: userMessage });
+          const demoNote = attachment
+            ? `Modo demo: vi tu archivo "${attachment.filename ?? "adjunto"}" pero no hay API key todavía. Te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.`
+            : "Modo demo: no hay API key configurada todavía, te reproduzco el Caso 1 (María, jubilada con cobro indebido en su AFP) para que veas el flujo.";
+          send({ type: "assistant", text: demoNote });
+          for await (const event of getAgentStream()) {
+            // Saltamos el user del mock (ya emitimos uno arriba con el mensaje real).
+            if (event.type === "user") continue;
+            send(event);
+          }
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        send({ type: "error", message });
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}

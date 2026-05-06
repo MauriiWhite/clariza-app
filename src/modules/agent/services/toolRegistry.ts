@@ -6,7 +6,12 @@
 // unico punto de verdad sobre que tools estan activas.
 
 import { echoTool } from "@/modules/agent/tools/echo";
+import { calculateDeadlinesTool } from "@/modules/tools/calculateDeadlines";
 import { classifyJurisdictionTool } from "@/modules/tools/classifyJurisdiction";
+import { draftClaimTool } from "@/modules/tools/draftClaim";
+import { createExtractEvidenceTool } from "@/modules/tools/extractEvidence";
+import type { FileAttachment } from "@/modules/tools/extractEvidence/types";
+import { getEconomicContextTool } from "@/modules/tools/getEconomicContext";
 import { searchRegulationTool } from "@/modules/tools/searchRegulation";
 import type { ToolMetadata } from "@/modules/agent/types";
 
@@ -18,27 +23,40 @@ type RegisteredTool = unknown;
 /**
  * Tools activas en este turno del agente.
  *
- * Estado actual (Paso 6):
+ * Estado actual (Paso 11) — 5 tools reales + dummy:
  *   - echoTool — dummy. Lo dejamos para tests del runner.
  *   - searchRegulationTool — busqueda sobre corpus regulatorio chileno (8 fuentes).
  *   - classifyJurisdictionTool — derivacion CMF/SERNAC/SUSESO/SUPEN/tribunales.
- *
- * Por venir:
- *   - extractEvidenceTool — Vision sobre PDFs/imagenes.
- *   - calculateDeadlinesTool — MCP server con plazos habiles.
- *   - draftClaimTool — generacion del reclamo formal.
+ *   - calculateDeadlinesTool — plazos habiles con feriados oficiales (Nager API).
+ *   - draftClaimTool — generacion del reclamo formal con templates por regulador.
+ *   - extractEvidenceTool — Vision sobre PDFs/imagenes (factory por turno).
  */
-const registeredTools: RegisteredTool[] = [
+const STATIC_TOOLS: RegisteredTool[] = [
   echoTool,
   searchRegulationTool,
   classifyJurisdictionTool,
+  calculateDeadlinesTool,
+  draftClaimTool,
+  getEconomicContextTool,
 ];
 
+interface ToolContext {
+  attachment?: FileAttachment | null;
+}
+
 /**
- * Devuelve todas las tools registradas para que el runner las pase al SDK.
+ * Devuelve todas las tools disponibles para este turno, incluyendo la
+ * tool factory extractEvidence si hay archivo adjunto. Si no hay,
+ * extractEvidence igual se incluye y devuelve hasAttachment: false al
+ * ser invocada — asi el agente puede aprenderlo sin que el contrato cambie.
  */
-export function getRegisteredTools(): RegisteredTool[] {
-  return registeredTools;
+export function getRegisteredTools(
+  context: ToolContext = {},
+): RegisteredTool[] {
+  return [
+    ...STATIC_TOOLS,
+    createExtractEvidenceTool(context.attachment ?? null),
+  ];
 }
 
 /**
@@ -46,12 +64,18 @@ export function getRegisteredTools(): RegisteredTool[] {
  * cuando queramos mostrar "estas son las herramientas disponibles".
  */
 export function getToolMetadata(): ToolMetadata[] {
-  return registeredTools.map((tool) => {
-    // betaZodTool retorna un objeto con name y description al nivel raiz.
+  // No instanciamos extractEvidence aca — solo contamos las estaticas
+  // y agregamos extractEvidence manualmente.
+  const metadata: ToolMetadata[] = STATIC_TOOLS.map((tool) => {
     const t = tool as { name?: string; description?: string };
     return {
       name: t.name ?? "unknown",
       description: t.description ?? "",
     };
   });
+  metadata.push({
+    name: "extractEvidence",
+    description: "Lee archivos del ciudadano con Vision (foto, PDF).",
+  });
+  return metadata;
 }

@@ -1,6 +1,11 @@
-// Hook que maneja el estado de un turno del chat.
-// En esta version v0 consume el mockAgentStream — cuando este el endpoint
-// /api/agent real, se reemplaza la fuente sin cambiar la API publica.
+// Hook que maneja el estado de un turno del chat conversacional.
+//
+// Consume el endpoint /api/agent via SSE. El endpoint internamente decide
+// si ejecuta el agente real (si hay ANTHROPIC_API_KEY) o el mock (si no).
+//
+// Si el endpoint falla por completo (ej: 500, offline), el hook cae a un
+// segundo nivel de fallback: el mock local. Asi la demo nunca se queda
+// muda en frente del jurado.
 
 "use client";
 
@@ -14,42 +19,99 @@ interface UseChatState {
   error: string | null;
 }
 
+const INITIAL_STATE: UseChatState = {
+  events: [],
+  isStreaming: false,
+  error: null,
+};
+
 export function useChat() {
-  const [state, setState] = useState<UseChatState>({
-    events: [],
-    isStreaming: false,
-    error: null,
-  });
+  const [state, setState] = useState<UseChatState>(INITIAL_STATE);
 
-  // Inicia un turno con el mensaje del usuario y opcionalmente un archivo.
-  // En produccion esto va a llamar al endpoint SSE real con fetch + FormData.
-  const startTurn = useCallback(async (
-    _userMessage: string,
-    _file?: File | null,
-  ) => {
-    // Por ahora ignoramos el userMessage y el archivo — el mock siempre reproduce Caso 1.
-    void _userMessage;
-    void _file;
-    setState({ events: [], isStreaming: true, error: null });
+  /** Empuja un evento al historial de la UI. */
+  const appendEvent = useCallback((event: ConsoleEvent) => {
+    setState((prev) => ({ ...prev, events: [...prev.events, event] }));
+  }, []);
 
-    try {
-      for await (const event of getAgentStream()) {
-        setState((prev) => ({
-          ...prev,
-          events: [...prev.events, event],
-        }));
+  /** Inicia un turno: llama a /api/agent y consume el stream SSE. */
+  const startTurn = useCallback(
+    async (userMessage: string, _file?: File | null) => {
+      // _file todavia no se sube (lo tomara extractEvidence cuando exista).
+      void _file;
+
+      setState({ events: [], isStreaming: true, error: null });
+
+      try {
+        const res = await fetch("/api/agent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userMessage }),
+        });
+
+        if (!res.ok || !res.body) {
+          throw new Error(`API respondió HTTP ${res.status}`);
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          // Eventos SSE separados por doble salto de linea.
+          const messages = buffer.split("\n\n");
+          buffer = messages.pop() ?? "";
+
+          for (const message of messages) {
+            const line = message.trim();
+            if (!line.startsWith("data: ")) continue;
+            const json = line.slice(6).trim();
+            if (!json) continue;
+            try {
+              const event = JSON.parse(json) as ConsoleEvent;
+              appendEvent(event);
+            } catch {
+              // SSE malformado, lo ignoramos.
+            }
+          }
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn(
+          "[useChat] /api/agent fallo, cayendo al mock local:",
+          message,
+        );
+
+        // Fallback total: mock local. Limpiamos events y reproducimos.
+        setState({ events: [], isStreaming: true, error: null });
+        try {
+          appendEvent({ type: "user", text: userMessage });
+          appendEvent({
+            type: "assistant",
+            text: "Conexión con el servidor falló. Te muestro el Caso 1 desde el cliente.",
+          });
+          for await (const event of getAgentStream()) {
+            if (event.type === "user") continue;
+            appendEvent(event);
+          }
+        } catch (mockErr) {
+          setState((prev) => ({
+            ...prev,
+            error: mockErr instanceof Error ? mockErr.message : String(mockErr),
+          }));
+        }
+      } finally {
+        setState((prev) => ({ ...prev, isStreaming: false }));
       }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      setState((prev) => ({ ...prev, error: message }));
-    } finally {
-      setState((prev) => ({ ...prev, isStreaming: false }));
-    }
-  }, []);
+    },
+    [appendEvent],
+  );
 
-  const reset = useCallback(() => {
-    setState({ events: [], isStreaming: false, error: null });
-  }, []);
+  const reset = useCallback(() => setState(INITIAL_STATE), []);
 
   return {
     events: state.events,

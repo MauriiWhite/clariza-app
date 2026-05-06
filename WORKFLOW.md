@@ -132,7 +132,56 @@ gh pr create --base dev --head dev-tuya --title "feat: lo que hiciste"
 
 ---
 
-## 4. Manejo de errores — 3 capas
+## 4. Desarrollo independiente por módulos (clave del ritmo)
+
+**Principio:** cada uno avanza en su módulo sin esperar a los otros. Trabajamos contra **contratos** (interfaces, tipos, schemas), no contra implementaciones reales. Al final, cuando todos los módulos están verdes, encajamos.
+
+### 4.1 Contratos definidos
+
+Estos son los puntos de contacto entre módulos. Si cambian, se avisa antes en WhatsApp del equipo.
+
+| Contrato | Definido en | Lo respeta |
+|---|---|---|
+| `ConsoleEvent` (eventos del agente: tool_call, tool_result, assistant) | `src/agent/runner.ts` | UI consola (Mauricio) |
+| `RunAgentResult` (output final del agente) | `src/agent/runner.ts` | API route (Mauricio) |
+| Schema de cada tool (input zod + output) | `src/agent/tools/*.ts` | Frontend cuando renderiza resultados |
+| Endpoint `/api/agent` — POST con streaming SSE | TBD por Mauricio en `src/app/api/agent/route.ts` | Componente Chat (Mauricio), smoke test (Exequiel) |
+| Tabla `cases` en Supabase | `src/lib/supabase/schema.sql` (Mauricio define) | Cron de recordatorios (Mauricio), persistencia (Mauricio) |
+| Schema de `regulation_chunks` en pgvector | `src/lib/supabase/schema.sql` (Mauricio define) | Tool searchRegulation (Exequiel) |
+
+### 4.2 Mocks que cada uno mantiene para no bloquearse
+
+| Persona | Lo que mockea (porque depende del otro) | Para qué |
+|---|---|---|
+| **Mauricio** | `mockAgentStream()` — emite `ConsoleEvent`s falsos desde un caso de CASES.md | Desarrollar UI consola, chat, timeline sin necesidad del agente real |
+| **Mauricio** | `mockReclamoPDF()` — datos hardcodeados | Probar el PDF generator sin la tool draftClaim real |
+| **Exequiel** | Corpus mock en `data/corpus/fallback.ts` con 3-4 chunks de cada ley | Desarrollar tools antes de tener pgvector cargada |
+| **Exequiel** | Smoke CLI (`npm run smoke:agent`) | Validar agente sin UI |
+| **Sebastián** | Agente real vía CLI o consola → screenshots | Validar normativa sin depender de UI |
+
+### 4.3 Cómo verificás tu módulo sin los otros
+
+- **Exequiel**: `npm run smoke:agent` debe pasar verde con corpus mock + tool dummy + tools reales.
+- **Mauricio**: `npm run dev` debe levantar la UI con mocks que muestren un flujo completo simulado.
+- **Sebastián**: leyendo CASES.md y verificando contra normativa real publicada en BCN/CMF.
+
+Cada módulo es **demo-able solo**. Si solo está mi parte, tengo que poder mostrarlo funcionando con stubs de las otras.
+
+### 4.4 Hitos de integración (cuándo unimos)
+
+| Hito | Cuándo | Qué se une |
+|---|---|---|
+| **Integración 1 — UI ↔ Agente real** | Día 6, ~18:30 | UI consume el endpoint `/api/agent` real en vez del mock |
+| **Integración 2 — Agente ↔ Corpus real** | Día 6, ~19:00 | tool searchRegulation deja de usar fallback y consume pgvector |
+| **Integración 3 — PDF ↔ draftClaim real** | Día 6, ~20:00 | PDF generator recibe output real de la tool |
+| **Integración 4 — Email recordatorios** | Día 6, ~21:00 | Cron Resend dispara contra casos guardados reales |
+| **Integración 5 — Deploy E2E** | Día 6, ~22:30 | Merge `dev` → `main` → Vercel produce con todo real |
+
+Cada hito tiene 30 min de buffer para fixes. Si un módulo no está listo, el hito se posterga, **no se merge a medias**.
+
+---
+
+## 5. Manejo de errores — 3 capas
 
 ### Capa A — Errores en código (mientras desarrollás)
 - Antes de cada commit: `npx tsc --noEmit` debe pasar limpio.
@@ -153,7 +202,7 @@ gh pr create --base dev --head dev-tuya --title "feat: lo que hiciste"
 
 ---
 
-## 5. Plan hora-por-hora (referencia rápida)
+## 6. Plan hora-por-hora (referencia rápida)
 
 ### Día 6 — miércoles 6 mayo
 
@@ -182,7 +231,7 @@ gh pr create --base dev --head dev-tuya --title "feat: lo que hiciste"
 
 ---
 
-## 6. Sincronización del equipo
+## 7. Sincronización del equipo
 
 - **Standups verbales cada 3 horas en sede** — 5 min: qué hice, qué sigo, qué bloqueo.
 - **WhatsApp del equipo** — solo para alertas de "voy a tocar X" o "rompí algo, dame 5 min".

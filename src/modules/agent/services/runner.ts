@@ -1,93 +1,81 @@
-// Runner del agente Clariza.
-// Usa el toolRunner del SDK para que el loop tool-use lo maneje Anthropic
-// (Claude llama tool -> ejecutamos run() -> le devolvemos resultado -> sigue).
+// Runner del agente Clariza — facade publica.
 //
-// Ademas registra cada tool call y resultado en una "consola" interna que
-// despues sera el componente visible en pantalla (cumple sub-check B3 de la
-// rubrica del Lab: >=3 mensajes visibles en la ventana durante la demo).
+// Esta funcion es el unico punto de entrada para ejecutar un turno del agente.
+// Internamente compone:
+//   - Cliente Anthropic + IDs de modelos (modules/agent/lib/client)
+//   - System prompt v1 (modules/agent/prompts/system)
+//   - Tools registradas centralmente (modules/agent/services/toolRegistry)
+//   - Emisor de eventos de consola (modules/agent/services/eventEmitter)
+//   - Tipos compartidos (modules/agent/types)
+//
+// Cumple sub-check B3 de la rubrica del Lab: emite >=3 eventos visibles
+// (user, tool_call, tool_result, assistant) por turno, lo que el componente
+// modules/console renderiza en pantalla durante la demo.
 
 import type { BetaTool } from "@anthropic-ai/sdk/resources/beta/messages";
 import { getAnthropicClient, MODELS } from "@/modules/agent/lib/client";
 import { CLARIZA_SYSTEM_PROMPT } from "@/modules/agent/prompts/system";
-import { echoTool } from "@/modules/agent/tools/echo";
+import { ConsoleEventEmitter } from "@/modules/agent/services/eventEmitter";
+import { getRegisteredTools } from "@/modules/agent/services/toolRegistry";
+import type {
+  ConsoleEvent,
+  RunAgentOptions,
+  RunAgentResult,
+} from "@/modules/agent/types";
 
-// Eventos que el runner emite para que UI / scripts los muestren en consola.
-export type ConsoleEvent =
-  | { type: "user"; text: string }
-  | { type: "tool_call"; name: string; input: unknown }
-  | { type: "tool_result"; name: string; output: unknown }
-  | { type: "assistant"; text: string }
-  | { type: "error"; message: string };
-
-export interface RunAgentOptions {
-  // Mensaje del ciudadano.
-  userMessage: string;
-  // Callback opcional para streamear eventos a la consola visible.
-  onEvent?: (event: ConsoleEvent) => void;
-}
-
-export interface RunAgentResult {
-  // Respuesta final que se muestra al ciudadano.
-  finalText: string;
-  // Lista completa de eventos del turno (util para tests y para el componente consola).
-  events: ConsoleEvent[];
-}
+// Re-export de tipos para mantener compatibilidad con consumers que ya
+// importaban desde este modulo (smoke test, futuros consumers de la UI).
+export type { ConsoleEvent, RunAgentOptions, RunAgentResult };
 
 /**
  * Ejecuta un turno del agente Clariza con tool-use real.
- * En esta version v0 solo expone la tool dummy `echo` para validar el pipeline.
+ * Maneja el loop completo Claude <-> tools y emite eventos a consola.
  */
 export async function runAgent(
   options: RunAgentOptions,
 ): Promise<RunAgentResult> {
   const { userMessage, onEvent } = options;
   const client = getAnthropicClient();
-  const events: ConsoleEvent[] = [];
+  const emitter = new ConsoleEventEmitter(onEvent);
 
-  // Helper que registra y emite eventos en simultaneo.
-  const log = (event: ConsoleEvent) => {
-    events.push(event);
-    onEvent?.(event);
-  };
-
-  log({ type: "user", text: userMessage });
-
-  // Tools disponibles en este turno.
-  // En el Paso 3 reemplazamos echoTool por las 5 reales (extract, search, classify, deadlines, draft).
-  const tools = [echoTool];
+  emitter.emit({ type: "user", text: userMessage });
 
   // Map para resolver el nombre de la tool a partir del tool_use_id, asi
   // podemos emitir eventos tool_result con el nombre correcto.
   const toolNameById = new Map<string, string>();
 
   try {
-    // toolRunner ejecuta el loop completo: Claude llama tool -> SDK corre run -> Claude continua
-    // hasta tener una respuesta final sin mas tool_use blocks.
+    // toolRunner ejecuta el loop completo: Claude llama tool -> SDK corre run
+    // -> Claude continua hasta tener una respuesta final sin mas tool_use.
     const runner = client.beta.messages.toolRunner({
       model: MODELS.primary,
       max_tokens: 2048,
       system: CLARIZA_SYSTEM_PROMPT,
-      tools: tools as unknown as BetaTool[],
+      tools: getRegisteredTools() as unknown as BetaTool[],
       messages: [{ role: "user", content: userMessage }],
     });
 
-    // Iteramos manualmente sobre el runner para capturar cada tool call,
-    // texto intermedio y tool result.
+    // Iteramos manualmente sobre el runner para capturar tool calls,
+    // texto intermedio y tool results en orden.
     for await (const message of runner) {
-      // 1) Procesamos los content blocks del mensaje del assistant que acaba de llegar.
+      // 1) Procesamos los content blocks del mensaje del assistant que llego.
       for (const block of message.content) {
         if (block.type === "tool_use") {
           toolNameById.set(block.id, block.name);
-          log({ type: "tool_call", name: block.name, input: block.input });
+          emitter.emit({
+            type: "tool_call",
+            name: block.name,
+            input: block.input,
+          });
         } else if (block.type === "text" && block.text.trim().length > 0) {
           // Texto intermedio del modelo (puede haber pensamiento estructurado entre tool calls).
-          log({ type: "assistant", text: block.text });
+          emitter.emit({ type: "assistant", text: block.text });
         }
       }
 
-      // 2) Tras procesar el mensaje, el SDK ejecuta las tools y agrega un mensaje
-      //    user con tool_result blocks. Lo leemos de params.messages para emitir
-      //    los resultados en el orden correcto.
+      // 2) Tras procesar el mensaje, el SDK ejecuta las tools y agrega un
+      //    mensaje user con tool_result blocks. Lo leemos de params.messages
+      //    para emitir los resultados en el orden correcto.
       const allMessages = runner.params.messages;
       const lastMessage = allMessages[allMessages.length - 1];
       if (
@@ -98,7 +86,11 @@ export async function runAgent(
         for (const block of lastMessage.content) {
           if (block.type === "tool_result") {
             const name = toolNameById.get(block.tool_use_id) ?? "unknown";
-            log({ type: "tool_result", name, output: block.content });
+            emitter.emit({
+              type: "tool_result",
+              name,
+              output: block.content,
+            });
           }
         }
       }
@@ -107,15 +99,17 @@ export async function runAgent(
     // Mensaje final del assistant: cuando la iteracion termina, runner.done()
     // devuelve la respuesta consolidada sin tool_use pendientes.
     const finalMessage = await runner.done();
-    const finalText = (finalMessage.content as Array<{ type: string; text?: string }>)
+    const finalText = (
+      finalMessage.content as Array<{ type: string; text?: string }>
+    )
       .map((b) => (b.type === "text" ? (b.text ?? "") : ""))
       .join("\n")
       .trim();
 
-    return { finalText, events };
+    return { finalText, events: [...emitter.getEvents()] };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    log({ type: "error", message });
+    emitter.emit({ type: "error", message });
     throw err;
   }
 }

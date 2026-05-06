@@ -118,25 +118,14 @@ Branch principal: `main`. README con setup local + estructura modular documentad
 |---|---|---|
 | ✅ **Agent SDK** | Marcar | `client.beta.messages.toolRunner` en `src/modules/agent/services/runner.ts` |
 | ✅ **Files API** | Marcar | `extractEvidence` con `image/pdf` content blocks en `src/modules/tools/extractEvidence/index.ts` |
-| ⚠️ **MCP** | Marcar si Mauricio levanta el MCP server de calculateDeadlines | Estructura preparada, server expuesto pendiente |
-| ⚠️ **Prompt Caching** | TODO antes del submit | Agregar `cache_control` al system prompt — 5 min de trabajo |
+| ✅ **Prompt Caching** | Marcar | `cache_control: { type: "ephemeral" }` en system prompt en `runner.ts` |
+| ✅ **Citations** | Marcar | `citations: { enabled: true }` en document blocks de `extractEvidence/index.ts` |
+| ⚠️ **MCP** | Marcar solo si Mauricio levanta el MCP server | Estructura preparada en `calculateDeadlines/`, server expuesto pendiente |
 | ❌ Extended Thinking | NO marcar | No usado |
 | ❌ Computer Use | NO marcar | No aplica al producto |
-| ❓ Citations | Marcar si activamos `citations: { enabled: true }` con Files API | Pendiente probar |
 
-### TODOs para maximizar bonus antes del submit
+### Marcar 4 de 7 herramientas Anthropic en el formulario
 
-1. **Prompt Caching** — agregar al system prompt:
-   ```ts
-   system: [{
-     type: "text",
-     text: CLARIZA_SYSTEM_PROMPT,
-     cache_control: { type: "ephemeral", ttl: "1h" },
-   }]
-   ```
-   Solo aplica al camino Anthropic (no OpenRouter). 1 línea de cambio.
+✅ Agent SDK · ✅ Files API · ✅ Prompt Caching · ✅ Citations
 
-2. **Citations** — habilitar en extractEvidence cuando se usa Files API:
-   ```ts
-   { type: "document", source: {...}, citations: { enabled: true } }
-   ```
+(MCP, Extended Thinking, Computer Use → no marcar.)

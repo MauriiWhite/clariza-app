@@ -46,7 +46,9 @@ function isSupportedMediaType(mediaType: string): boolean {
   return SUPPORTED_IMAGE_TYPES.has(mediaType) || mediaType === "application/pdf";
 }
 
-/** Construye el content block multimodal segun tipo de archivo. */
+/** Construye el content block multimodal segun tipo de archivo.
+ *  Para PDF activamos `citations: { enabled: true }` para que Claude
+ *  devuelva referencias literales al documento — primer linea anti-alucinacion. */
 function buildVisionContent(attachment: FileAttachment) {
   if (attachment.mediaType === "application/pdf") {
     return {
@@ -56,6 +58,7 @@ function buildVisionContent(attachment: FileAttachment) {
         media_type: "application/pdf" as const,
         data: attachment.base64,
       },
+      citations: { enabled: true },
     };
   }
   return {

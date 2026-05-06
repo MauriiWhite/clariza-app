@@ -51,6 +51,7 @@ El agente expone 5 tools que el usuario ve operar en una consola en vivo:
 
 - [SPEC.md](SPEC.md) — detalle técnico, plan 48h y rúbrica de evaluación
 - [DIAGRAMS.md](DIAGRAMS.md) — flujos del producto, agent loop y arquitectura
+- [CASES.md](CASES.md) — 4 casos de uso reales (1 por perfil oficial del Lab)
 
 ## Equipo
 

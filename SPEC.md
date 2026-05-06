@@ -1,7 +1,7 @@
 # Clariza — Spec v0.1
 
 **Hackathon:** Claude Impact Lab Chile 2026 · 6–7 mayo · Espacio Riesco · Chile Fintech Forum 2026
-**Equipo:** Cruzaders (3 personas) — modalidad **AI Builder**
+**Equipo:** Cruzaders (3 personas) — categoría de inscripción: **AI Builder** (perfiles internos complementarios: AI Builder + Vibecoder + Comercial)
 **Track:** Línea 01 — Inclusión Financiera
 **Tip de regulador:** CMF — Asistente Inteligente de Consultas y Reclamaciones Financieras
 **Ventana de construcción válida:** 2026-05-06 00:00 a 2026-05-07 23:59 hora Chile (UTC-4). Commits fuera de ventana = score técnico 0.
@@ -244,12 +244,14 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 | 11:00 | Bienvenida + apertura oficial | Todos | Asistir |
 | 11:30 | Mesa Pública-Privada con reguladores | Todos | Tomar notas |
 | 12:30 | Kick-off de construcción | — | — |
-| 12:30–15:30 | Ingesta corpus regulatorio + Files API beta | Mauricio | Leyes y NCG cargadas con citations |
-| 12:30–15:30 | Wireframes + scaffold Next.js | Exequiel | Repo deployado en Vercel |
-| 12:30–15:30 | 3 casos demo guionados | Sebastián | Casos validados con normativa real |
-| 15:30–18:30 | Tools: `extraer_antecedentes` + `buscar_normativa` | Mauricio | 2 tools verdes |
-| 15:30–18:30 | UI chat + consola en vivo | Exequiel | Streaming SSE funcionando |
-| 18:30–20:00 | Tools: `clasificar_competencia` + `calcular_plazos` (MCP) + `generar_reclamo` | Mauricio | 5 tools verdes |
+| 12:30–15:30 | Ingesta corpus regulatorio + Files API beta + embeddings | Exequiel | Leyes y NCG cargadas con citations en pgvector |
+| 12:30–15:30 | Scaffold Next.js + Vercel + Supabase + UI base | Mauricio | Repo deployado, schema DB, layout chat |
+| 12:30–15:30 | 3 casos demo guionados + ficha cívica draft | Sebastián | Casos validados con normativa real |
+| 15:30–18:30 | Tools `extraer_antecedentes` + `buscar_normativa` + system prompt | Exequiel | 2 tools verdes + agente respondiendo |
+| 15:30–18:30 | API routes + streaming SSE + consola UI + timeline plazos | Mauricio | Frontend conectado al agente |
+| 15:30–18:30 | Validación anti-alucinación con casos reales | Sebastián | Cada cita normativa verificada |
+| 18:30–20:00 | Tools `clasificar_competencia` + `calcular_plazos` (MCP) + `generar_reclamo` | Exequiel | 5 tools verdes |
+| 18:30–20:00 | PDF generator + envío email recordatorio (cron simple) | Mauricio | Reclamo descargable + email funcional |
 | 20:00 | **Cierre día 1 oficial** | — | — |
 | Noche | Integración E2E + recordatorios email | Todos | Flujo completo funcionando |
 
@@ -259,11 +261,11 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 |---|---|---|---|
 | 09:00 | Check-in | Todos | — |
 | 09:30 | Mentoría de refinamiento | Todos | Feedback aplicado |
-| **10:00** | **Deadline ficha cívica** | Sebastián + Exequiel | Form enviado |
-| 10:00–14:00 | Pulido demo + grabación video 3-5 min | Exequiel | MP4 + screenshot consola + system prompt |
-| 14:00–16:30 | Ensayos pitch 3 min + Q&A 2 min | Todos | Pitch fluido |
+| **10:00** | **Deadline ficha cívica** | Sebastián | Form enviado |
+| 10:00–14:00 | Pulido demo + grabación video 3-5 min + screenshot consola | Exequiel + Mauricio | MP4 + screenshot consola + system prompt |
+| 14:00–16:30 | Ensayos pitch 3 min + Q&A 2 min | Sebastián lidera, todos | Pitch fluido |
 | **17:00** | **Deadline técnico + preselección Top 6** | Líder | Repo + ficha técnica enviados |
-| Tarde | Si pasamos: pitches finales | Exequiel | Pitch en vivo |
+| Tarde | Si pasamos: pitches finales | Sebastián + Exequiel | Pitch en vivo |
 | Tarde | Premiación + networking | Todos | — |
 
 ---
@@ -290,13 +292,16 @@ Estética: clara, alto contraste, tipografía grande (inclusividad: smartphone v
 
 **Cruzaders** — 3 integrantes.
 
-| Rol | Persona | Foco |
-|---|---|---|
-| Lead técnico + Frontend + Demo | Exequiel Alvarado | Next.js, UX, video, pitch |
-| Backend + Tools | Mauricio Blanco | Ingesta corpus, RAG, tools, agent loop |
-| Datos + QA + Pitch coach | Sebastián Fuentes | Casos demo, validación normativa, ensayos |
+| Persona | Perfil Lab | Rol funcional | Foco |
+|---|---|---|---|
+| **Exequiel Alvarado** | AI Builder | Datos + Agente | Ingesta corpus regulatorio, embeddings, diseño de tools, agent loop, prompts, screenshot consola, demo |
+| **Mauricio Blanco** | Vibecoder | Backend + Frontend | API routes, DB Supabase, integración tools, UI chat + consola + timeline (con Claude Code / Cursor) |
+| **Sebastián Fuentes** | Comercial / Producto | QA + Pitch | Casos demo curados, validación normativa anti-alucinación, ficha cívica, narrativa, pitch |
 
-> Stacks específicos por integrante por confirmar — ajustar foco según fortalezas reales.
+**Lógica del reparto:**
+- Exequiel domina IA y datos → owner del corpus + agente.
+- Mauricio construye con vibecoding → owner de la app (frontend + backend) que envuelve el agente.
+- Sebastián tiene foco comercial → owner de los entregables narrativos y validación de salida.
 
 ---
 

@@ -47,7 +47,10 @@ El agente expone 5 tools que el usuario ve operar en una consola en vivo:
 
 ## Estado
 
-🚧 En construcción durante el hackathon (6–7 mayo 2026). Ver [SPEC.md](SPEC.md) para el detalle técnico, plan 48h y rúbrica de evaluación.
+🚧 En construcción durante el hackathon (6–7 mayo 2026).
+
+- [SPEC.md](SPEC.md) — detalle técnico, plan 48h y rúbrica de evaluación
+- [DIAGRAMS.md](DIAGRAMS.md) — flujos del producto, agent loop y arquitectura
 
 ## Equipo
 

@@ -47,10 +47,20 @@ export async function runAgent(
   try {
     // toolRunner ejecuta el loop completo: Claude llama tool -> SDK corre run
     // -> Claude continua hasta tener una respuesta final sin mas tool_use.
+    // Prompt Caching activado en el system prompt: el bloque es estable
+    // entre turnos (cambia solo si editamos system.ts), entonces Anthropic
+    // lo cachea por 5 min default. Cache hit = ~0.1x del costo input.
+    // Verificar con response.usage.cache_read_input_tokens > 0.
     const runner = client.beta.messages.toolRunner({
       model: MODELS.primary,
       max_tokens: 2048,
-      system: CLARIZA_SYSTEM_PROMPT,
+      system: [
+        {
+          type: "text",
+          text: CLARIZA_SYSTEM_PROMPT,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
       tools: getRegisteredTools({
         attachment: options.attachment ?? null,
       }) as unknown as BetaTool[],

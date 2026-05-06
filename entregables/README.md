@@ -7,6 +7,10 @@ Borradores listos para copiar/pegar a la plataforma Bendita IA.
 | [01-ficha-civica.md](01-ficha-civica.md) | 7-may 10:00 | Sebastián (revisa Exequiel) |
 | [02-entregable-tecnico.md](02-entregable-tecnico.md) | 7-may 17:00 | Exequiel + Mauricio |
 | [03-pitch.md](03-pitch.md) | 7-may tarde (en vivo) | Sebastián narra · Exequiel demo |
+| [04-slides.md](04-slides.md) | 7-may tarde | Sebastián diseña · Exequiel revisa |
+| [05-demo-script.md](05-demo-script.md) | 6-may noche | Exequiel graba · Sebastián narra |
+| [06-screenshot-checklist.md](06-screenshot-checklist.md) | 6-may noche | Exequiel + Mauricio |
+| [07-url-validation.md](07-url-validation.md) | 7-may 09:30 | Sebastián verifica antes de submit |
 
 ## Antes de submit
 

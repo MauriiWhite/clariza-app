@@ -60,11 +60,11 @@ export default function AccionPage() {
             Paso 2 de 3 · Acción
           </p>
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight leading-tight">
-            Acá tenés todo para presentar tu reclamo.
+            Aquí tienes todo para presentar tu reclamo.
           </h1>
           <p className="text-base text-ink-2 leading-relaxed max-w-2xl">
             Diagnóstico, plazos y el reclamo listo. Cuando lo presentes en el
-            portal del regulador, marcalo abajo y cerramos el caso.
+            portal del regulador, márcalo abajo y cerramos el caso.
           </p>
         </header>
 
@@ -95,8 +95,8 @@ export default function AccionPage() {
             </div>
 
             <p className="text-sm text-ink-2 leading-relaxed">
-              Si el portal acepta archivos, descargá el PDF. Si pide los datos
-              en un formulario online, expandí "Listo para copiar" abajo.
+              Si el portal acepta archivos, descarga el PDF. Si pide los datos
+              en un formulario online, expande "Listo para copiar" abajo.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -156,19 +156,19 @@ export default function AccionPage() {
               <li className="flex gap-3">
                 <span className="font-semibold text-clay shrink-0">1.</span>
                 <span>
-                  Abrí el portal oficial de{" "}
+                  Abre el portal oficial de{" "}
                   <strong>{stored.diagnosis.primaryRegulator}</strong>.
                 </span>
               </li>
               <li className="flex gap-3">
                 <span className="font-semibold text-clay shrink-0">2.</span>
                 <span>
-                  Subí el PDF o pegá los datos del reclamo en su formulario.
+                  Sube el PDF o pega los datos del reclamo en su formulario.
                 </span>
               </li>
               <li className="flex gap-3">
                 <span className="font-semibold text-clay shrink-0">3.</span>
-                <span>Guardá el comprobante o número de seguimiento.</span>
+                <span>Guarda el comprobante o número de seguimiento.</span>
               </li>
               {stored.diagnosis.notes && (
                 <li className="flex gap-3 italic text-ink-3 pt-1">
@@ -238,7 +238,7 @@ function NoActiveCase() {
         No hay un caso activo todavía.
       </h1>
       <p className="text-ink-2 max-w-md leading-relaxed">
-        Empezá una conversación con Clariza para que te ayude a armar tu
+        Empieza una conversación con Clariza para que te ayude a preparar tu
         reclamo paso a paso.
       </p>
       <Button href="/chat" variant="primary" size="lg">

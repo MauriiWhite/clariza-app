@@ -44,8 +44,8 @@ export default function GlobalError({ error, reset }: ErrorProps) {
         </h1>
 
         <p className="text-base text-ink-2 leading-relaxed max-w-md">
-          No te preocupes, tus datos están seguros. Probá de nuevo o volvé al
-          inicio. Si el problema persiste, podés reportarlo en GitHub.
+          No te preocupes, tus datos están seguros. Prueba de nuevo o vuelve al
+          inicio. Si el problema persiste, puedes reportarlo en GitHub.
         </p>
 
         {error.digest && (

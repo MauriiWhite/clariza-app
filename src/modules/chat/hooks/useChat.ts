@@ -11,6 +11,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import {
+  extractCitations,
   extractClaim,
   extractDiagnosis,
   extractSchedule,
@@ -168,6 +169,10 @@ export function useChat() {
     [state.events],
   );
   const claim = useMemo(() => extractClaim(state.events), [state.events]);
+  const citations = useMemo(
+    () => extractCitations(state.events),
+    [state.events],
+  );
 
   return {
     events: state.events,
@@ -178,5 +183,6 @@ export function useChat() {
     diagnosis,
     schedule,
     claim,
+    citations,
   };
 }

@@ -154,7 +154,7 @@ const RULES: Rule[] = [
         url: "https://www.cmfchile.cl/portal/principal/613/w3-propertyvalue-43589.html",
       },
       notes:
-        "Importante: tenes 90 dias corridos desde que tomaste conocimiento del cargo desconocido para reclamar bajo Ley 21.234.",
+        "Importante: tienes 90 dias corridos desde que tomaste conocimiento del cargo desconocido para reclamar bajo Ley 21.234.",
     }),
   },
 
@@ -225,7 +225,7 @@ const RULES: Rule[] = [
       procedure: "improcedente",
       severity: "baja",
       reasoning:
-        "Las instituciones financieras tienen libertad de evaluar el riesgo del solicitante (Ley 18.010). El rechazo per se no es reclamable, salvo que haya discriminacion arbitraria o falta total de explicacion. Lo que SI podes hacer es pedir formalmente las razones del rechazo y, si no las dan, entonces si reclamar.",
+        "Las instituciones financieras tienen libertad de evaluar el riesgo del solicitante (Ley 18.010). El rechazo per se no es reclamable, salvo que haya discriminacion arbitraria o falta total de explicacion. Lo que SI puedes hacer es pedir formalmente las razones del rechazo y, si no las dan, entonces si reclamar.",
       officialChannel: {
         name: "SERNAC — Consulta orientacion",
         url: "https://www.sernac.cl",

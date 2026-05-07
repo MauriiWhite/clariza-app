@@ -17,8 +17,15 @@ import { Button } from "@/modules/core/design-system/Button";
 
 export default function ChatPage() {
   const router = useRouter();
-  const { events, isStreaming, startTurn, diagnosis, schedule, claim } =
-    useChat();
+  const {
+    events,
+    isStreaming,
+    startTurn,
+    diagnosis,
+    schedule,
+    claim,
+    citations,
+  } = useChat();
 
   const showResults = !isStreaming && (diagnosis || schedule);
   const [mobileTab, setMobileTab] = useState<"chat" | "console">("chat");
@@ -157,7 +164,12 @@ export default function ChatPage() {
               mobileTab === "chat" ? "" : "hidden lg:block"
             }`}
           >
-            <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
+            <Chat
+              events={events}
+              isStreaming={isStreaming}
+              onSend={startTurn}
+              citations={citations}
+            />
           </div>
           <div
             className={`min-h-0 ${

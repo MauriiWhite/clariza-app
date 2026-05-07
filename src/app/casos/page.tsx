@@ -129,7 +129,7 @@ export default function CasosPage() {
             Cuatro personas. Cuatro reguladores. <span className="text-clay">Un solo flujo.</span>
           </h1>
           <p className="text-lg leading-relaxed text-ink-2 max-w-2xl">
-            Estos son casos reales que Clariza puede resolver. Tocá uno para
+            Estos son casos reales que Clariza puede resolver. Toca uno para
             ver el diagnóstico, los plazos hábiles y el reclamo formal listo
             para enviar.
           </p>

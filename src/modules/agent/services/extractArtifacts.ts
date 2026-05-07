@@ -16,6 +16,7 @@ import type {
   DeadlineSchedule,
   RegulatoryDiagnosis,
 } from "@/modules/diagnosis/types";
+import type { Citation } from "@/modules/regulations/types";
 import type { ClaimDocument } from "@/modules/tools/draftClaim/types";
 
 /** Devuelve el ultimo tool_result con un nombre dado, o null si no hay. */
@@ -98,4 +99,32 @@ export function extractClaim(
   const ev = findLastToolResult(events, "draftClaim");
   if (!ev) return null;
   return parseToolOutput<ClaimDocument>(ev.output);
+}
+
+/** Citas regulatorias devueltas por searchRegulation a lo largo del turno.
+ *  Itera todos los tool_result de searchRegulation, deduplica por sourceId+article
+ *  y devuelve la lista plana — el agente puede haber llamado la tool varias veces
+ *  con queries distintas y queremos mostrar todas las fuentes verificables al
+ *  ciudadano sin duplicados. */
+export function extractCitations(
+  events: readonly ConsoleEvent[],
+): Citation[] {
+  const seen = new Set<string>();
+  const result: Citation[] = [];
+
+  for (const event of events) {
+    if (event.type !== "tool_result" || event.name !== "searchRegulation") {
+      continue;
+    }
+    const parsed = parseToolOutput<{ citations?: Citation[] }>(event.output);
+    if (!parsed?.citations) continue;
+
+    for (const citation of parsed.citations) {
+      const key = `${citation.sourceId}::${citation.article ?? ""}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      result.push(citation);
+    }
+  }
+  return result;
 }

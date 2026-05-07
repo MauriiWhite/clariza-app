@@ -32,7 +32,7 @@ export default function CasoIndex() {
         No hay un caso activo todavía.
       </h1>
       <p className="text-ink-2 max-w-md leading-relaxed">
-        Empezá una conversación con Clariza para que te ayude a armar tu
+        Empieza una conversación con Clariza para que te ayude a preparar tu
         reclamo paso a paso.
       </p>
       <Button href="/chat" variant="primary" size="lg">

@@ -63,5 +63,5 @@ export function renderRegulationsList(regulations: string[]): string {
 export const LEGAL_NOTICE = `
 ---
 
-> **Nota:** Este documento fue generado por Clariza como borrador asistido. Antes de presentarlo formalmente, revisá que los datos personales y los hechos sean exactos. Clariza no constituye asesoría legal definitiva.
+> **Nota:** Este documento fue generado por Clariza como borrador asistido. Antes de presentarlo formalmente, revisa que los datos personales y los hechos sean exactos. Clariza no constituye asesoría legal definitiva.
 `.trim();

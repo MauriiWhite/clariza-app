@@ -44,7 +44,7 @@ export const classifyJurisdictionTool = betaZodTool({
       .string()
       .optional()
       .describe(
-        "Contexto adicional del caso en lenguaje natural si lo tenes.",
+        "Contexto adicional del caso en lenguaje natural si lo tienes.",
       ),
   }),
   run: async ({ entity, product, issue, case_summary }) => {

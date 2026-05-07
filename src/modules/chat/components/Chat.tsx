@@ -6,17 +6,20 @@
 
 import { useRef, useState } from "react";
 import type { ConsoleEvent } from "@/modules/agent/types";
-import { Button } from "@/modules/core/design-system/Button";
+import { CitationsPanel } from "@/modules/chat/components/CitationsPanel";
 import {
   EMPTY_IDENTITY,
   IdentityCard,
   type Identity,
 } from "@/modules/chat/components/IdentityCard";
+import { Button } from "@/modules/core/design-system/Button";
+import type { Citation } from "@/modules/regulations/types";
 
 interface ChatProps {
   events: ConsoleEvent[];
   isStreaming: boolean;
   onSend: (message: string, file?: File | null) => void;
+  citations?: Citation[];
 }
 
 // Sugerencias rapidas — tap para arrancar sin tener que pensar la frase.
@@ -28,7 +31,12 @@ const QUICK_STARTS = [
   "Le mandé plata a una app y ahora no me responden",
 ];
 
-export function Chat({ events, isStreaming, onSend }: ChatProps) {
+export function Chat({
+  events,
+  isStreaming,
+  onSend,
+  citations = [],
+}: ChatProps) {
   const [draft, setDraft] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [identity, setIdentity] = useState<Identity>(EMPTY_IDENTITY);
@@ -75,7 +83,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
                 ¿Qué te pasó?
               </h2>
               <p className="text-sm leading-relaxed text-ink-2">
-                Contanos en una frase. O tocá uno de los casos comunes:
+                Cuéntanos en una frase. O toca uno de los casos comunes:
               </p>
             </div>
 
@@ -96,7 +104,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
             </div>
 
             <p className="text-xs text-ink-3">
-              También podés adjuntar foto del contrato, cartola o un mensaje
+              También puedes adjuntar foto del contrato, cartola o un mensaje
               que recibiste.
             </p>
 
@@ -108,6 +116,13 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
         {messages.map((event, idx) => (
           <Message key={idx} event={event} />
         ))}
+
+        {/* Fuentes verificables consultadas en este turno — solo aparece
+            cuando hay citas Y el agente termino (asi no aparece a medias
+            durante el stream). */}
+        {!isStreaming && citations.length > 0 && (
+          <CitationsPanel citations={citations} />
+        )}
 
         {isStreaming && (
           <div className="flex items-center gap-2 text-sm text-ink-3">

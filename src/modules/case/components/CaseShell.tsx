@@ -32,8 +32,8 @@ export function CaseShell({
   const containerWidth = wide ? "max-w-6xl" : "max-w-4xl";
   return (
     <div className="flex-1 flex flex-col">
-      {/* Top bar glass */}
-      <header className="sticky top-0 z-50 glass">
+      {/* Top bar glass — oculto en print */}
+      <header className="print-hide sticky top-0 z-50 glass">
         <div className={`mx-auto ${containerWidth} px-4 md:px-12 h-14 flex items-center justify-between gap-3`}>
           <Link
             href="/chat"
@@ -70,8 +70,8 @@ export function CaseShell({
         </div>
       </header>
 
-      {/* Stepper visible */}
-      <div className="sticky top-14 z-40">
+      {/* Stepper visible — oculto en print */}
+      <div className="print-hide sticky top-14 z-40">
         <Stepper
           steps={STEPS}
           currentStep={currentStep}

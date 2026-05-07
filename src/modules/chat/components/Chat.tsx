@@ -76,7 +76,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
                 ¿Qué te pasó?
               </h2>
               <p className="text-sm leading-relaxed text-ink-2">
-                Contanos en una frase. O tocá uno de los casos comunes:
+                Cuéntanos en una frase. O toca uno de los casos comunes:
               </p>
             </div>
 
@@ -97,7 +97,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
             </div>
 
             <p className="text-xs text-ink-3">
-              También podés adjuntar foto del contrato, cartola o un mensaje
+              También puedes adjuntar foto del contrato, cartola o un mensaje
               que recibiste.
             </p>
 
@@ -145,7 +145,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
             type="text"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Contame qué te pasó…"
+            placeholder="Cuéntame qué te pasó…"
             disabled={isStreaming}
             className="flex-1 px-4 py-3 rounded-md border border-border bg-paper focus:outline-none focus:border-clay disabled:bg-black/2 disabled:cursor-not-allowed"
             aria-label="Mensaje para Clariza"

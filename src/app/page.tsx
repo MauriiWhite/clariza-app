@@ -95,13 +95,20 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Link discreto a casos de ejemplo */}
-        <div className="mt-12">
+        {/* Links discretos a casos + proceso */}
+        <div className="mt-12 flex flex-col sm:flex-row gap-6">
           <Link
             href="/casos"
             className="inline-flex items-center gap-2 text-sm font-medium text-clay hover:underline"
           >
             Ver casos de ejemplo
+            <span aria-hidden>→</span>
+          </Link>
+          <Link
+            href="/proceso"
+            className="inline-flex items-center gap-2 text-sm font-medium text-clay hover:underline"
+          >
+            Cómo se construyó
             <span aria-hidden>→</span>
           </Link>
         </div>

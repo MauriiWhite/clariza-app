@@ -51,7 +51,8 @@ export default function ChatPage() {
 
   const handleVerCaso = () => {
     saveCase({ diagnosis, schedule, claim });
-    router.push("/caso");
+    // Navegamos directo al paso 2 — /caso es solo un router.
+    router.push("/caso/accion");
   };
 
   // Cuenta de tool calls visibles para el badge del tab consola.
@@ -141,36 +142,46 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Layout principal */}
-      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 space-y-4">
-        {/* Desktop: split. Mobile: solo el tab activo. */}
+      {/* Layout principal — overflow-hidden en el grid contiene scroll interno */}
+      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 flex flex-col gap-4">
+        {/* Desktop: split. Mobile: solo el tab activo. min-h-0 habilita scroll en hijos. */}
         <div
-          className={`grid gap-4 ${
+          className={`grid gap-4 lg:grid-cols-[3fr_2fr] min-h-0 ${
             showResults
-              ? "lg:h-[calc(100vh-18rem)] lg:max-h-130"
-              : "lg:h-[calc(100vh-7rem)] lg:max-h-160"
-          } lg:grid-cols-[3fr_2fr] h-[calc(100vh-12rem)]`}
+              ? "h-[calc(100vh-20rem)] lg:h-[calc(100vh-19rem)] lg:max-h-130"
+              : "h-[calc(100vh-12rem)] lg:h-[calc(100vh-7rem)] lg:max-h-160"
+          }`}
         >
-          <div className={mobileTab === "chat" ? "" : "hidden lg:block"}>
+          <div
+            className={`min-h-0 ${
+              mobileTab === "chat" ? "" : "hidden lg:block"
+            }`}
+          >
             <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           </div>
-          <div className={mobileTab === "console" ? "" : "hidden lg:block"}>
+          <div
+            className={`min-h-0 ${
+              mobileTab === "console" ? "" : "hidden lg:block"
+            }`}
+          >
             <Console events={events} />
           </div>
         </div>
 
-        {/* CTA "Ver mi caso" sticky bottom cuando hay resultados. */}
+        {/* CTA "Siguiente paso" — solido (NO glass) para que nunca se vea
+            atravesado por el contenido del chat. Aparece debajo del grid
+            como bloque normal, no sticky. */}
         {showResults && (
           <section
             aria-label="Resultados disponibles"
-            className="sticky bottom-4 z-30 animate-in slide-in-from-bottom duration-500"
+            className="animate-in fade-in duration-500"
           >
-            <div className="rounded-lg glass border-2 border-clay/40 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_12px_40px_rgba(204,120,92,0.18)]">
-              <div className="flex flex-col gap-1 max-w-xl">
+            <div className="rounded-lg bg-paper border-2 border-ink p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_12px_40px_rgba(26,31,46,0.18)]">
+              <div className="flex flex-col gap-0.5 max-w-xl">
                 <p className="text-xs font-semibold uppercase tracking-wider text-clay">
-                  Tu caso está listo · Paso 1 de 3 completado
+                  Paso 1 de 3 completado · Tu caso está listo
                 </p>
-                <h2 className="font-serif text-lg md:text-xl font-medium leading-tight">
+                <h2 className="font-serif text-lg md:text-xl font-medium leading-tight text-ink">
                   {diagnosis
                     ? `Va a ${diagnosis.primaryRegulator}. Vamos a presentarlo.`
                     : "Vamos a presentar tu reclamo."}
@@ -182,7 +193,7 @@ export default function ChatPage() {
                 size="lg"
                 className="shrink-0 whitespace-nowrap"
               >
-                Ver mi caso →
+                Siguiente paso →
               </Button>
             </div>
           </section>

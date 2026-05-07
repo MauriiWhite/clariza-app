@@ -63,28 +63,27 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
   return (
     <div className="flex flex-col h-full glass rounded-lg shadow-[0_8px_32px_rgba(26,31,46,0.04)]">
       {/* Hilo de mensajes */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3">
         {isEmpty ? (
-          <div className="py-4 space-y-6">
-            <div className="space-y-3">
-              <h2 className="font-serif text-2xl md:text-[28px] font-medium leading-tight tracking-tight">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="font-serif text-xl md:text-2xl font-medium leading-tight tracking-tight">
                 ¿Qué te pasó?
               </h2>
-              <p className="text-base leading-relaxed text-ink-2">
-                Contanos en una frase. O tocá uno de los casos comunes para
-                arrancar:
+              <p className="text-sm leading-relaxed text-ink-2">
+                Contanos en una frase. O tocá uno de los casos comunes:
               </p>
             </div>
 
             {/* Quick starts — tap para arrancar */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               {QUICK_STARTS.map((q) => (
                 <button
                   key={q}
                   type="button"
                   onClick={() => handleQuickStart(q)}
                   disabled={isStreaming}
-                  className="text-left px-4 py-3 rounded-md bg-paper/70 hover:bg-paper border border-border hover:border-clay text-sm md:text-base text-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-left px-3 py-2.5 rounded-md bg-paper/70 hover:bg-paper border border-border hover:border-clay text-sm text-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-clay mr-2">→</span>
                   {q}
@@ -92,15 +91,13 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
               ))}
             </div>
 
-            <p className="text-xs text-ink-3 pt-2">
+            <p className="text-xs text-ink-3">
               También podés adjuntar foto del contrato, cartola o un mensaje
               que recibiste.
             </p>
 
             {/* Identity inline opcional. No bloquea — la gente con prisa la salta. */}
-            <div className="pt-2">
-              <IdentityCard identity={identity} onChange={setIdentity} />
-            </div>
+            <IdentityCard identity={identity} onChange={setIdentity} />
           </div>
         ) : null}
 
@@ -119,7 +116,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
       {/* Input + adjuntar */}
       <form
         onSubmit={handleSubmit}
-        className="border-t border-border p-4 space-y-3"
+        className="border-t border-border p-3 md:p-4 space-y-2"
       >
         {/* Archivo seleccionado — chip con opcion de quitar */}
         {file && (

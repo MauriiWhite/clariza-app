@@ -43,7 +43,7 @@ export default function ChatPage() {
     <div className="flex-1 flex flex-col">
       {/* Top bar glass con boton volver explicito + brand */}
       <header className="sticky top-0 z-50 glass">
-        <div className="mx-auto max-w-350 px-6 py-3 md:px-8 flex items-center justify-between gap-4">
+        <div className="mx-auto max-w-7xl px-6 py-3 md:px-8 flex items-center justify-between gap-4">
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border-strong bg-paper/80 hover:bg-paper text-sm font-medium text-ink transition-colors"
@@ -84,9 +84,9 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Split: chat + consola */}
-      <div className="flex-1 mx-auto max-w-350 w-full px-6 py-6 md:px-8 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:h-[calc(100vh-7rem)] lg:max-h-190">
+      {/* Split: chat + consola — alturas mas compactas para no sentir vacio */}
+      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-4 lg:h-[calc(100vh-6rem)] lg:max-h-160">
           <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           <Console events={events} />
         </div>

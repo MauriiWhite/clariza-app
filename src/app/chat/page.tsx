@@ -1,25 +1,43 @@
 // Pagina principal del flujo conversacional.
 // Layout split: Chat (izquierda) + Consola del agente (derecha).
-// Cuando el agente termina, aparecen DiagnosisCard + TimelineDeadlines +
-// ReclamoPreview con datos derivados del stream real (o del mock canonico
-// como fallback). Componentes de Mauricio integrados al flujo.
+// Cuando el agente termina y hay diagnostico, mostramos un CTA grande
+// "Ver mi caso paso a paso →" que guarda los datos en sessionStorage
+// y navega a /caso (wizard de 5 pasos).
 
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { saveCase } from "@/modules/case/services/caseStorage";
 import { Chat } from "@/modules/chat/components/Chat";
 import { useChat } from "@/modules/chat/hooks/useChat";
-import { ReclamoPreview } from "@/modules/claim/components/ReclamoPreview";
 import { Console } from "@/modules/console/components/Console";
-import { DiagnosisCard } from "@/modules/diagnosis/components/DiagnosisCard";
-import { TimelineDeadlines } from "@/modules/diagnosis/components/TimelineDeadlines";
+import { Button } from "@/modules/core/design-system/Button";
 
 export default function ChatPage() {
+  const router = useRouter();
   const { events, isStreaming, startTurn, diagnosis, schedule, claim } =
     useChat();
 
-  // Mostramos los resultados solo cuando el turno termino.
-  const showResults = !isStreaming && events.length > 0;
+  const showResults = !isStreaming && (diagnosis || schedule);
+
+  // Guarda el snapshot del caso en sessionStorage cuando aparecen resultados,
+  // para que /caso pueda leerlo cuando el ciudadano apriete "Ver mi caso".
+  // Ref para evitar re-saves innecesarios.
+  const lastSavedRef = useRef<string>("");
+  useEffect(() => {
+    if (!showResults) return;
+    const snapshot = JSON.stringify({ diagnosis, schedule, claim });
+    if (snapshot === lastSavedRef.current) return;
+    saveCase({ diagnosis, schedule, claim });
+    lastSavedRef.current = snapshot;
+  }, [showResults, diagnosis, schedule, claim]);
+
+  const handleVerCaso = () => {
+    saveCase({ diagnosis, schedule, claim });
+    router.push("/caso");
+  };
 
   return (
     <div className="flex-1 flex flex-col">
@@ -66,36 +84,44 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Split: chat 60% / consola 40% en desktop, stack en mobile.
-          Altura fija a una pantalla, scroll interno. */}
+      {/* Split: chat + consola */}
       <div className="flex-1 mx-auto max-w-350 w-full px-6 py-6 md:px-8 space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:h-[calc(100vh-7rem)] lg:max-h-190">
           <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           <Console events={events} />
         </div>
 
-        {/* Resultados derivados del stream — diseño de Mauricio. */}
-        {showResults && (diagnosis || schedule) && (
+        {/* Cuando hay resultados: un solo CTA grande para ir al wizard.
+            Reemplaza las cards apiladas (que ahora viven en /caso). */}
+        {showResults && (
           <section
-            aria-label="Resultados del análisis"
-            className="grid grid-cols-1 gap-6 lg:grid-cols-2 animate-in fade-in duration-500"
-          >
-            {diagnosis && <DiagnosisCard diagnosis={diagnosis} />}
-            {schedule && <TimelineDeadlines schedule={schedule} />}
-          </section>
-        )}
-
-        {showResults && claim && (
-          <section
-            aria-label="Reclamo formal"
+            aria-label="Resultados disponibles"
             className="animate-in fade-in duration-500"
           >
-            <ReclamoPreview
-              claim={claim}
-              onDownload={() =>
-                alert(`Descarga del reclamo ${claim.id} (demo).`)
-              }
-            />
+            <div className="rounded-lg bg-paper border border-border p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-[0_8px_32px_rgba(26,31,46,0.06)]">
+              <div className="flex flex-col gap-2 max-w-xl">
+                <p className="text-sm font-semibold uppercase tracking-wider text-clay">
+                  Tu caso está listo
+                </p>
+                <h2 className="font-serif text-2xl md:text-[28px] font-medium leading-tight">
+                  {diagnosis
+                    ? `Va a ${diagnosis.primaryRegulator}. Vamos paso a paso para presentarlo.`
+                    : "Vamos paso a paso para presentar tu reclamo."}
+                </h2>
+                <p className="text-sm text-ink-2 leading-relaxed">
+                  En 5 pasos te guiamos: diagnóstico, plazos, reclamo formal,
+                  cómo contactar al regulador y cierre del caso.
+                </p>
+              </div>
+              <Button
+                onClick={handleVerCaso}
+                variant="primary"
+                size="lg"
+                className="shrink-0"
+              >
+                Ver mi caso →
+              </Button>
+            </div>
           </section>
         )}
       </div>

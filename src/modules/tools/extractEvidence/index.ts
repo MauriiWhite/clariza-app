@@ -6,15 +6,20 @@
 // agente, hace una llamada interna a Claude Vision con el contenido del
 // archivo + un prompt de extraccion estructurada.
 //
-// Si el ciudadano no adjunto archivo, la tool devuelve hasAttachment: false
-// y el agente sigue el flujo solo con el relato textual.
-//
-// Modelo elegido: Claude Haiku 4.5 — Vision-capable, rapido y barato.
-// Para casos demo es mas que suficiente.
+// PROVIDER ROUTING:
+//   - Si ANTHROPIC_API_KEY existe → Anthropic SDK directo (Haiku 4.5 Vision).
+//   - Si solo OPENROUTER_API_KEY → OpenAI SDK con baseURL OpenRouter,
+//     usando anthropic/claude-haiku-4.5 con formato image_url estilo OpenAI.
+//   - Si ninguna → devuelve hasAttachment: false, el flujo sigue solo con
+//     el relato textual.
 
 import { betaZodTool } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { getAnthropicClient, MODELS } from "@/modules/agent/lib/client";
+import {
+  getOpenRouterClient,
+  OPENROUTER_MODELS,
+} from "@/modules/agent/lib/openRouterClient";
 import type {
   Evidence,
   FileAttachment,
@@ -46,35 +51,6 @@ function isSupportedMediaType(mediaType: string): boolean {
   return SUPPORTED_IMAGE_TYPES.has(mediaType) || mediaType === "application/pdf";
 }
 
-/** Construye el content block multimodal segun tipo de archivo.
- *  Para PDF activamos `citations: { enabled: true }` para que Claude
- *  devuelva referencias literales al documento — primer linea anti-alucinacion. */
-function buildVisionContent(attachment: FileAttachment) {
-  if (attachment.mediaType === "application/pdf") {
-    return {
-      type: "document" as const,
-      source: {
-        type: "base64" as const,
-        media_type: "application/pdf" as const,
-        data: attachment.base64,
-      },
-      citations: { enabled: true },
-    };
-  }
-  return {
-    type: "image" as const,
-    source: {
-      type: "base64" as const,
-      media_type: attachment.mediaType as
-        | "image/jpeg"
-        | "image/png"
-        | "image/webp"
-        | "image/gif",
-      data: attachment.base64,
-    },
-  };
-}
-
 /** Default cuando no hay archivo o no se pudo procesar. */
 function emptyEvidence(reason: string): Evidence {
   return {
@@ -89,9 +65,144 @@ function emptyEvidence(reason: string): Evidence {
   };
 }
 
+/** Parsea el JSON que devuelve Claude (puede venir con texto extra). */
+function parseEvidenceJson(
+  rawText: string,
+  fileType: "image" | "pdf",
+): Evidence {
+  try {
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : "{}";
+    const parsed = JSON.parse(jsonStr) as Partial<Evidence>;
+
+    return {
+      hasAttachment: true,
+      entity: parsed.entity ?? null,
+      product: parsed.product ?? null,
+      chargeAmount:
+        typeof parsed.chargeAmount === "number" ? parsed.chargeAmount : null,
+      chargeFrequency: parsed.chargeFrequency ?? null,
+      dateOfFact: parsed.dateOfFact ?? null,
+      summary: parsed.summary ?? "Documento procesado.",
+      evidenceQuality: parsed.evidenceQuality ?? "media",
+      fileType,
+    };
+  } catch {
+    return {
+      ...emptyEvidence("Documento procesado parcialmente, JSON invalido."),
+      summary: rawText.slice(0, 200),
+    };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// PATH 1: Anthropic SDK directo
+// ---------------------------------------------------------------------------
+
+async function extractViaAnthropic(
+  attachment: FileAttachment,
+  contextHint?: string,
+): Promise<Evidence> {
+  const client = getAnthropicClient();
+  const fileType: "image" | "pdf" =
+    attachment.mediaType === "application/pdf" ? "pdf" : "image";
+
+  const visionContent =
+    attachment.mediaType === "application/pdf"
+      ? {
+          type: "document" as const,
+          source: {
+            type: "base64" as const,
+            media_type: "application/pdf" as const,
+            data: attachment.base64,
+          },
+          citations: { enabled: true },
+        }
+      : {
+          type: "image" as const,
+          source: {
+            type: "base64" as const,
+            media_type: attachment.mediaType as
+              | "image/jpeg"
+              | "image/png"
+              | "image/webp"
+              | "image/gif",
+            data: attachment.base64,
+          },
+        };
+
+  const response = await client.messages.create({
+    model: MODELS.fast,
+    max_tokens: 1024,
+    messages: [
+      {
+        role: "user",
+        content: [
+          visionContent,
+          {
+            type: "text",
+            text: contextHint
+              ? `${EXTRACTION_PROMPT}\n\nContexto del usuario: ${contextHint}`
+              : EXTRACTION_PROMPT,
+          },
+        ],
+      },
+    ],
+  });
+
+  const textBlock = response.content.find((b) => b.type === "text");
+  const rawText = textBlock && "text" in textBlock ? textBlock.text : "{}";
+  return parseEvidenceJson(rawText, fileType);
+}
+
+// ---------------------------------------------------------------------------
+// PATH 2: OpenAI SDK contra OpenRouter (formato OpenAI multimodal)
+// ---------------------------------------------------------------------------
+
+async function extractViaOpenRouter(
+  attachment: FileAttachment,
+  contextHint?: string,
+): Promise<Evidence> {
+  // OpenRouter solo soporta image_url para Vision en formato OpenAI.
+  // Los PDFs requieren un endpoint distinto que muchos modelos no soportan.
+  if (attachment.mediaType === "application/pdf") {
+    return emptyEvidence(
+      "Por ahora solo proceso imagenes (JPG/PNG/WEBP). Para PDFs, abrilos y mandame una captura.",
+    );
+  }
+
+  const client = getOpenRouterClient();
+  const dataUrl = `data:${attachment.mediaType};base64,${attachment.base64}`;
+
+  const response = await client.chat.completions.create({
+    model: OPENROUTER_MODELS.fast,
+    max_tokens: 1024,
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "image_url", image_url: { url: dataUrl } },
+          {
+            type: "text",
+            text: contextHint
+              ? `${EXTRACTION_PROMPT}\n\nContexto del usuario: ${contextHint}`
+              : EXTRACTION_PROMPT,
+          },
+        ],
+      },
+    ],
+  });
+
+  const rawText = response.choices[0]?.message?.content ?? "{}";
+  return parseEvidenceJson(
+    typeof rawText === "string" ? rawText : "{}",
+    "image",
+  );
+}
+
 /**
  * Crea la tool extractEvidence con closure sobre el archivo adjunto.
- * Si attachment es null, la tool devuelve sin procesar.
+ * Detecta automaticamente que provider usar segun env vars.
  */
 export function createExtractEvidenceTool(
   attachment: FileAttachment | null,
@@ -121,56 +232,23 @@ export function createExtractEvidenceTool(
         );
       }
 
+      // Routing por env var disponible.
+      const useAnthropic = !!process.env.ANTHROPIC_API_KEY;
+      const useOpenRouter =
+        !useAnthropic && !!process.env.OPENROUTER_API_KEY;
+
+      if (!useAnthropic && !useOpenRouter) {
+        return JSON.stringify(
+          emptyEvidence(
+            "No hay API key configurada para Vision. Configura ANTHROPIC_API_KEY u OPENROUTER_API_KEY.",
+          ),
+        );
+      }
+
       try {
-        const client = getAnthropicClient();
-        const visionContent = buildVisionContent(attachment);
-        const fileType: "image" | "pdf" =
-          attachment.mediaType === "application/pdf" ? "pdf" : "image";
-
-        const response = await client.messages.create({
-          model: MODELS.fast,
-          max_tokens: 1024,
-          messages: [
-            {
-              role: "user",
-              content: [
-                visionContent,
-                {
-                  type: "text",
-                  text: contextHint
-                    ? `${EXTRACTION_PROMPT}\n\nContexto del usuario: ${contextHint}`
-                    : EXTRACTION_PROMPT,
-                },
-              ],
-            },
-          ],
-        });
-
-        const textBlock = response.content.find((b) => b.type === "text");
-        const rawText =
-          textBlock && "text" in textBlock ? textBlock.text : "{}";
-
-        // Extrae el primer JSON valido del output (puede venir con texto extra).
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        const jsonStr = jsonMatch ? jsonMatch[0] : "{}";
-
-        const parsed = JSON.parse(jsonStr) as Partial<Evidence>;
-
-        const evidence: Evidence = {
-          hasAttachment: true,
-          entity: parsed.entity ?? null,
-          product: parsed.product ?? null,
-          chargeAmount:
-            typeof parsed.chargeAmount === "number"
-              ? parsed.chargeAmount
-              : null,
-          chargeFrequency: parsed.chargeFrequency ?? null,
-          dateOfFact: parsed.dateOfFact ?? null,
-          summary: parsed.summary ?? "Documento procesado.",
-          evidenceQuality: parsed.evidenceQuality ?? "media",
-          fileType,
-        };
-
+        const evidence = useAnthropic
+          ? await extractViaAnthropic(attachment, contextHint)
+          : await extractViaOpenRouter(attachment, contextHint);
         return JSON.stringify(evidence);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);

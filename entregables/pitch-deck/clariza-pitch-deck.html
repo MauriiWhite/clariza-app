@@ -597,14 +597,14 @@
 
       /* ============== SLIDE FLUJO 3 PANTALLAS ============== */
       .slide-flow {
-        padding: 80px 100px;
+        padding: 72px 88px;
       }
       .slide-flow .header {
-        margin-bottom: 56px;
+        margin-bottom: 48px;
       }
       .slide-flow h2 {
         font-family: "Newsreader", serif;
-        font-size: 64px;
+        font-size: 68px;
         font-weight: 500;
         line-height: 1.05;
         letter-spacing: -1.5px;
@@ -612,12 +612,12 @@
       }
       .slide-flow .row {
         display: grid;
-        grid-template-columns: 1fr 80px 1fr 80px 1fr;
+        grid-template-columns: 1fr 64px 1fr 64px 1fr;
         align-items: center;
         gap: 0;
       }
       .slide-flow .arrow {
-        font-size: 56px;
+        font-size: 64px;
         color: var(--clay);
         text-align: center;
         font-weight: 300;
@@ -625,24 +625,24 @@
       .slide-flow .pane {
         background: var(--paper);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 24px;
-        height: 480px;
+        border-radius: 18px;
+        padding: 32px;
+        height: 580px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 20px;
         box-shadow: 0 8px 32px rgba(26, 31, 46, 0.08);
       }
       .slide-flow .pane-step {
-        font-size: 13px;
+        font-size: 18px;
         font-weight: 700;
         color: var(--clay);
-        letter-spacing: 2px;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
       }
       .slide-flow .pane-title {
         font-family: "Newsreader", serif;
-        font-size: 28px;
+        font-size: 36px;
         font-weight: 500;
         line-height: 1.1;
         color: var(--ink);
@@ -650,30 +650,30 @@
       .slide-flow .pane-body {
         flex: 1;
         background: var(--cream);
-        border-radius: 8px;
-        padding: 16px;
-        font-size: 13px;
+        border-radius: 10px;
+        padding: 20px;
+        font-size: 18px;
         color: var(--ink-2);
-        line-height: 1.5;
+        line-height: 1.45;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
       }
       .slide-flow .stepper-mini {
         display: flex;
         align-items: center;
-        gap: 4px;
-        font-size: 11px;
+        gap: 6px;
+        font-size: 16px;
       }
       .slide-flow .step-dot {
-        width: 22px;
-        height: 22px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        font-size: 11px;
+        font-size: 15px;
         color: white;
       }
       .slide-flow .step-done { background: var(--success); }
@@ -683,39 +683,40 @@
         color: var(--ink-3);
         border: 1px solid var(--border);
       }
-      .slide-flow .step-line { width: 16px; height: 1px; background: var(--border); }
+      .slide-flow .step-line { width: 22px; height: 2px; background: var(--border); }
       .slide-flow .step-line-done { background: var(--success); }
       .slide-flow .pane-cta {
         background: var(--ink);
         color: var(--cream);
-        padding: 10px 16px;
+        padding: 12px 18px;
         border-radius: 8px;
-        font-size: 13px;
+        font-size: 18px;
         font-weight: 600;
         text-align: center;
       }
       .slide-flow .foot {
-        margin-top: 40px;
-        font-size: 18px;
+        margin-top: 36px;
+        font-size: 24px;
         color: var(--ink-2);
         text-align: center;
       }
 
       /* ============== SLIDE OUTPUT PDF ============== */
       .slide-output {
-        padding: 80px 100px;
+        padding: 72px 88px;
       }
+      .slide-output > .eyebrow { font-size: 18px; }
       .slide-output h2 {
         font-family: "Newsreader", serif;
-        font-size: 64px;
+        font-size: 68px;
         font-weight: 500;
         line-height: 1.05;
         letter-spacing: -1.5px;
-        margin: 8px 0 56px;
+        margin: 8px 0 48px;
       }
       .slide-output .split {
         display: grid;
-        grid-template-columns: 1fr 80px 1fr;
+        grid-template-columns: 1fr 64px 1fr;
         align-items: center;
         gap: 0;
       }
@@ -727,102 +728,104 @@
       .slide-output .screen {
         background: var(--paper);
         border: 2px solid var(--ink);
-        border-radius: 16px;
-        padding: 28px;
-        min-height: 560px;
+        border-radius: 18px;
+        padding: 36px;
+        min-height: 620px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 20px;
         box-shadow: 0 12px 40px rgba(26, 31, 46, 0.12);
       }
       .slide-output .screen-label {
-        font-size: 13px;
+        font-size: 18px;
         font-weight: 700;
         color: var(--clay);
-        letter-spacing: 2px;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
       }
       .slide-output .screen-h {
         font-family: "Newsreader", serif;
-        font-size: 32px;
+        font-size: 42px;
         font-weight: 500;
         line-height: 1.1;
       }
       .slide-output .btn-print {
         background: var(--ink);
         color: var(--cream);
-        padding: 14px 20px;
-        border-radius: 8px;
-        font-size: 14px;
+        padding: 18px 26px;
+        border-radius: 10px;
+        font-size: 20px;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
         align-self: flex-start;
       }
       .slide-output .pdf-doc {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 24px;
+        border-radius: 6px;
+        padding: 32px;
         font-family: "Newsreader", serif;
         flex: 1;
       }
       .slide-output .pdf-eyebrow {
         font-family: "Inter", sans-serif;
-        font-size: 10px;
+        font-size: 14px;
         text-transform: uppercase;
         letter-spacing: 2px;
         color: var(--ink-3);
-        margin-bottom: 4px;
+        margin-bottom: 6px;
       }
       .slide-output .pdf-h {
-        font-size: 22px;
+        font-size: 30px;
         font-weight: 500;
         line-height: 1.15;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
       }
       .slide-output .pdf-meta {
         font-family: "Inter", sans-serif;
-        font-size: 10px;
+        font-size: 14px;
         color: var(--ink-3);
-        padding-bottom: 12px;
+        padding-bottom: 16px;
         border-bottom: 1px solid var(--border);
-        margin-bottom: 14px;
+        margin-bottom: 18px;
       }
-      .slide-output .pdf-section { margin-bottom: 12px; }
+      .slide-output .pdf-section { margin-bottom: 16px; }
       .slide-output .pdf-section-h {
         font-family: "Inter", sans-serif;
-        font-size: 9px;
+        font-size: 13px;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.8px;
         color: var(--ink-3);
-        margin-bottom: 4px;
+        margin-bottom: 6px;
       }
       .slide-output .pdf-section-body {
         font-family: "Inter", sans-serif;
-        font-size: 12px;
+        font-size: 17px;
         color: var(--ink);
-        line-height: 1.4;
+        line-height: 1.5;
       }
       .slide-output .foot {
-        margin-top: 40px;
-        font-size: 18px;
+        margin-top: 36px;
+        font-size: 24px;
         color: var(--ink-2);
         text-align: center;
       }
 
       /* ============== SLIDE POST-RECLAMO ============== */
       .slide-post {
-        padding: 80px 100px;
+        padding: 72px 88px;
       }
+      .slide-post > .eyebrow { font-size: 18px; }
       .slide-post h2 {
         font-family: "Newsreader", serif;
-        font-size: 64px;
+        font-size: 68px;
         font-weight: 500;
         line-height: 1.05;
         letter-spacing: -1.5px;
-        margin: 8px 0 56px;
+        margin: 8px 0 48px;
       }
       .slide-post .grid2 {
         display: grid;
@@ -833,105 +836,115 @@
       .slide-post .card {
         background: var(--paper);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 36px;
+        border-radius: 18px;
+        padding: 44px;
         box-shadow: 0 8px 32px rgba(26, 31, 46, 0.06);
       }
       .slide-post .card-eyebrow {
-        font-size: 13px;
+        font-size: 18px;
         font-weight: 700;
         color: var(--clay);
-        letter-spacing: 2px;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
       }
       .slide-post .check {
-        width: 64px;
-        height: 64px;
+        width: 84px;
+        height: 84px;
         border-radius: 50%;
         background: rgba(5, 150, 105, 0.1);
         color: var(--success);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 32px;
+        font-size: 44px;
         font-weight: 700;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
       }
       .slide-post .check-h {
         font-family: "Newsreader", serif;
-        font-size: 28px;
+        font-size: 38px;
         font-weight: 500;
         line-height: 1.2;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
       .slide-post .check-meta {
-        font-size: 13px;
+        font-size: 18px;
         color: var(--ink-3);
-        margin-bottom: 24px;
+        margin-bottom: 28px;
       }
       .slide-post .dates {
         background: rgba(204, 120, 92, 0.06);
         border: 1px solid rgba(204, 120, 92, 0.3);
-        border-radius: 12px;
-        padding: 20px;
+        border-radius: 14px;
+        padding: 26px;
+      }
+      .slide-post .dates-h {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--clay);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
       }
       .slide-post .date-row {
         display: flex;
-        gap: 12px;
+        gap: 16px;
         align-items: flex-start;
-        font-size: 14px;
-        margin-bottom: 12px;
+        font-size: 18px;
+        margin-bottom: 18px;
       }
       .slide-post .date-row:last-child { margin-bottom: 0; }
-      .slide-post .dot-orange { width: 8px; height: 8px; border-radius: 50%; background: var(--clay); margin-top: 7px; }
-      .slide-post .dot-red { width: 8px; height: 8px; border-radius: 50%; background: var(--error); margin-top: 7px; }
-      .slide-post .date-strong { font-weight: 600; color: var(--ink); }
-      .slide-post .date-desc { color: var(--ink-2); font-size: 12px; }
+      .slide-post .dot-orange { width: 12px; height: 12px; border-radius: 50%; background: var(--clay); margin-top: 8px; flex-shrink: 0; }
+      .slide-post .dot-red { width: 12px; height: 12px; border-radius: 50%; background: var(--error); margin-top: 8px; flex-shrink: 0; }
+      .slide-post .date-strong { font-weight: 700; color: var(--ink); font-size: 20px; }
+      .slide-post .date-desc { color: var(--ink-2); font-size: 16px; line-height: 1.4; margin-top: 2px; }
       .slide-post .reminder-form {
         background: var(--cream);
         border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 16px;
-        margin-top: 16px;
+        border-radius: 10px;
+        padding: 22px;
+        margin-top: 20px;
       }
       .slide-post .reminder-input {
         background: var(--paper);
         border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 10px 14px;
-        font-size: 13px;
+        border-radius: 8px;
+        padding: 14px 18px;
+        font-size: 18px;
         color: var(--ink-3);
-        margin-bottom: 8px;
+        margin-bottom: 12px;
       }
       .slide-post .reminder-btn {
         background: var(--clay);
         color: white;
-        padding: 10px;
-        border-radius: 6px;
-        font-size: 13px;
+        padding: 14px;
+        border-radius: 8px;
+        font-size: 18px;
         font-weight: 600;
         text-align: center;
       }
       .slide-post .foot {
-        margin-top: 56px;
-        font-size: 20px;
+        margin-top: 48px;
+        font-size: 24px;
         color: var(--ink-2);
         text-align: center;
         font-style: italic;
+        line-height: 1.4;
       }
 
       /* ============== SLIDE MOBILE ============== */
       .slide-mobile {
-        padding: 80px 100px;
+        padding: 64px 80px;
       }
+      .slide-mobile > .eyebrow { font-size: 18px; }
       .slide-mobile h2 {
         font-family: "Newsreader", serif;
         font-size: 64px;
         font-weight: 500;
         line-height: 1.05;
         letter-spacing: -1.5px;
-        margin: 8px 0 48px;
+        margin: 8px 0 36px;
       }
       .slide-mobile .phones {
         display: flex;
@@ -940,16 +953,16 @@
         align-items: flex-end;
       }
       .slide-mobile .phone {
-        width: 320px;
-        height: 640px;
+        width: 400px;
+        height: 760px;
         background: var(--ink);
-        border-radius: 32px;
-        padding: 14px;
+        border-radius: 38px;
+        padding: 16px;
         box-shadow: 0 24px 64px rgba(26, 31, 46, 0.25);
       }
       .slide-mobile .phone-screen {
         background: var(--cream);
-        border-radius: 22px;
+        border-radius: 26px;
         height: 100%;
         overflow: hidden;
         display: flex;
@@ -958,9 +971,9 @@
       .slide-mobile .phone-bar {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(20px);
-        padding: 12px 16px;
+        padding: 16px 20px;
         font-family: "Newsreader", serif;
-        font-size: 14px;
+        font-size: 20px;
         font-weight: 500;
         text-align: center;
         border-bottom: 1px solid var(--border);
@@ -972,15 +985,15 @@
       }
       .slide-mobile .phone-tab {
         flex: 1;
-        padding: 12px;
-        font-size: 12px;
+        padding: 16px;
+        font-size: 17px;
         font-weight: 600;
         text-align: center;
         color: var(--ink-3);
       }
       .slide-mobile .phone-tab.active {
         color: var(--ink);
-        border-bottom: 2px solid var(--clay);
+        border-bottom: 3px solid var(--clay);
       }
       .slide-mobile .phone-badge {
         display: inline-flex;
@@ -988,76 +1001,79 @@
         justify-content: center;
         background: var(--clay);
         color: white;
-        font-size: 9px;
+        font-size: 13px;
         font-weight: 700;
-        border-radius: 10px;
-        padding: 1px 6px;
-        margin-left: 4px;
+        border-radius: 12px;
+        padding: 2px 9px;
+        margin-left: 6px;
       }
       .slide-mobile .phone-content {
         flex: 1;
-        padding: 14px;
-        font-size: 11px;
+        padding: 20px;
+        font-size: 16px;
         color: var(--ink-2);
         overflow: hidden;
       }
       .slide-mobile .phone-bubble-user {
         background: var(--ink);
         color: var(--cream);
-        padding: 8px 12px;
-        border-radius: 10px;
-        margin-left: 32px;
-        margin-bottom: 6px;
-        font-size: 11px;
+        padding: 12px 16px;
+        border-radius: 14px;
+        margin-left: 50px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        line-height: 1.4;
       }
       .slide-mobile .phone-bubble-asst {
         background: var(--paper);
         border: 1px solid var(--border);
-        padding: 8px 12px;
-        border-radius: 10px;
-        margin-right: 32px;
-        margin-bottom: 6px;
-        font-size: 11px;
+        padding: 12px 16px;
+        border-radius: 14px;
+        margin-right: 50px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        line-height: 1.4;
         color: var(--ink);
       }
       .slide-mobile .phone-tool {
         background: rgb(15 18 28);
         color: rgb(110 231 183);
-        padding: 6px 10px;
-        border-radius: 6px;
+        padding: 10px 14px;
+        border-radius: 8px;
         font-family: "JetBrains Mono", "SF Mono", monospace;
-        font-size: 10px;
-        margin-bottom: 4px;
+        font-size: 14px;
+        margin-bottom: 6px;
       }
       .slide-mobile .phone-cta {
         background: var(--paper);
         border: 2px solid var(--ink);
-        border-radius: 10px;
-        padding: 8px 12px;
-        margin: 12px 8px;
+        border-radius: 14px;
+        padding: 14px 18px;
+        margin: 14px 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
-        font-size: 11px;
+        gap: 10px;
+        font-size: 16px;
       }
       .slide-mobile .phone-cta-btn {
         background: var(--clay);
         color: white;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-size: 10px;
-        font-weight: 600;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 700;
       }
       .slide-mobile .phone-label {
         text-align: center;
-        margin-top: 16px;
-        font-size: 14px;
-        color: var(--ink-2);
+        margin-top: 24px;
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--ink);
       }
       .slide-mobile .foot {
-        margin-top: 56px;
-        font-size: 20px;
+        margin-top: 48px;
+        font-size: 24px;
         color: var(--ink-2);
         text-align: center;
         font-style: italic;
@@ -1195,11 +1211,11 @@
             <div class="pane-step">Paso 1 · Chat</div>
             <div class="pane-title">Cuéntame qué te pasó.</div>
             <div class="pane-body">
-              <div style="background: var(--ink); color: var(--cream); padding: 8px 12px; border-radius: 8px; align-self: flex-end; max-width: 80%; font-size: 12px;">
+              <div style="background: var(--ink); color: var(--cream); padding: 12px 16px; border-radius: 10px; align-self: flex-end; max-width: 90%; font-size: 17px; line-height: 1.4;">
                 Mi AFP me cobra 14.200 hace 3 meses
               </div>
-              <div style="background: var(--paper); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 12px;">
-                Esto va a SUPEN. Tienes 18 días hábiles. ¿Te armo el reclamo?
+              <div style="background: var(--paper); border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; max-width: 95%; font-size: 17px; line-height: 1.4;">
+                Esto va a SUPEN. Tienes 18 días. ¿Te genero el reclamo?
               </div>
             </div>
             <div class="stepper-mini">
@@ -1215,13 +1231,14 @@
           <!-- Pane 2: Acción -->
           <div class="pane">
             <div class="pane-step">Paso 2 · Acción</div>
-            <div class="pane-title">Acá tienes todo para presentar.</div>
+            <div class="pane-title">Todo listo para presentar.</div>
             <div class="pane-body">
-              <div style="font-weight: 600; color: var(--ink); font-size: 13px;">SUPEN · DL 3.500 Art. 29</div>
-              <div style="font-size: 11px; color: var(--ink-3);">18 días hábiles · vence 22 may</div>
-              <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-top: 4px;">
-                <div style="font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Reclamo formal</div>
-                <div style="font-size: 11px;">Listo para presentar →</div>
+              <div style="font-weight: 700; color: var(--ink); font-size: 22px;">SUPEN</div>
+              <div style="font-size: 17px; color: var(--ink-2);">DL 3.500 Art. 29</div>
+              <div style="font-size: 16px; color: var(--ink-3);">Vence 22 may · 18 días</div>
+              <div style="background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; padding: 14px; margin-top: 8px;">
+                <div style="font-size: 13px; font-weight: 700; color: var(--clay); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;">Reclamo formal</div>
+                <div style="font-size: 18px; font-weight: 600;">Listo para presentar →</div>
               </div>
             </div>
             <div class="stepper-mini">
@@ -1237,15 +1254,15 @@
           <!-- Pane 3: Cerrado -->
           <div class="pane">
             <div class="pane-step">Paso 3 · Cerrado</div>
-            <div class="pane-title">Caso registrado. Te avisamos.</div>
+            <div class="pane-title">Caso cerrado. Te avisamos.</div>
             <div class="pane-body">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(5,150,105,0.1); color: var(--success); font-weight: 700;">✓</span>
-                <span style="font-size: 12px; font-weight: 600;">Reclamo presentado</span>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(5,150,105,0.12); color: var(--success); font-weight: 700; font-size: 22px;">✓</span>
+                <span style="font-size: 19px; font-weight: 600;">Reclamo presentado</span>
               </div>
-              <div style="font-size: 10px; color: var(--ink-3); margin-top: 4px;">Próximas fechas:</div>
-              <div style="font-size: 11px;">15 may · seguimiento</div>
-              <div style="font-size: 11px;">22 may · vencimiento legal</div>
+              <div style="font-size: 15px; color: var(--ink-3); margin-top: 8px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">Próximas fechas</div>
+              <div style="font-size: 18px;"><strong>15 may</strong> · seguimiento</div>
+              <div style="font-size: 18px;"><strong>22 may</strong> · vencimiento legal</div>
             </div>
             <div class="stepper-mini">
               <span class="step-dot step-done">✓</span>
@@ -1268,15 +1285,15 @@
           <div class="screen">
             <div class="screen-label">/caso/accion</div>
             <div class="screen-h">Tu reclamo formal</div>
-            <div style="font-size: 13px; color: var(--ink-2); line-height: 1.5;">
-              Para guardarlo como PDF: toca "Imprimir / Guardar PDF" y elige "Guardar como PDF" en el diálogo del navegador.
+            <div style="font-size: 19px; color: var(--ink-2); line-height: 1.5;">
+              Toca "Imprimir / Guardar PDF" y elige "Guardar como PDF" en el diálogo del navegador.
             </div>
             <div class="btn-print">
               <span>🖨</span>
               <span>Imprimir / Guardar PDF</span>
             </div>
-            <div style="background: var(--cream); border: 1px solid var(--border); border-radius: 6px; padding: 12px; font-size: 12px; color: var(--ink-3);">
-              <strong style="color: var(--ink);">Listo para copiar ↓</strong> — para portales que piden formulario
+            <div style="background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 18px; font-size: 17px; color: var(--ink-3); line-height: 1.4;">
+              <strong style="color: var(--ink); font-size: 19px;">Listo para copiar ↓</strong><br />para portales que piden formulario online.
             </div>
           </div>
           <div class="arrow">→</div>
@@ -1331,9 +1348,7 @@
             <div class="check-meta">Marcado como presentado el 6 de mayo de 2026</div>
 
             <div class="dates">
-              <div style="font-size: 12px; font-weight: 700; color: var(--clay); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px;">
-                Próximas fechas
-              </div>
+              <div class="dates-h">Próximas fechas</div>
               <div class="date-row">
                 <span class="dot-orange"></span>
                 <div>
@@ -1354,11 +1369,11 @@
           <!-- Card recordatorios -->
           <div class="card">
             <div class="card-eyebrow">Recordatorios</div>
-            <div style="font-family: 'Newsreader', serif; font-size: 26px; font-weight: 500; line-height: 1.2; margin-bottom: 12px;">
+            <div style="font-family: 'Newsreader', serif; font-size: 36px; font-weight: 500; line-height: 1.15; margin-bottom: 18px;">
               ¿Quieres que te avisemos antes de que se venza?
             </div>
-            <div style="font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-bottom: 16px;">
-              Te mandamos avisos por email a 7, 3 y 1 día del vencimiento legal. Sin password — magic link de Supabase.
+            <div style="font-size: 19px; color: var(--ink-2); line-height: 1.5; margin-bottom: 20px;">
+              Avisos por email a 7, 3 y 1 día del vencimiento. Sin password — magic link Supabase.
             </div>
             <div class="reminder-form">
               <div class="reminder-input">maria@ejemplo.cl</div>
@@ -1427,18 +1442,18 @@
               <div class="phone-screen">
                 <div class="phone-bar">Paso 2 · Acción</div>
                 <div class="phone-content" style="position: relative;">
-                  <div style="font-family: 'Newsreader', serif; font-size: 16px; font-weight: 500; line-height: 1.2; margin-bottom: 8px;">
-                    Acá tienes todo para presentar tu reclamo.
+                  <div style="font-family: 'Newsreader', serif; font-size: 24px; font-weight: 500; line-height: 1.15; margin-bottom: 16px;">
+                    Aquí tienes todo para presentar tu reclamo.
                   </div>
-                  <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 10px; margin-bottom: 6px;">
+                  <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 16px; margin-bottom: 10px;">
                     <strong>SUPEN</strong> · prioridad media
                   </div>
-                  <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 10px;">
+                  <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 16px;">
                     <strong>18 días</strong> hábiles restantes
                   </div>
                 </div>
                 <div class="phone-cta">
-                  <span style="font-weight: 600;">¿Ya presentaste?</span>
+                  <span style="font-weight: 700; font-size: 16px;">¿Ya presentaste?</span>
                   <span class="phone-cta-btn">✓ Sí →</span>
                 </div>
               </div>

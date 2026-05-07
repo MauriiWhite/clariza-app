@@ -1,0 +1,38 @@
+# Configuracion de Netlify para Clariza (Next.js 16 App Router)
+# Docs: https://docs.netlify.com/frameworks/next-js/
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Plugin oficial de Netlify para Next.js — soporta App Router, Server Components,
+# API routes con runtime nodejs, streaming SSE, etc.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Headers para SSE — evita buffering en CDN.
+[[headers]]
+  for = "/api/agent"
+  [headers.values]
+    Cache-Control = "no-cache, no-transform"
+    X-Accel-Buffering = "no"
+
+# Headers de seguridad razonables.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Variables de entorno requeridas (configurar en el dashboard de Netlify):
+#
+#   OPENROUTER_API_KEY  — obligatoria mientras no llegue la de Anthropic.
+#                         Settings → Environment variables → Add a variable
+#
+#   ANTHROPIC_API_KEY   — opcional, preferida cuando esté disponible.
+#
+#   NEXT_PUBLIC_APP_URL — URL canonica del deploy (ej. https://clariza.netlify.app)
+#
+# IMPORTANTE: marcar las env vars como "All deploy contexts" para que apliquen
+# tanto a producción como a previews.

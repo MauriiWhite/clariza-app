@@ -75,7 +75,7 @@
 ## Q&A — preguntas probables y respuestas
 
 ### "¿Cómo verifican que la normativa que cita es real?"
-> "Cada cita viene de una tool con ID estable a una fuente oficial: BCN, CMF, SUPEN. El system prompt prohíbe expresamente citar normativa que no haya sido devuelta por la tool en el turno actual. Si querés, lo mostramos en la consola en vivo."
+> "Cada cita viene de una tool con ID estable a una fuente oficial: BCN, CMF, SUPEN. El system prompt prohíbe expresamente citar normativa que no haya sido devuelta por la tool en el turno actual. Si quieres, lo mostramos en la consola en vivo."
 
 ### "¿Dónde corre el agente?"
 > "Claude Sonnet 4.5 vía Anthropic Agent SDK. Tools de Anthropic: Agent SDK, Files API para Vision sobre cartolas/contratos, MCP listo para ampliar. Stack: Next.js + Vercel + Supabase preparado para pgvector."
@@ -87,7 +87,7 @@
 > "B2G primario: CMF y SERNAC ya nos publicaron como pista oficial — el tip salió de ellos. Plan 60 días: piloto con SERNAC Financiero. B2NGO secundario: Coopeuch y ChileMujeres ya distribuyen contenido educativo y nos sumarían."
 
 ### "¿Por qué los chilenos van a confiar?"
-> "Porque la respuesta cita ley con link a BCN. Y porque acompaña paso a paso, no es un formulario. La diferencia entre 'reclamá ante SUPEN' y 'esto va a SUPEN, te toma 18 días, te aviso por mail antes que se venza' es enorme en confianza."
+> "Porque la respuesta cita ley con link a BCN. Y porque acompaña paso a paso, no es un formulario. La diferencia entre 'reclama ante SUPEN' y 'esto va a SUPEN, te toma 18 días, te aviso por mail antes que se venza' es enorme en confianza."
 
 ### "¿Y si la persona miente o exagera?"
 > "El reclamo es del ciudadano, no de Clariza. Nosotros estructuramos lo que cuenta y lo armamos en formato regulador. La verificación de hechos la hace el regulador, como siempre. Si Clariza detecta inconsistencias, las marca antes de generar el reclamo."

@@ -27,7 +27,7 @@ const RegulatorySourceEnum = z.enum([
 export const searchRegulationTool = betaZodTool({
   name: "searchRegulation",
   description:
-    "Busca normativa chilena vigente que aplique al caso del ciudadano. Devuelve citas con link a la fuente oficial (BCN o CMF). USA esta tool ANTES de afirmar cualquier articulo, ley o circular: solo podes citar normativa que esta tool devuelva en este turno. Cubre: DL 3.500 (AFP), Ley 19.496 (consumidor), Ley 20.555 (SERNAC Financiero), Ley 21.398 (Pro Consumidor), Ley 21.234 (fraudes con tarjetas), Ley 21.521 (Fintec), Ley 21.680 (REDEC) y circulares SUPEN.",
+    "Busca normativa chilena vigente que aplique al caso del ciudadano. Devuelve citas con link a la fuente oficial (BCN o CMF). USA esta tool ANTES de afirmar cualquier articulo, ley o circular: solo puedes citar normativa que esta tool devuelva en este turno. Cubre: DL 3.500 (AFP), Ley 19.496 (consumidor), Ley 20.555 (SERNAC Financiero), Ley 21.398 (Pro Consumidor), Ley 21.234 (fraudes con tarjetas), Ley 21.521 (Fintec), Ley 21.680 (REDEC) y circulares SUPEN.",
   inputSchema: z.object({
     query: z
       .string()

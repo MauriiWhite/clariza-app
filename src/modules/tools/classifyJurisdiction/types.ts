@@ -31,7 +31,7 @@ export interface OfficialChannel {
  *  Lo emite la tool classifyJurisdiction y lo consume:
  *  - El agente para construir su respuesta al ciudadano.
  *  - modules/diagnosis (Mauricio) para renderizar la DiagnosisCard.
- *  - draftClaim (Exequiel) para armar el reclamo formal en el formato correcto.
+ *  - draftClaim (Exequiel) para preparar el reclamo formal en el formato correcto.
  */
 export interface RegulatoryDiagnosis {
   /** Regulador competente principal — donde va el reclamo. */

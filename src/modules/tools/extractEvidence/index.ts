@@ -25,7 +25,7 @@ import type {
   FileAttachment,
 } from "@/modules/tools/extractEvidence/types";
 
-const EXTRACTION_PROMPT = `Eres un asistente que extrae datos estructurados de documentos financieros chilenos. Lee el documento adjunto y devolve los datos en JSON. NUNCA inventes datos: si un campo no se ve claro, marcalo como null.
+const EXTRACTION_PROMPT = `Eres un asistente que extrae datos estructurados de documentos financieros chilenos. Lee el documento adjunto y devuelve los datos en JSON. NUNCA inventes datos: si un campo no se ve claro, márcalo como null.
 
 Devuelve SOLO el JSON, sin texto adicional ni markdown:
 

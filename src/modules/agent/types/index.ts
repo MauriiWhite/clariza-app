@@ -1,6 +1,6 @@
 // Tipos compartidos del agente Clariza.
 // Cualquier modulo que consuma el agente (UI, scripts, tests) importa desde aqui.
-// Mauricio: usalo desde modules/console y modules/chat para tipar el SSE.
+// Mauricio: úsalo desde modules/console y modules/chat para tipar el SSE.
 
 /**
  * Eventos que el agente emite durante un turno.

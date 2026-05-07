@@ -17,8 +17,16 @@ import { Button } from "@/modules/core/design-system/Button";
 
 export default function ChatPage() {
   const router = useRouter();
-  const { events, isStreaming, error, startTurn, diagnosis, schedule, claim } =
-    useChat();
+  const {
+    events,
+    isStreaming,
+    error,
+    startTurn,
+    diagnosis,
+    schedule,
+    claim,
+    citations,
+  } = useChat();
 
   const showResults = !isStreaming && (diagnosis || schedule);
   const [mobileTab, setMobileTab] = useState<"chat" | "console">("chat");
@@ -164,6 +172,7 @@ export default function ChatPage() {
               isStreaming={isStreaming}
               error={error}
               onSend={startTurn}
+              citations={citations}
             />
           </div>
           <div

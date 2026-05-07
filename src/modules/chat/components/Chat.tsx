@@ -6,13 +6,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ConsoleEvent } from "@/modules/agent/types";
-import { Button } from "@/modules/core/design-system/Button";
+import { CitationsPanel } from "@/modules/chat/components/CitationsPanel";
 import {
   EMPTY_IDENTITY,
   IdentityCard,
   type Identity,
 } from "@/modules/chat/components/IdentityCard";
 import { compressImageIfNeeded } from "@/modules/chat/services/imageCompression";
+import { Button } from "@/modules/core/design-system/Button";
+import type { Citation } from "@/modules/regulations/types";
 
 interface ChatProps {
   events: ConsoleEvent[];
@@ -20,6 +22,7 @@ interface ChatProps {
   error?: string | null;
   onSend: (message: string, file?: File | null) => void;
   onRetry?: () => void;
+  citations?: Citation[];
 }
 
 // Sugerencias rapidas — tap para arrancar sin tener que pensar la frase.
@@ -40,6 +43,7 @@ export function Chat({
   error,
   onSend,
   onRetry,
+  citations = [],
 }: ChatProps) {
   const [draft, setDraft] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -177,6 +181,13 @@ export function Chat({
         {messages.map((event, idx) => (
           <Message key={idx} event={event} />
         ))}
+
+        {/* Fuentes verificables consultadas en este turno — solo aparece
+            cuando hay citas Y el agente termino (asi no aparece a medias
+            durante el stream). */}
+        {!isStreaming && citations.length > 0 && (
+          <CitationsPanel citations={citations} />
+        )}
 
         {isStreaming && (
           <div

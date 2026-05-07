@@ -116,3 +116,40 @@ body > * {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Print: oculta chrome (header, sidebar, navegacion) y muestra solo el
+ * contenido marcado como print:visible. Lo usamos en /caso/accion para que
+ * el ciudadano pueda imprimir / guardar como PDF su reclamo formal directo
+ * desde el browser, sin depender de un servicio externo. */
+@media print {
+  body::before {
+    display: none !important;
+  }
+
+  /* Por defecto, ocultamos TODO. */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Y volvemos visible solo el contenedor con .print-area y sus hijos. */
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    inset: 0;
+    padding: 24px;
+    background: white;
+  }
+
+  /* Elementos decorativos / interactivos siempre fuera de impresion. */
+  .print-hide {
+    display: none !important;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}

@@ -41,7 +41,18 @@ export default function RootLayout({
       lang="es-CL"
       className={`${inter.variable} ${newsreader.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Skip link para lectores de pantalla — invisible hasta foco. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:text-cream focus:px-4 focus:py-2 focus:rounded-md focus:font-semibold"
+        >
+          Saltar al contenido principal
+        </a>
+        <div id="main" className="flex flex-col min-h-full">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

@@ -12,6 +12,7 @@ import {
   IdentityCard,
   type Identity,
 } from "@/modules/chat/components/IdentityCard";
+import { compressImageIfNeeded } from "@/modules/chat/services/imageCompression";
 import { Button } from "@/modules/core/design-system/Button";
 import type { Citation } from "@/modules/regulations/types";
 
@@ -46,6 +47,7 @@ export function Chat({
 }: ChatProps) {
   const [draft, setDraft] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [fileCompressing, setFileCompressing] = useState(false);
   const [identity, setIdentity] = useState<Identity>(EMPTY_IDENTITY);
   const [lastSent, setLastSent] = useState<{
     message: string;
@@ -72,14 +74,17 @@ export function Chat({
   const submit = () => {
     const trimmed = draft.trim();
     // Permitimos enviar con texto O solo con archivo (caso: subir foto sin texto).
-    if ((!trimmed && !file) || isStreaming) return;
+    if ((!trimmed && !file) || isStreaming || fileCompressing) return;
     const message =
       trimmed ||
       (file ? `Te adjunto este documento (${file.name}) para que lo revises.` : "");
     setLastSent({ message, file });
     onSend(message, file);
     setDraft("");
-    setFile(null);
+    // NOTA: NO reseteamos `file` aca. El backend solo lee el archivo en este
+    // turno, pero el chip queda visible hasta que el ciudadano lo quite con
+    // la X. Asi entiende que el archivo se proceso y puede mandarlo de nuevo
+    // si el agente lo necesita en otro turno.
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -101,9 +106,22 @@ export function Chat({
     onSend(text, null);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] ?? null;
-    setFile(selected);
+    if (!selected) {
+      setFile(null);
+      return;
+    }
+    // Comprimir / redimensionar imagenes grandes para que quepan en el limite
+    // de Netlify Functions (~6 MB). Las fotos del telefono pesan 3-12 MB.
+    setFileCompressing(true);
+    setFile(selected); // mostramos el chip enseguida con el archivo original
+    try {
+      const compressed = await compressImageIfNeeded(selected);
+      setFile(compressed);
+    } finally {
+      setFileCompressing(false);
+    }
   };
 
   const handleRetry = () => {
@@ -220,16 +238,24 @@ export function Chat({
         onSubmit={handleSubmit}
         className="border-t border-border p-3 md:p-4 space-y-2"
       >
-        {/* Archivo seleccionado — chip con opcion de quitar */}
+        {/* Archivo seleccionado — chip con opcion de quitar.
+            Persiste entre turnos hasta que el ciudadano lo quite con X. */}
         {file && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-cream border border-border-strong text-sm">
             <PaperclipIcon />
-            <span className="flex-1 truncate text-ink-2">{file.name}</span>
+            <span className="flex-1 truncate text-ink-2">
+              {file.name}{" "}
+              <span className="text-xs text-ink-3">
+                ({formatBytes(file.size)})
+                {fileCompressing && " · optimizando…"}
+              </span>
+            </span>
             <button
               type="button"
               onClick={() => setFile(null)}
               className="text-ink-3 hover:text-error"
               aria-label="Quitar archivo"
+              disabled={fileCompressing}
             >
               ✕
             </button>
@@ -314,6 +340,14 @@ function Message({ event }: { event: ConsoleEvent }) {
   }
 
   return null;
+}
+
+// Formatea bytes humano: 245 KB, 1.2 MB. Usado en el chip del archivo
+// para que el ciudadano sepa el peso (y entienda por que comprimimos).
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 // Icono clip — inline SVG para no agregar dep de iconos.

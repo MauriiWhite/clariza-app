@@ -595,6 +595,474 @@
         font-weight: 600;
       }
 
+      /* ============== SLIDE FLUJO 3 PANTALLAS ============== */
+      .slide-flow {
+        padding: 80px 100px;
+      }
+      .slide-flow .header {
+        margin-bottom: 56px;
+      }
+      .slide-flow h2 {
+        font-family: "Newsreader", serif;
+        font-size: 64px;
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -1.5px;
+        margin-top: 8px;
+      }
+      .slide-flow .row {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr 80px 1fr;
+        align-items: center;
+        gap: 0;
+      }
+      .slide-flow .arrow {
+        font-size: 56px;
+        color: var(--clay);
+        text-align: center;
+        font-weight: 300;
+      }
+      .slide-flow .pane {
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        height: 480px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-shadow: 0 8px 32px rgba(26, 31, 46, 0.08);
+      }
+      .slide-flow .pane-step {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--clay);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .slide-flow .pane-title {
+        font-family: "Newsreader", serif;
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 1.1;
+        color: var(--ink);
+      }
+      .slide-flow .pane-body {
+        flex: 1;
+        background: var(--cream);
+        border-radius: 8px;
+        padding: 16px;
+        font-size: 13px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .slide-flow .stepper-mini {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+      }
+      .slide-flow .step-dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 11px;
+        color: white;
+      }
+      .slide-flow .step-done { background: var(--success); }
+      .slide-flow .step-active { background: var(--clay); }
+      .slide-flow .step-pending {
+        background: var(--cream);
+        color: var(--ink-3);
+        border: 1px solid var(--border);
+      }
+      .slide-flow .step-line { width: 16px; height: 1px; background: var(--border); }
+      .slide-flow .step-line-done { background: var(--success); }
+      .slide-flow .pane-cta {
+        background: var(--ink);
+        color: var(--cream);
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+      }
+      .slide-flow .foot {
+        margin-top: 40px;
+        font-size: 18px;
+        color: var(--ink-2);
+        text-align: center;
+      }
+
+      /* ============== SLIDE OUTPUT PDF ============== */
+      .slide-output {
+        padding: 80px 100px;
+      }
+      .slide-output h2 {
+        font-family: "Newsreader", serif;
+        font-size: 64px;
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -1.5px;
+        margin: 8px 0 56px;
+      }
+      .slide-output .split {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr;
+        align-items: center;
+        gap: 0;
+      }
+      .slide-output .arrow {
+        font-size: 64px;
+        color: var(--clay);
+        text-align: center;
+      }
+      .slide-output .screen {
+        background: var(--paper);
+        border: 2px solid var(--ink);
+        border-radius: 16px;
+        padding: 28px;
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-shadow: 0 12px 40px rgba(26, 31, 46, 0.12);
+      }
+      .slide-output .screen-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--clay);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .slide-output .screen-h {
+        font-family: "Newsreader", serif;
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 1.1;
+      }
+      .slide-output .btn-print {
+        background: var(--ink);
+        color: var(--cream);
+        padding: 14px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        align-self: flex-start;
+      }
+      .slide-output .pdf-doc {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 24px;
+        font-family: "Newsreader", serif;
+        flex: 1;
+      }
+      .slide-output .pdf-eyebrow {
+        font-family: "Inter", sans-serif;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .slide-output .pdf-h {
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.15;
+        margin-bottom: 4px;
+      }
+      .slide-output .pdf-meta {
+        font-family: "Inter", sans-serif;
+        font-size: 10px;
+        color: var(--ink-3);
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 14px;
+      }
+      .slide-output .pdf-section { margin-bottom: 12px; }
+      .slide-output .pdf-section-h {
+        font-family: "Inter", sans-serif;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .slide-output .pdf-section-body {
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        color: var(--ink);
+        line-height: 1.4;
+      }
+      .slide-output .foot {
+        margin-top: 40px;
+        font-size: 18px;
+        color: var(--ink-2);
+        text-align: center;
+      }
+
+      /* ============== SLIDE POST-RECLAMO ============== */
+      .slide-post {
+        padding: 80px 100px;
+      }
+      .slide-post h2 {
+        font-family: "Newsreader", serif;
+        font-size: 64px;
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -1.5px;
+        margin: 8px 0 56px;
+      }
+      .slide-post .grid2 {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 48px;
+        align-items: start;
+      }
+      .slide-post .card {
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 36px;
+        box-shadow: 0 8px 32px rgba(26, 31, 46, 0.06);
+      }
+      .slide-post .card-eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--clay);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .slide-post .check {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgba(5, 150, 105, 0.1);
+        color: var(--success);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .slide-post .check-h {
+        font-family: "Newsreader", serif;
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+      .slide-post .check-meta {
+        font-size: 13px;
+        color: var(--ink-3);
+        margin-bottom: 24px;
+      }
+      .slide-post .dates {
+        background: rgba(204, 120, 92, 0.06);
+        border: 1px solid rgba(204, 120, 92, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .slide-post .date-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+      .slide-post .date-row:last-child { margin-bottom: 0; }
+      .slide-post .dot-orange { width: 8px; height: 8px; border-radius: 50%; background: var(--clay); margin-top: 7px; }
+      .slide-post .dot-red { width: 8px; height: 8px; border-radius: 50%; background: var(--error); margin-top: 7px; }
+      .slide-post .date-strong { font-weight: 600; color: var(--ink); }
+      .slide-post .date-desc { color: var(--ink-2); font-size: 12px; }
+      .slide-post .reminder-form {
+        background: var(--cream);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+      }
+      .slide-post .reminder-input {
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: var(--ink-3);
+        margin-bottom: 8px;
+      }
+      .slide-post .reminder-btn {
+        background: var(--clay);
+        color: white;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+      }
+      .slide-post .foot {
+        margin-top: 56px;
+        font-size: 20px;
+        color: var(--ink-2);
+        text-align: center;
+        font-style: italic;
+      }
+
+      /* ============== SLIDE MOBILE ============== */
+      .slide-mobile {
+        padding: 80px 100px;
+      }
+      .slide-mobile h2 {
+        font-family: "Newsreader", serif;
+        font-size: 64px;
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -1.5px;
+        margin: 8px 0 48px;
+      }
+      .slide-mobile .phones {
+        display: flex;
+        gap: 56px;
+        justify-content: center;
+        align-items: flex-end;
+      }
+      .slide-mobile .phone {
+        width: 320px;
+        height: 640px;
+        background: var(--ink);
+        border-radius: 32px;
+        padding: 14px;
+        box-shadow: 0 24px 64px rgba(26, 31, 46, 0.25);
+      }
+      .slide-mobile .phone-screen {
+        background: var(--cream);
+        border-radius: 22px;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .slide-mobile .phone-bar {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        padding: 12px 16px;
+        font-family: "Newsreader", serif;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+      }
+      .slide-mobile .phone-tabs {
+        display: flex;
+        background: rgba(255, 255, 255, 0.4);
+        border-bottom: 1px solid var(--border);
+      }
+      .slide-mobile .phone-tab {
+        flex: 1;
+        padding: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        color: var(--ink-3);
+      }
+      .slide-mobile .phone-tab.active {
+        color: var(--ink);
+        border-bottom: 2px solid var(--clay);
+      }
+      .slide-mobile .phone-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--clay);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 1px 6px;
+        margin-left: 4px;
+      }
+      .slide-mobile .phone-content {
+        flex: 1;
+        padding: 14px;
+        font-size: 11px;
+        color: var(--ink-2);
+        overflow: hidden;
+      }
+      .slide-mobile .phone-bubble-user {
+        background: var(--ink);
+        color: var(--cream);
+        padding: 8px 12px;
+        border-radius: 10px;
+        margin-left: 32px;
+        margin-bottom: 6px;
+        font-size: 11px;
+      }
+      .slide-mobile .phone-bubble-asst {
+        background: var(--paper);
+        border: 1px solid var(--border);
+        padding: 8px 12px;
+        border-radius: 10px;
+        margin-right: 32px;
+        margin-bottom: 6px;
+        font-size: 11px;
+        color: var(--ink);
+      }
+      .slide-mobile .phone-tool {
+        background: rgb(15 18 28);
+        color: rgb(110 231 183);
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-family: "JetBrains Mono", "SF Mono", monospace;
+        font-size: 10px;
+        margin-bottom: 4px;
+      }
+      .slide-mobile .phone-cta {
+        background: var(--paper);
+        border: 2px solid var(--ink);
+        border-radius: 10px;
+        padding: 8px 12px;
+        margin: 12px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 11px;
+      }
+      .slide-mobile .phone-cta-btn {
+        background: var(--clay);
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .slide-mobile .phone-label {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+        color: var(--ink-2);
+      }
+      .slide-mobile .foot {
+        margin-top: 56px;
+        font-size: 20px;
+        color: var(--ink-2);
+        text-align: center;
+        font-style: italic;
+      }
+
       /* PRINT STYLES — Ctrl+P → Guardar como PDF */
       @page {
         size: 1920px 1080px;
@@ -715,22 +1183,288 @@
         </div>
       </section>
 
-      <!-- ============== SLIDE 5 ============== -->
+      <!-- ============== SLIDE 5 — Flujo completo en 3 pantallas ============== -->
+      <section class="slide slide-flow">
+        <div class="header">
+          <p class="eyebrow">Flujo del producto · 3 pantallas, 1 caso</p>
+          <h2>Una conversación, dos pantallas más, caso cerrado.</h2>
+        </div>
+        <div class="row">
+          <!-- Pane 1: Chat -->
+          <div class="pane">
+            <div class="pane-step">Paso 1 · Chat</div>
+            <div class="pane-title">Cuéntame qué te pasó.</div>
+            <div class="pane-body">
+              <div style="background: var(--ink); color: var(--cream); padding: 8px 12px; border-radius: 8px; align-self: flex-end; max-width: 80%; font-size: 12px;">
+                Mi AFP me cobra 14.200 hace 3 meses
+              </div>
+              <div style="background: var(--paper); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 12px;">
+                Esto va a SUPEN. Tienes 18 días hábiles. ¿Te armo el reclamo?
+              </div>
+            </div>
+            <div class="stepper-mini">
+              <span class="step-dot step-active">1</span>
+              <span class="step-line"></span>
+              <span class="step-dot step-pending">2</span>
+              <span class="step-line"></span>
+              <span class="step-dot step-pending">3</span>
+            </div>
+          </div>
+          <div class="arrow">→</div>
+
+          <!-- Pane 2: Acción -->
+          <div class="pane">
+            <div class="pane-step">Paso 2 · Acción</div>
+            <div class="pane-title">Acá tienes todo para presentar.</div>
+            <div class="pane-body">
+              <div style="font-weight: 600; color: var(--ink); font-size: 13px;">SUPEN · DL 3.500 Art. 29</div>
+              <div style="font-size: 11px; color: var(--ink-3);">18 días hábiles · vence 22 may</div>
+              <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-top: 4px;">
+                <div style="font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Reclamo formal</div>
+                <div style="font-size: 11px;">Listo para presentar →</div>
+              </div>
+            </div>
+            <div class="stepper-mini">
+              <span class="step-dot step-done">✓</span>
+              <span class="step-line step-line-done"></span>
+              <span class="step-dot step-active">2</span>
+              <span class="step-line"></span>
+              <span class="step-dot step-pending">3</span>
+            </div>
+          </div>
+          <div class="arrow">→</div>
+
+          <!-- Pane 3: Cerrado -->
+          <div class="pane">
+            <div class="pane-step">Paso 3 · Cerrado</div>
+            <div class="pane-title">Caso registrado. Te avisamos.</div>
+            <div class="pane-body">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(5,150,105,0.1); color: var(--success); font-weight: 700;">✓</span>
+                <span style="font-size: 12px; font-weight: 600;">Reclamo presentado</span>
+              </div>
+              <div style="font-size: 10px; color: var(--ink-3); margin-top: 4px;">Próximas fechas:</div>
+              <div style="font-size: 11px;">15 may · seguimiento</div>
+              <div style="font-size: 11px;">22 may · vencimiento legal</div>
+            </div>
+            <div class="stepper-mini">
+              <span class="step-dot step-done">✓</span>
+              <span class="step-line step-line-done"></span>
+              <span class="step-dot step-done">✓</span>
+              <span class="step-line step-line-done"></span>
+              <span class="step-dot step-active">3</span>
+            </div>
+          </div>
+        </div>
+        <p class="foot">Sin login. Sin app. Persistencia en sessionStorage hasta cerrar el browser.</p>
+      </section>
+
+      <!-- ============== SLIDE 6 — Output PDF accionable ============== -->
+      <section class="slide slide-output">
+        <p class="eyebrow">Output accionable · sin backend, sin descargar nada</p>
+        <h2>El PDF se genera en tu navegador.</h2>
+        <div class="split">
+          <!-- Pantalla acción -->
+          <div class="screen">
+            <div class="screen-label">/caso/accion</div>
+            <div class="screen-h">Tu reclamo formal</div>
+            <div style="font-size: 13px; color: var(--ink-2); line-height: 1.5;">
+              Para guardarlo como PDF: toca "Imprimir / Guardar PDF" y elige "Guardar como PDF" en el diálogo del navegador.
+            </div>
+            <div class="btn-print">
+              <span>🖨</span>
+              <span>Imprimir / Guardar PDF</span>
+            </div>
+            <div style="background: var(--cream); border: 1px solid var(--border); border-radius: 6px; padding: 12px; font-size: 12px; color: var(--ink-3);">
+              <strong style="color: var(--ink);">Listo para copiar ↓</strong> — para portales que piden formulario
+            </div>
+          </div>
+          <div class="arrow">→</div>
+
+          <!-- PDF doc -->
+          <div class="pdf-doc">
+            <div class="pdf-eyebrow">Reclamo formal · CLM-2026-0142</div>
+            <div class="pdf-h">Reclamo dirigido a AFP Habitat</div>
+            <div class="pdf-meta">Generado el 6 de mayo de 2026</div>
+
+            <div class="pdf-section">
+              <div class="pdf-section-h">Reclamante</div>
+              <div class="pdf-section-body"><strong>María Rojas Pérez</strong> · RUT 8.123.456-7</div>
+            </div>
+
+            <div class="pdf-section">
+              <div class="pdf-section-h">Hechos</div>
+              <div class="pdf-section-body">
+                1. Desde enero 2026 mi cartola muestra cargo mensual de $14.200.<br />
+                2. La AFP no informó previamente este cobro adicional.<br />
+                3. Solicité explicación por canal web sin respuesta en 30 días.
+              </div>
+            </div>
+
+            <div class="pdf-section">
+              <div class="pdf-section-h">Normativa invocada</div>
+              <div class="pdf-section-body">
+                · DL 3.500 Art. 29 (comisiones AFP)<br />
+                · Circular SUPEN N° 1.998
+              </div>
+            </div>
+
+            <div class="pdf-section">
+              <div class="pdf-section-h">Petición</div>
+              <div class="pdf-section-body">Devolución de las comisiones cobradas sin información previa.</div>
+            </div>
+          </div>
+        </div>
+        <p class="foot">window.print() + @media print. Funciona offline. No depende de servicios externos.</p>
+      </section>
+
+      <!-- ============== SLIDE 7 — Después del reclamo ============== -->
+      <section class="slide slide-post">
+        <p class="eyebrow">Persistencia · seguimiento más allá del reclamo</p>
+        <h2>El reclamo no termina cuando lo presentas.</h2>
+        <div class="grid2">
+          <!-- Card confirmación + fechas -->
+          <div class="card">
+            <div class="card-eyebrow">/caso/cerrado</div>
+            <div class="check">✓</div>
+            <div class="check-h">¡Listo, tu reclamo está presentado!</div>
+            <div class="check-meta">Marcado como presentado el 6 de mayo de 2026</div>
+
+            <div class="dates">
+              <div style="font-size: 12px; font-weight: 700; color: var(--clay); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px;">
+                Próximas fechas
+              </div>
+              <div class="date-row">
+                <span class="dot-orange"></span>
+                <div>
+                  <div class="date-strong">15 de mayo de 2026</div>
+                  <div class="date-desc">Si no hay respuesta, te sugerimos hacer seguimiento.</div>
+                </div>
+              </div>
+              <div class="date-row">
+                <span class="dot-red"></span>
+                <div>
+                  <div class="date-strong">22 de mayo de 2026</div>
+                  <div class="date-desc">Vencimiento legal del plazo de SUPEN para responder.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card recordatorios -->
+          <div class="card">
+            <div class="card-eyebrow">Recordatorios</div>
+            <div style="font-family: 'Newsreader', serif; font-size: 26px; font-weight: 500; line-height: 1.2; margin-bottom: 12px;">
+              ¿Quieres que te avisemos antes de que se venza?
+            </div>
+            <div style="font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-bottom: 16px;">
+              Te mandamos avisos por email a 7, 3 y 1 día del vencimiento legal. Sin password — magic link de Supabase.
+            </div>
+            <div class="reminder-form">
+              <div class="reminder-input">maria@ejemplo.cl</div>
+              <div class="reminder-btn">Enviar enlace mágico</div>
+            </div>
+          </div>
+        </div>
+        <p class="foot">"Lo primero que pierde un chileno con un problema financiero es saber a quién decirle. Lo segundo, cuándo." — Clariza resuelve los dos.</p>
+      </section>
+
+      <!-- ============== SLIDE 8 — Mobile-first ============== -->
+      <section class="slide slide-mobile">
+        <p class="eyebrow">Mobile-first · el caso primario, no responsive</p>
+        <h2>La mayoría llega desde el celular.</h2>
+        <div class="phones">
+          <!-- Phone 1: Chat -->
+          <div>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-bar">· Clariza</div>
+                <div class="phone-tabs">
+                  <div class="phone-tab active">Chat</div>
+                  <div class="phone-tab">
+                    Consola<span class="phone-badge">5</span>
+                  </div>
+                </div>
+                <div class="phone-content">
+                  <div class="phone-bubble-user">Mi AFP me cobra de más</div>
+                  <div class="phone-bubble-asst">Eso es plata tuya — entiendo. ¿En qué AFP estás?</div>
+                  <div class="phone-bubble-user">Habitat</div>
+                  <div class="phone-bubble-asst">Esto va a SUPEN. Tienes 18 días hábiles.</div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-label">Chat con tabs adaptativos</div>
+          </div>
+
+          <!-- Phone 2: Consola -->
+          <div>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-bar">· Clariza</div>
+                <div class="phone-tabs">
+                  <div class="phone-tab">Chat</div>
+                  <div class="phone-tab active">
+                    Consola<span class="phone-badge">5</span>
+                  </div>
+                </div>
+                <div class="phone-content" style="background: rgb(15 18 28);">
+                  <div class="phone-tool">🔧 extractEvidence</div>
+                  <div class="phone-tool" style="color: rgb(165 180 252);">✓ AFP Habitat detectada</div>
+                  <div class="phone-tool">🔧 searchRegulation</div>
+                  <div class="phone-tool" style="color: rgb(165 180 252);">✓ DL 3.500 Art. 29</div>
+                  <div class="phone-tool">🔧 classifyJurisdiction</div>
+                  <div class="phone-tool" style="color: rgb(165 180 252);">✓ SUPEN</div>
+                  <div class="phone-tool">🔧 calculateDeadlines</div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-label">Consola visible — el wow</div>
+          </div>
+
+          <!-- Phone 3: Acción mobile con CTA flotante -->
+          <div>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-bar">Paso 2 · Acción</div>
+                <div class="phone-content" style="position: relative;">
+                  <div style="font-family: 'Newsreader', serif; font-size: 16px; font-weight: 500; line-height: 1.2; margin-bottom: 8px;">
+                    Acá tienes todo para presentar tu reclamo.
+                  </div>
+                  <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 10px; margin-bottom: 6px;">
+                    <strong>SUPEN</strong> · prioridad media
+                  </div>
+                  <div style="background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 10px;">
+                    <strong>18 días</strong> hábiles restantes
+                  </div>
+                </div>
+                <div class="phone-cta">
+                  <span style="font-weight: 600;">¿Ya presentaste?</span>
+                  <span class="phone-cta-btn">✓ Sí →</span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-label">CTA flotante mobile</div>
+          </div>
+        </div>
+        <p class="foot">Tabs Chat/Consola en mobile, CTA flotante, fotos auto-comprimidas en el cliente.</p>
+      </section>
+
+      <!-- ============== SLIDE 9 — Diferenciador (4 pilares) ============== -->
       <section class="slide slide-diff">
         <p class="eyebrow">Diferenciador · nadie más hace esto junto</p>
-        <div class="cols">
+        <div class="cols" style="grid-template-columns: repeat(4, 1fr); gap: 32px;">
           <div class="col">
             <div class="num">01</div>
             <div class="col-title">Derivación inteligente</div>
             <p class="col-desc">
-              Único agente que enruta entre los 5 reguladores chilenos. Otros equipos hacen un canal. Nosotros enrutamos.
+              Único agente que enruta entre los 5 reguladores chilenos. Otros equipos hacen un canal.
             </p>
           </div>
           <div class="col">
             <div class="num">02</div>
             <div class="col-title">Plazos hábiles vivos</div>
             <p class="col-desc">
-              Feriados oficiales chilenos vía API pública. La pieza invisible que hace que la gente pierda reclamos.
+              Feriados oficiales vía API pública. La pieza invisible que hace que la gente pierda reclamos.
             </p>
           </div>
           <div class="col">
@@ -740,8 +1474,15 @@
               Cada cita normativa tiene URL a BCN o CMF. Si el agente no la verifica, no la dice.
             </p>
           </div>
+          <div class="col">
+            <div class="num">04</div>
+            <div class="col-title">Seguimiento persistente</div>
+            <p class="col-desc">
+              Recordatorios automáticos a 7, 3 y 1 día del vencimiento. Magic link sin password.
+            </p>
+          </div>
         </div>
-        <p class="foot">6 tools del agente · 8 fuentes regulatorias · 2 APIs públicas chilenas</p>
+        <p class="foot">6 tools del agente · 8 fuentes regulatorias · 2 APIs públicas chilenas · Magic link Supabase</p>
       </section>
 
       <!-- ============== SLIDE 6 ============== -->

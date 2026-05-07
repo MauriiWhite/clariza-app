@@ -93,7 +93,25 @@ export function useChat() {
         }
 
         if (!res.ok || !res.body) {
-          throw new Error(`API respondió HTTP ${res.status}`);
+          // El backend devuelve { error: "..." } en JSON cuando rechaza la
+          // request (ej: archivo demasiado grande, body cortado). Lo
+          // extraemos para mostrar el mensaje real, en vez de un genérico.
+          let detail = `API respondió HTTP ${res.status}`;
+          try {
+            const data = (await res.clone().json()) as { error?: string };
+            if (data?.error) detail = data.error;
+          } catch {
+            /* respuesta no era JSON, usamos el detail genérico */
+          }
+
+          // Errores 4xx (request mal formada, archivo grande): mostrar al
+          // usuario y NO caer al mock — caer al mock con keywords basura
+          // confunde mas. setError lo hace renderizable como banner con retry.
+          if (res.status >= 400 && res.status < 500) {
+            setState((prev) => ({ ...prev, isStreaming: false, error: detail }));
+            return;
+          }
+          throw new Error(detail);
         }
 
         const reader = res.body.getReader();

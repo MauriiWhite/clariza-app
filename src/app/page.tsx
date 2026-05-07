@@ -123,6 +123,195 @@ export default function Home() {
           </Button>
         </div>
       </section>
+
+      {/* Marco legal y privacidad — pie editorial sobrio */}
+      <section
+        id="legal"
+        className="border-t border-border bg-paper/40"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 md:px-12 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Marco legal */}
+          <div className="flex flex-col gap-5">
+            <p className="inline-flex items-center gap-2 text-sm font-medium tracking-wide uppercase text-ink-3">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-clay" />
+              Marco legal
+            </p>
+            <h2 className="font-serif text-2xl md:text-3xl font-medium tracking-tight">
+              Cada cita está respaldada por ley vigente.
+            </h2>
+            <p className="text-base text-ink-2 leading-relaxed">
+              Clariza solo cita normativa que tiene URL verificable a la
+              Biblioteca del Congreso Nacional o a la CMF. Si no la tiene a
+              mano, lo dice — nunca inventa.
+            </p>
+            <ul className="text-sm text-ink-2 leading-relaxed space-y-1.5 pt-2">
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1187323"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 21.521 — Fintec (Open Finance, registro CMF)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=61438"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 19.496 — Derechos del consumidor (base SERNAC)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1024266"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 20.555 — SERNAC Financiero (CAE, cargos)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1170464"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 21.398 — Pro Consumidor (certificados de deuda 5 días)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1147562"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 21.234 — Fraudes con tarjetas (responsabilidad emisor)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=7147"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  DL 3.500 — Pensiones (comisiones AFP)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1209293"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 21.680 — REDEC (Registro Consolidado de Deudas)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1177743"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 21.459 — Delitos informáticos (fraude digital)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.bcn.cl/leychile/navegar?idNorma=1202434"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-clay hover:underline"
+                >
+                  Ley 21.663 — Marco de Ciberseguridad (ANCI)
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Privacidad */}
+          <div className="flex flex-col gap-5">
+            <p className="inline-flex items-center gap-2 text-sm font-medium tracking-wide uppercase text-ink-3">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-clay" />
+              Privacidad
+            </p>
+            <h2 className="font-serif text-2xl md:text-3xl font-medium tracking-tight">
+              Tus datos son tuyos. Punto.
+            </h2>
+            <p className="text-base text-ink-2 leading-relaxed">
+              Clariza fue diseñada con <em>privacy by design</em>. Cumplimos
+              con la Ley 19.628 vigente y estamos preparados para la nueva
+              Ley 21.719 que entra en vigor en diciembre de 2026.
+            </p>
+            <ul className="text-sm text-ink-2 leading-relaxed space-y-2 pt-2">
+              <li className="flex gap-3">
+                <span aria-hidden className="text-clay">·</span>
+                <span>
+                  Tus datos personales y los de tu reclamo quedan en tu
+                  dispositivo hasta que vos toques un botón explícito de
+                  enviar.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span aria-hidden className="text-clay">·</span>
+                <span>
+                  No vendemos ni compartimos tu información con terceros, ni
+                  con la entidad reclamada ni con el regulador, sin tu
+                  consentimiento expreso.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span aria-hidden className="text-clay">·</span>
+                <span>
+                  Solo guardamos lo mínimo necesario para enviarte
+                  recordatorios — y solo si vos los activás con tu email.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span aria-hidden className="text-clay">·</span>
+                <span>
+                  Podés ejercer tus derechos ARCO (acceso, rectificación,
+                  cancelación, oposición) en cualquier momento.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span aria-hidden className="text-clay">·</span>
+                <span>
+                  Código abierto auditable en{" "}
+                  <a
+                    href="https://github.com/MauriiWhite/clariza-app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-clay hover:underline"
+                  >
+                    GitHub
+                  </a>
+                  .
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Pie de la sección */}
+        <div className="mx-auto max-w-6xl px-6 pb-12 md:px-12">
+          <p className="text-xs text-ink-3 leading-relaxed border-t border-border pt-8 max-w-3xl">
+            Clariza es un asistente de orientación. No constituye asesoría
+            legal definitiva ni reemplaza la consulta con un abogado en
+            casos complejos. Construido durante el Claude Impact Lab Chile
+            2026 por el equipo Cruzaders.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

@@ -142,25 +142,27 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Layout principal — overflow-hidden en el grid contiene scroll interno */}
-      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 flex flex-col gap-4">
-        {/* Desktop: split. Mobile: solo el tab activo. min-h-0 habilita scroll en hijos. */}
+      {/* Layout principal.
+          La pieza clave: cada wrapper del grid tiene `overflow-hidden` y
+          `h-full`. Sin esto, el contenido del Chat/Console rompe el alto
+          del row del grid y se desborda en la pantalla. */}
+      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 flex flex-col gap-4 overflow-hidden">
         <div
-          className={`grid gap-4 lg:grid-cols-[3fr_2fr] min-h-0 ${
+          className={`grid gap-4 lg:grid-cols-[3fr_2fr] overflow-hidden ${
             showResults
-              ? "h-[calc(100vh-20rem)] lg:h-[calc(100vh-19rem)] lg:max-h-130"
-              : "h-[calc(100vh-12rem)] lg:h-[calc(100vh-7rem)] lg:max-h-160"
+              ? "h-[60vh] lg:h-[calc(100vh-20rem)] lg:max-h-[520px]"
+              : "h-[calc(100vh-12rem)] lg:h-[calc(100vh-8rem)] lg:max-h-[640px]"
           }`}
         >
           <div
-            className={`min-h-0 ${
+            className={`h-full overflow-hidden ${
               mobileTab === "chat" ? "" : "hidden lg:block"
             }`}
           >
             <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           </div>
           <div
-            className={`min-h-0 ${
+            className={`h-full overflow-hidden ${
               mobileTab === "console" ? "" : "hidden lg:block"
             }`}
           >

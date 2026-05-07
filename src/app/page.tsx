@@ -3,6 +3,7 @@
 // directo, glassmorphism estrategico, ritmo respirado.
 
 import Link from "next/link";
+import { Footer } from "@/modules/core/components/Footer";
 import { Button } from "@/modules/core/design-system/Button";
 
 export default function Home() {
@@ -312,6 +313,8 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

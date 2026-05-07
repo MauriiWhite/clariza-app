@@ -142,7 +142,7 @@ const CASE_DATA: Record<
       fact_date: "2026-05-02",
     },
     finalAssistant:
-      "Tu caso es competencia de la Superintendencia de Pensiones (SUPEN), no de la CMF. Tienes 18 días hábiles para reclamar formalmente.\n\nLas AFP solo pueden cobrar comisión por administrar tu cuenta. Si no te explicaron este cobro adicional, puedes exigir devolución bajo el DL 3.500 Art. 29.\n\nDéjame armarte el reclamo formal.",
+      "Tu caso es competencia de la Superintendencia de Pensiones (SUPEN), no de la CMF. Tienes 18 días hábiles para reclamar formalmente.\n\nLas AFP solo pueden cobrar comisión por administrar tu cuenta. Si no te explicaron este cobro adicional, puedes exigir devolución bajo el DL 3.500 Art. 29.\n\nDéjame prepararte el reclamo formal.",
     closingAssistant:
       "Listo. El reclamo formal está abajo, dirigido a SUPEN, citando DL 3.500 Art. 29 y la Circular SUPEN 1.998. Cuando lo descargues puedes presentarlo en el portal oficial.",
   },

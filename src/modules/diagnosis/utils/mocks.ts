@@ -41,7 +41,7 @@ export const mockDiagnoses: Record<string, RegulatoryDiagnosis> = {
       url: "https://www.cmfchile.cl/portal/principal/613/w3-propertyvalue-28042.html",
     },
     notes:
-      "Importante: tenes 90 dias corridos desde que tomaste conocimiento del cargo desconocido para reclamar bajo Ley 21.234.",
+      "Importante: tienes 90 dias corridos desde que tomaste conocimiento del cargo desconocido para reclamar bajo Ley 21.234.",
   },
   caso4: {
     primaryRegulator: "CMF",

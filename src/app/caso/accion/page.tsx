@@ -71,7 +71,7 @@ export default function AccionPage() {
             Paso 2 de 3 · Acción
           </p>
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight leading-tight">
-            Acá tienes todo para presentar tu reclamo.
+            Aquí tienes todo para presentar tu reclamo.
           </h1>
           <p className="text-base text-ink-2 leading-relaxed max-w-2xl">
             Diagnóstico, plazos y el reclamo listo. Cuando lo presentes en el
@@ -312,7 +312,7 @@ function NoActiveCase() {
         No hay un caso activo todavía.
       </h1>
       <p className="text-ink-2 max-w-md leading-relaxed">
-        Empieza una conversación con Clariza para que te ayude a armar tu
+        Empieza una conversación con Clariza para que te ayude a preparar tu
         reclamo paso a paso.
       </p>
       <Button href="/chat" variant="primary" size="lg">

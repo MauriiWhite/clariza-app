@@ -65,9 +65,10 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
   const isEmpty = messages.length === 0 && !isStreaming;
 
   return (
-    <div className="flex flex-col h-full glass rounded-lg shadow-[0_8px_32px_rgba(26,31,46,0.04)]">
-      {/* Hilo de mensajes */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3">
+    <div className="flex flex-col h-full min-h-0 glass rounded-lg shadow-[0_8px_32px_rgba(26,31,46,0.04)] overflow-hidden">
+      {/* Hilo de mensajes — scroll interno cuando crece. min-h-0 critico
+          para que flex-1 + overflow funcione dentro del padre flex. */}
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-3">
         {isEmpty ? (
           <div className="space-y-4">
             <div className="space-y-2">

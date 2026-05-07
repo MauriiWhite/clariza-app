@@ -217,7 +217,7 @@ const CASE_DATA: Record<
       fact_date: "2026-02-20",
     },
     finalAssistant:
-      "Tu caso es competencia de la CMF. Bajo la Ley 21.234, el banco emisor debe restituir los $480.000 salvo que pruebe dolo o culpa grave tuya. Que la transacción tuviera 3DSecure no exime al banco.\n\nTenés 90 días corridos desde que tomaste conocimiento del cargo. Vamos a presentarlo formalmente.",
+      "Tu caso es competencia de la CMF. Bajo la Ley 21.234, el banco emisor debe restituir los $480.000 salvo que pruebe dolo o culpa grave tuya. Que la transacción tuviera 3DSecure no exime al banco.\n\nTienes 90 días corridos desde que tomaste conocimiento del cargo. Vamos a presentarlo formalmente.",
     closingAssistant:
       "El reclamo formal va a CMF, citando Ley 21.234 Art. 5, pidiendo restitución completa de los fondos.",
   },

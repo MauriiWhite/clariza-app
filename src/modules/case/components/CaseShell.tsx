@@ -18,18 +18,23 @@ interface CaseShellProps {
   currentStep: 2 | 3;
   completedSteps: number[];
   children: ReactNode;
+  // wide=true expande el container a max-w-6xl para layouts con sidebar.
+  // Por defecto usamos max-w-4xl (lectura comoda).
+  wide?: boolean;
 }
 
 export function CaseShell({
   currentStep,
   completedSteps,
   children,
+  wide = false,
 }: CaseShellProps) {
+  const containerWidth = wide ? "max-w-6xl" : "max-w-4xl";
   return (
     <div className="flex-1 flex flex-col">
-      {/* Top bar glass */}
-      <header className="sticky top-0 z-50 glass">
-        <div className="mx-auto max-w-4xl px-4 md:px-12 h-14 flex items-center justify-between gap-3">
+      {/* Top bar glass — oculto en print */}
+      <header className="print-hide sticky top-0 z-50 glass">
+        <div className={`mx-auto ${containerWidth} px-4 md:px-12 h-14 flex items-center justify-between gap-3`}>
           <Link
             href="/chat"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border-strong bg-paper/80 hover:bg-paper text-sm font-medium text-ink transition-colors"
@@ -65,8 +70,8 @@ export function CaseShell({
         </div>
       </header>
 
-      {/* Stepper visible */}
-      <div className="sticky top-14 z-40">
+      {/* Stepper visible — oculto en print */}
+      <div className="print-hide sticky top-14 z-40">
         <Stepper
           steps={STEPS}
           currentStep={currentStep}
@@ -75,7 +80,7 @@ export function CaseShell({
       </div>
 
       {/* Contenido del paso */}
-      <div className="flex-1 mx-auto max-w-4xl w-full px-4 md:px-12 py-8 md:py-12">
+      <div className={`flex-1 mx-auto ${containerWidth} w-full px-4 md:px-12 py-8 md:py-12`}>
         {children}
       </div>
     </div>

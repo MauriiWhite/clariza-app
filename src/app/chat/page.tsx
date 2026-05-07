@@ -20,6 +20,7 @@ export default function ChatPage() {
   const {
     events,
     isStreaming,
+    error,
     startTurn,
     diagnosis,
     schedule,
@@ -149,30 +150,33 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Layout principal — overflow-hidden en el grid contiene scroll interno */}
-      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 flex flex-col gap-4">
-        {/* Desktop: split. Mobile: solo el tab activo. min-h-0 habilita scroll en hijos. */}
+      {/* Layout principal.
+          La pieza clave: cada wrapper del grid tiene `overflow-hidden` y
+          `h-full`. Sin esto, el contenido del Chat/Console rompe el alto
+          del row del grid y se desborda en la pantalla. */}
+      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 flex flex-col gap-4 overflow-hidden">
         <div
-          className={`grid gap-4 lg:grid-cols-[3fr_2fr] min-h-0 ${
+          className={`grid gap-4 lg:grid-cols-[3fr_2fr] overflow-hidden ${
             showResults
-              ? "h-[calc(100vh-20rem)] lg:h-[calc(100vh-19rem)] lg:max-h-130"
-              : "h-[calc(100vh-12rem)] lg:h-[calc(100vh-7rem)] lg:max-h-160"
+              ? "h-[60vh] lg:h-[calc(100vh-20rem)] lg:max-h-[520px]"
+              : "h-[calc(100vh-12rem)] lg:h-[calc(100vh-8rem)] lg:max-h-[640px]"
           }`}
         >
           <div
-            className={`min-h-0 ${
+            className={`h-full overflow-hidden ${
               mobileTab === "chat" ? "" : "hidden lg:block"
             }`}
           >
             <Chat
               events={events}
               isStreaming={isStreaming}
+              error={error}
               onSend={startTurn}
               citations={citations}
             />
           </div>
           <div
-            className={`min-h-0 ${
+            className={`h-full overflow-hidden ${
               mobileTab === "console" ? "" : "hidden lg:block"
             }`}
           >
@@ -180,33 +184,63 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* CTA "Siguiente paso" — solido (NO glass) para que nunca se vea
-            atravesado por el contenido del chat. Aparece debajo del grid
-            como bloque normal, no sticky. */}
+        {/* CTA "Siguiente paso" — solido + mini-progreso visual de los 3 pasos
+            para que el ciudadano vea CLARO que el caso continua a una
+            siguiente pantalla. */}
         {showResults && (
           <section
             aria-label="Resultados disponibles"
             className="animate-in fade-in duration-500"
           >
-            <div className="rounded-lg bg-paper border-2 border-ink p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_12px_40px_rgba(26,31,46,0.18)]">
-              <div className="flex flex-col gap-0.5 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-wider text-clay">
-                  Paso 1 de 3 completado · Tu caso está listo
-                </p>
-                <h2 className="font-serif text-lg md:text-xl font-medium leading-tight text-ink">
-                  {diagnosis
-                    ? `Va a ${diagnosis.primaryRegulator}. Vamos a presentarlo.`
-                    : "Vamos a presentar tu reclamo."}
-                </h2>
+            <div className="rounded-lg bg-paper border-2 border-ink p-4 md:p-5 shadow-[0_12px_40px_rgba(26,31,46,0.18)]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col gap-3 max-w-xl">
+                  {/* Mini stepper inline */}
+                  <div
+                    className="flex items-center gap-1.5"
+                    aria-label="Progreso del caso"
+                  >
+                    <span
+                      className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-success text-white text-[11px] font-bold"
+                      aria-label="Paso 1 completado"
+                    >
+                      ✓
+                    </span>
+                    <span className="w-4 h-px bg-success" aria-hidden />
+                    <span
+                      className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-clay text-white text-[11px] font-bold animate-pulse"
+                      aria-label="Paso 2 siguiente"
+                    >
+                      2
+                    </span>
+                    <span className="w-4 h-px bg-border" aria-hidden />
+                    <span
+                      className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-cream border border-border text-[11px] font-medium text-ink-3"
+                      aria-label="Paso 3 pendiente"
+                    >
+                      3
+                    </span>
+                    <span className="ml-2 text-xs text-ink-3 font-medium">
+                      Chat → Acción → Cerrado
+                    </span>
+                  </div>
+
+                  <h2 className="font-serif text-lg md:text-xl font-medium leading-tight text-ink">
+                    {diagnosis
+                      ? `Va a ${diagnosis.primaryRegulator}. Continuemos.`
+                      : "Vamos a presentar tu reclamo."}
+                  </h2>
+                </div>
+
+                <Button
+                  onClick={handleVerCaso}
+                  variant="primary"
+                  size="lg"
+                  className="shrink-0 whitespace-nowrap"
+                >
+                  Continuar al paso 2 →
+                </Button>
               </div>
-              <Button
-                onClick={handleVerCaso}
-                variant="primary"
-                size="lg"
-                className="shrink-0 whitespace-nowrap"
-              >
-                Siguiente paso →
-              </Button>
             </div>
           </section>
         )}

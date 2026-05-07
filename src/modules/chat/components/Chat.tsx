@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ConsoleEvent } from "@/modules/agent/types";
 import { CitationsPanel } from "@/modules/chat/components/CitationsPanel";
 import {
@@ -18,7 +18,9 @@ import type { Citation } from "@/modules/regulations/types";
 interface ChatProps {
   events: ConsoleEvent[];
   isStreaming: boolean;
+  error?: string | null;
   onSend: (message: string, file?: File | null) => void;
+  onRetry?: () => void;
   citations?: Citation[];
 }
 
@@ -31,37 +33,71 @@ const QUICK_STARTS = [
   "Le mandé plata a una app y ahora no me responden",
 ];
 
+const TEXTAREA_MIN_PX = 48;
+const TEXTAREA_MAX_PX = 180;
+
 export function Chat({
   events,
   isStreaming,
+  error,
   onSend,
+  onRetry,
   citations = [],
 }: ChatProps) {
   const [draft, setDraft] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [identity, setIdentity] = useState<Identity>(EMPTY_IDENTITY);
+  const [lastSent, setLastSent] = useState<{
+    message: string;
+    file: File | null;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Filtramos solo los eventos que se muestran en el hilo conversacional.
   const messages = events.filter(
     (e) => e.type === "user" || e.type === "assistant",
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Auto-resize del textarea — crece con el contenido hasta TEXTAREA_MAX_PX,
+  // luego scroll interno. Evita que el chat consuma toda la pantalla.
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    const next = Math.min(Math.max(ta.scrollHeight, TEXTAREA_MIN_PX), TEXTAREA_MAX_PX);
+    ta.style.height = `${next}px`;
+  }, [draft]);
+
+  const submit = () => {
     const trimmed = draft.trim();
     // Permitimos enviar con texto O solo con archivo (caso: subir foto sin texto).
     if ((!trimmed && !file) || isStreaming) return;
     const message =
       trimmed ||
       (file ? `Te adjunto este documento (${file.name}) para que lo revises.` : "");
+    setLastSent({ message, file });
     onSend(message, file);
     setDraft("");
     setFile(null);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submit();
+  };
+
+  // Enter envía, Shift+Enter agrega salto de línea — convención de chats modernos.
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submit();
+    }
+  };
+
   const handleQuickStart = (text: string) => {
     if (isStreaming) return;
+    setLastSent({ message: text, file: null });
     onSend(text, null);
   };
 
@@ -70,12 +106,23 @@ export function Chat({
     setFile(selected);
   };
 
+  const handleRetry = () => {
+    if (onRetry) {
+      onRetry();
+      return;
+    }
+    if (lastSent) {
+      onSend(lastSent.message, lastSent.file);
+    }
+  };
+
   const isEmpty = messages.length === 0 && !isStreaming;
 
   return (
-    <div className="flex flex-col h-full glass rounded-lg shadow-[0_8px_32px_rgba(26,31,46,0.04)]">
-      {/* Hilo de mensajes */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3">
+    <div className="flex flex-col h-full min-h-0 glass rounded-lg shadow-[0_8px_32px_rgba(26,31,46,0.04)] overflow-hidden">
+      {/* Hilo de mensajes — scroll interno cuando crece. min-h-0 critico
+          para que flex-1 + overflow funcione dentro del padre flex. */}
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-3">
         {isEmpty ? (
           <div className="space-y-4">
             <div className="space-y-2">
@@ -125,9 +172,45 @@ export function Chat({
         )}
 
         {isStreaming && (
-          <div className="flex items-center gap-2 text-sm text-ink-3">
+          <div
+            className="flex items-center gap-2 text-sm text-ink-3"
+            role="status"
+            aria-live="polite"
+          >
             <span className="inline-block w-2 h-2 rounded-full bg-clay animate-pulse" />
             Clariza está pensando…
+          </div>
+        )}
+
+        {/* Banner de error con retry — solo cuando no esta streameando y hay
+            error del ultimo turno. No reemplaza al hilo, lo complementa. */}
+        {!isStreaming && error && (
+          <div
+            role="alert"
+            className="flex flex-col gap-3 rounded-md border border-error/40 bg-error/5 p-4"
+          >
+            <div className="flex items-start gap-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-error/15 text-error text-xs font-bold shrink-0">
+                !
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-ink">
+                  Algo se cortó del lado del servidor.
+                </p>
+                <p className="text-xs text-ink-2 mt-0.5 leading-relaxed">
+                  {error}
+                </p>
+              </div>
+            </div>
+            {(lastSent || onRetry) && (
+              <button
+                type="button"
+                onClick={handleRetry}
+                className="self-start inline-flex items-center gap-2 rounded-md border border-error/40 bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:bg-cream transition-colors"
+              >
+                ↻ Reintentar
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -153,15 +236,21 @@ export function Chat({
           </div>
         )}
 
-        <div className="flex gap-2 items-stretch">
-          {/* Input principal */}
-          <input
-            type="text"
+        <div className="flex gap-2 items-end">
+          {/* Textarea principal — autoexpansivo. Enter envía, Shift+Enter
+              salto de línea. Permite que el ciudadano escriba contexto largo. */}
+          <textarea
+            ref={textareaRef}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Contame qué te pasó…"
+            onKeyDown={handleKeyDown}
+            placeholder="Cuéntame qué te pasó… (Enter para enviar, Shift+Enter para nueva línea)"
             disabled={isStreaming}
-            className="flex-1 px-4 py-3 rounded-md border border-border bg-paper focus:outline-none focus:border-clay disabled:bg-black/2 disabled:cursor-not-allowed"
+            rows={1}
+            enterKeyHint="send"
+            autoComplete="off"
+            className="flex-1 px-4 py-3 rounded-md border border-border bg-paper focus:outline-none focus:border-clay disabled:bg-black/2 disabled:cursor-not-allowed resize-none leading-relaxed"
+            style={{ minHeight: TEXTAREA_MIN_PX, maxHeight: TEXTAREA_MAX_PX }}
             aria-label="Mensaje para Clariza"
           />
 
@@ -170,7 +259,7 @@ export function Chat({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isStreaming}
-            className="inline-flex items-center justify-center w-12 rounded-md border border-border-strong bg-paper hover:bg-cream text-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center w-12 h-12 shrink-0 rounded-md border border-border-strong bg-paper hover:bg-cream text-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Adjuntar documento"
             title="Adjuntar documento (foto, PDF o imagen)"
           >
@@ -189,6 +278,7 @@ export function Chat({
           <Button
             type="submit"
             disabled={isStreaming || (!draft.trim() && !file)}
+            className="h-12"
           >
             Enviar
           </Button>

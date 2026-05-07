@@ -40,6 +40,15 @@ export default function AccionPage() {
     router.push("/caso/cerrado");
   };
 
+  // Imprimir / guardar como PDF: aprovecha @media print en globals.css.
+  // El navegador maneja "guardar como PDF" sin necesidad de backend, lo que
+  // funciona offline y no depende de un servicio externo.
+  const handlePrint = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
   if (!hydrated) {
     return (
       <main className="flex-1 flex items-center justify-center">
@@ -53,8 +62,10 @@ export default function AccionPage() {
   }
 
   return (
-    <CaseShell currentStep={2} completedSteps={[1]}>
-      <div className="flex flex-col gap-8 animate-in fade-in duration-300">
+    <CaseShell currentStep={2} completedSteps={[1]} wide>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 lg:gap-10 animate-in fade-in duration-300">
+        {/* Columna principal */}
+        <div className="flex flex-col gap-8 min-w-0">
         <header className="flex flex-col gap-3">
           <p className="text-sm font-semibold uppercase tracking-wider text-clay">
             Paso 2 de 3 · Acción
@@ -64,13 +75,14 @@ export default function AccionPage() {
           </h1>
           <p className="text-base text-ink-2 leading-relaxed max-w-2xl">
             Diagnóstico, plazos y el reclamo listo. Cuando lo presentes en el
-            portal del regulador, márcalo abajo y cerramos el caso.
+            portal del regulador, márcalo en el panel lateral y cerramos el
+            caso.
           </p>
         </header>
 
         {/* Cards de diagnostico + plazos */}
         {stored.diagnosis && stored.schedule && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <DiagnosisCard diagnosis={stored.diagnosis} />
             <TimelineDeadlines schedule={stored.schedule} />
           </div>
@@ -79,13 +91,14 @@ export default function AccionPage() {
           <DiagnosisCard diagnosis={stored.diagnosis} />
         )}
 
-        {/* Reclamo formal */}
+        {/* Reclamo formal — el card lleva clase .print-area asi al imprimir
+            queda solo este bloque (gracias a @media print en globals.css). */}
         {stored.claim && (
           <section
             aria-label="Tu reclamo formal"
-            className="rounded-lg bg-paper border border-border p-6 md:p-8 flex flex-col gap-5"
+            className="print-area rounded-lg bg-paper border border-border p-6 md:p-8 flex flex-col gap-5"
           >
-            <div>
+            <div className="print-hide">
               <p className="text-xs font-semibold uppercase tracking-wider text-ink-3 mb-1">
                 Tu reclamo formal
               </p>
@@ -94,17 +107,17 @@ export default function AccionPage() {
               </h2>
             </div>
 
-            <p className="text-sm text-ink-2 leading-relaxed">
-              Si el portal acepta archivos, descarga el PDF. Si pide los datos
-              en un formulario online, expande "Listo para copiar" abajo.
+            <p className="print-hide text-sm text-ink-2 leading-relaxed">
+              Para guardarlo como PDF: toca &ldquo;Imprimir / Guardar
+              PDF&rdquo; y elige &ldquo;Guardar como PDF&rdquo; en el diálogo
+              del navegador. Si el portal pide los datos en un formulario,
+              expande &ldquo;Listo para copiar&rdquo;.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="print-hide flex flex-col sm:flex-row gap-3">
               <button
                 type="button"
-                onClick={() =>
-                  alert(`Descarga del reclamo ${stored.claim?.id} (demo).`)
-                }
+                onClick={handlePrint}
                 className="inline-flex items-center justify-center gap-2 rounded-md bg-ink text-cream px-5 py-3 text-sm font-semibold hover:opacity-90 transition-opacity"
               >
                 <svg
@@ -118,11 +131,11 @@ export default function AccionPage() {
                   strokeLinejoin="round"
                   aria-hidden
                 >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
                 </svg>
-                Descargar PDF
+                Imprimir / Guardar PDF
               </button>
               <button
                 type="button"
@@ -132,6 +145,10 @@ export default function AccionPage() {
                 {showCopy ? "Ocultar" : "Listo para copiar"} ↓
               </button>
             </div>
+
+            {/* Vista imprimible del reclamo — siempre presente en el DOM para
+                que @media print pueda mostrarla, pero oculta en pantalla. */}
+            <ReclamoPrintable claim={stored.claim} />
 
             {showCopy && <CopyFields claim={stored.claim} />}
           </section>
@@ -203,27 +220,84 @@ export default function AccionPage() {
           </section>
         )}
 
-        {/* CTA siguiente paso — sticky bottom solido (no glass) */}
-        <div className="sticky bottom-4 z-30 mt-4">
-          <div className="rounded-lg bg-paper border-2 border-ink p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_12px_40px_rgba(26,31,46,0.18)]">
-            <div className="flex flex-col gap-0.5">
+        </div>
+
+        {/* CTA flotante SOLO MOBILE — sticky bottom para que la decisión
+            "ya lo presenté" siempre esté a la mano sin scroll infinito.
+            En desktop (lg+) este bloque desaparece, ahí manda el sidebar. */}
+        <div className="lg:hidden print-hide fixed bottom-4 left-4 right-4 z-40">
+          <div className="rounded-lg bg-paper border-2 border-ink p-3 flex items-center justify-between gap-3 shadow-[0_12px_40px_rgba(26,31,46,0.25)]">
+            <p className="text-xs font-semibold text-ink leading-tight flex-1">
+              ¿Ya presentaste el reclamo?
+            </p>
+            <Button
+              onClick={markContacted}
+              variant="primary"
+              size="md"
+              className="shrink-0 whitespace-nowrap"
+            >
+              ✓ Sí →
+            </Button>
+          </div>
+        </div>
+
+        {/* Sidebar — CTA "Ya presenté" + mini-progreso.
+            En desktop (lg+): columna derecha pegajosa que viaja con el scroll.
+            En mobile: card al final de la columna principal (visible siempre,
+            adicional al CTA flotante de arriba para usuarios que lleguen al
+            final con scroll). */}
+        <aside className="print-hide lg:sticky lg:top-32 lg:self-start lg:h-fit">
+          <div className="rounded-lg bg-paper border-2 border-ink p-5 md:p-6 flex flex-col gap-5 shadow-[0_12px_40px_rgba(26,31,46,0.12)]">
+            <div className="flex flex-col gap-1.5">
               <p className="text-xs font-semibold uppercase tracking-wider text-clay">
+                Cerrar el caso
+              </p>
+              <p className="font-serif text-lg md:text-xl font-medium text-ink leading-tight">
                 ¿Ya presentaste el reclamo?
               </p>
-              <p className="font-serif text-base md:text-lg font-medium text-ink leading-tight">
-                Marcalo como presentado para cerrar el caso.
+              <p className="text-sm text-ink-2 leading-relaxed mt-1">
+                Cuando lo subas al portal del regulador, márcalo aquí para
+                cerrar el caso y activar recordatorios.
               </p>
             </div>
+
             <Button
               onClick={markContacted}
               variant="primary"
               size="lg"
-              className="shrink-0 whitespace-nowrap"
+              className="w-full whitespace-nowrap"
             >
               ✓ Ya lo presenté →
             </Button>
+
+            {/* Mini stepper visual */}
+            <div className="flex items-center gap-1.5 pt-3 border-t border-border">
+              <span
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-success text-white text-[11px] font-bold"
+                aria-label="Paso 1 completado"
+              >
+                ✓
+              </span>
+              <span className="w-3 h-px bg-success" aria-hidden />
+              <span
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-clay text-white text-[11px] font-bold animate-pulse"
+                aria-label="Paso 2 en curso"
+              >
+                2
+              </span>
+              <span className="w-3 h-px bg-border" aria-hidden />
+              <span
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-cream border border-border text-[11px] font-medium text-ink-3"
+                aria-label="Paso 3 pendiente"
+              >
+                3
+              </span>
+              <span className="ml-2 text-[11px] text-ink-3 font-medium">
+                Acción → Cerrado
+              </span>
+            </div>
           </div>
-        </div>
+        </aside>
       </div>
     </CaseShell>
   );
@@ -245,6 +319,79 @@ function NoActiveCase() {
         Empezar mi reclamo →
       </Button>
     </main>
+  );
+}
+
+// Vista imprimible — formato carta sobrio, monocromo, sin chrome de UI.
+// Solo se muestra cuando el navegador entra en modo print (controlado por
+// @media print en globals.css). En pantalla queda hidden.
+function ReclamoPrintable({
+  claim,
+}: {
+  claim: NonNullable<StoredCase["claim"]>;
+}) {
+  const today = new Date().toLocaleDateString("es-CL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return (
+    <div className="hidden print:block text-ink text-sm leading-relaxed font-sans">
+      <header className="mb-6 pb-4 border-b border-ink/30">
+        <p className="text-xs uppercase tracking-wider text-ink-3 mb-1">
+          Reclamo formal · {claim.id}
+        </p>
+        <h1 className="font-serif text-2xl font-medium leading-tight">
+          Reclamo dirigido a {claim.respondent.entity}
+        </h1>
+        <p className="text-xs text-ink-3 mt-1">Generado el {today}</p>
+      </header>
+
+      <section className="mb-5">
+        <h2 className="text-xs uppercase tracking-wider text-ink-3 mb-1">
+          Reclamante
+        </h2>
+        <p>
+          <strong>{claim.claimant.fullName || "[Nombre del reclamante]"}</strong>
+          {claim.claimant.rut && <> · RUT {claim.claimant.rut}</>}
+          {claim.claimant.email && <> · {claim.claimant.email}</>}
+        </p>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="text-xs uppercase tracking-wider text-ink-3 mb-1">
+          Hechos
+        </h2>
+        <ol className="list-decimal pl-5 space-y-1">
+          {claim.facts.map((f, i) => (
+            <li key={i}>{f}</li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="text-xs uppercase tracking-wider text-ink-3 mb-1">
+          Normativa invocada
+        </h2>
+        <ul className="list-disc pl-5 space-y-1">
+          {claim.invokedRegulations.map((r, i) => (
+            <li key={i}>{r}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="text-xs uppercase tracking-wider text-ink-3 mb-1">
+          Petición
+        </h2>
+        <p>{claim.petition}</p>
+      </section>
+
+      <footer className="mt-8 pt-4 border-t border-ink/30 text-xs text-ink-3">
+        Documento generado por Clariza (clariza-app.netlify.app). El ciudadano
+        es responsable de revisar y firmar antes de presentar al regulador.
+      </footer>
+    </div>
   );
 }
 

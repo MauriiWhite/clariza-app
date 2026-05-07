@@ -33,13 +33,13 @@ export default function Home() {
           </p>
 
           <h1 className="font-serif text-[44px] md:text-[80px] lg:text-[104px] font-medium leading-[0.95] tracking-[-0.025em]">
-            Reclamá tu plata.
+            Reclama tu plata.
             <br />
             <span className="text-clay">En 5 minutos.</span>
           </h1>
 
           <p className="text-lg md:text-xl leading-relaxed text-ink-2 max-w-2xl">
-            Contanos qué te pasó. Clariza encuentra al regulador correcto,
+            Cuéntanos qué te pasó. Clariza encuentra al regulador correcto,
             calcula tu plazo y arma el reclamo formal — sin abogados.
           </p>
 
@@ -68,8 +68,8 @@ export default function Home() {
           {[
             {
               n: "01",
-              title: "Contás",
-              body: "Tu problema en lenguaje natural. Subís cartola, contrato o foto.",
+              title: "Cuentas",
+              body: "Tu problema en lenguaje natural. Subes cartola, contrato o foto.",
             },
             {
               n: "02",
@@ -117,7 +117,7 @@ export default function Home() {
         {/* CTA final, single */}
         <div className="mt-24 flex flex-col items-center text-center gap-6">
           <p className="font-serif text-2xl md:text-3xl font-medium tracking-tight max-w-2xl leading-tight">
-            Tu plazo corre desde el día uno. Empezá ahora.
+            Tu plazo corre desde el día uno. Empieza ahora.
           </p>
           <Button href="/chat" variant="primary" size="lg">
             Empezar mi reclamo →
@@ -258,7 +258,7 @@ export default function Home() {
                 <span aria-hidden className="text-clay">·</span>
                 <span>
                   Tus datos personales y los de tu reclamo quedan en tu
-                  dispositivo hasta que vos toques un botón explícito de
+                  dispositivo hasta que tú toques un botón explícito de
                   enviar.
                 </span>
               </li>
@@ -274,13 +274,13 @@ export default function Home() {
                 <span aria-hidden className="text-clay">·</span>
                 <span>
                   Solo guardamos lo mínimo necesario para enviarte
-                  recordatorios — y solo si vos los activás con tu email.
+                  recordatorios — y solo si tú los activas con tu email.
                 </span>
               </li>
               <li className="flex gap-3">
                 <span aria-hidden className="text-clay">·</span>
                 <span>
-                  Podés ejercer tus derechos ARCO (acceso, rectificación,
+                  Puedes ejercer tus derechos ARCO (acceso, rectificación,
                   cancelación, oposición) en cualquier momento.
                 </span>
               </li>

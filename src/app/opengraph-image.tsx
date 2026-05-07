@@ -62,7 +62,7 @@ export default function OG() {
               letterSpacing: -2,
             }}
           >
-            Reclamá tu plata.
+            Reclama tu plata.
           </div>
           <div
             style={{

@@ -142,9 +142,9 @@ const CASE_DATA: Record<
       fact_date: "2026-05-02",
     },
     finalAssistant:
-      "Tu caso es competencia de la Superintendencia de Pensiones (SUPEN), no de la CMF. Tenés 18 días hábiles para reclamar formalmente.\n\nLas AFP solo pueden cobrar comisión por administrar tu cuenta. Si no te explicaron este cobro adicional, podés exigir devolución bajo el DL 3.500 Art. 29.\n\nDejame armarte el reclamo formal.",
+      "Tu caso es competencia de la Superintendencia de Pensiones (SUPEN), no de la CMF. Tienes 18 días hábiles para reclamar formalmente.\n\nLas AFP solo pueden cobrar comisión por administrar tu cuenta. Si no te explicaron este cobro adicional, puedes exigir devolución bajo el DL 3.500 Art. 29.\n\nDéjame armarte el reclamo formal.",
     closingAssistant:
-      "Listo. El reclamo formal está abajo, dirigido a SUPEN, citando DL 3.500 Art. 29 y la Circular SUPEN 1.998. Cuando lo descargues podés presentarlo en el portal oficial.",
+      "Listo. El reclamo formal está abajo, dirigido a SUPEN, citando DL 3.500 Art. 29 y la Circular SUPEN 1.998. Cuando lo descargues puedes presentarlo en el portal oficial.",
   },
   caso2: {
     persona: "Camila",
@@ -183,7 +183,7 @@ const CASE_DATA: Record<
       fact_date: "2026-04-15",
     },
     finalAssistant:
-      "Tu caso es competencia de SERNAC Financiero. La Ley 20.555 obliga al proveedor a informar el CAE real antes de firmar; si te dijeron 28% verbalmente y el contrato dice 38%, podés exigir recálculo.",
+      "Tu caso es competencia de SERNAC Financiero. La Ley 20.555 obliga al proveedor a informar el CAE real antes de firmar; si te dijeron 28% verbalmente y el contrato dice 38%, puedes exigir recálculo.",
     closingAssistant:
       "Listo, el reclamo formal va a SERNAC pidiendo recálculo de la deuda al CAE pactado y devolución de cobros excedentes.",
   },
@@ -217,7 +217,7 @@ const CASE_DATA: Record<
       fact_date: "2026-02-20",
     },
     finalAssistant:
-      "Tu caso es competencia de la CMF. Bajo la Ley 21.234, el banco emisor debe restituir los $480.000 salvo que pruebe dolo o culpa grave tuya. Que la transacción tuviera 3DSecure no exime al banco.\n\nTenés 90 días corridos desde que tomaste conocimiento del cargo. Vamos a presentarlo formalmente.",
+      "Tu caso es competencia de la CMF. Bajo la Ley 21.234, el banco emisor debe restituir los $480.000 salvo que pruebe dolo o culpa grave tuya. Que la transacción tuviera 3DSecure no exime al banco.\n\nTienes 90 días corridos desde que tomaste conocimiento del cargo. Vamos a presentarlo formalmente.",
     closingAssistant:
       "El reclamo formal va a CMF, citando Ley 21.234 Art. 5, pidiendo restitución completa de los fondos.",
   },

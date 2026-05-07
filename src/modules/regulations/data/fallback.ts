@@ -53,7 +53,7 @@ export const REGULATION_CORPUS: RegulationChunk[] = [
     article: "Art. 17",
     text: "Los contratos de adhesión deberán estar escritos de modo claramente legible, en idioma castellano y los proveedores no podrán incluir cláusulas abusivas en perjuicio del consumidor. La falta de claridad en la información esencial del producto o servicio puede ser causal de nulidad parcial.",
     plainLanguageSummary:
-      "Tu contrato tiene que estar en castellano, ser legible, y no incluir cláusulas abusivas. Si la información clave no fue clara antes de firmar, podés reclamar la nulidad de esas cláusulas en SERNAC.",
+      "Tu contrato tiene que estar en castellano, ser legible, y no incluir cláusulas abusivas. Si la información clave no fue clara antes de firmar, puedes reclamar la nulidad de esas cláusulas en SERNAC.",
     url: "https://www.bcn.cl/leychile/navegar?idNorma=61438",
     keywords: [
       "consumidor",
@@ -80,7 +80,7 @@ export const REGULATION_CORPUS: RegulationChunk[] = [
     article: "Art. 17 B",
     text: "Los contratos de adhesión de productos y servicios financieros deben informar de forma destacada la Carga Anual Equivalente (CAE), el costo total del crédito, los intereses moratorios y cualquier otro cargo. La omisión o presentación engañosa de estos elementos faculta al consumidor a solicitar la nulidad o el recálculo del contrato.",
     plainLanguageSummary:
-      "Si firmaste un crédito en banco, retail o fintech, te tienen que decir clarísimo el CAE, los intereses extra por atraso y cualquier otro cobro. Si te ocultaron o cambiaron esa info, podés pedir devolución o recálculo en SERNAC.",
+      "Si firmaste un crédito en banco, retail o fintech, te tienen que decir clarísimo el CAE, los intereses extra por atraso y cualquier otro cobro. Si te ocultaron o cambiaron esa info, puedes pedir devolución o recálculo en SERNAC.",
     url: "https://www.bcn.cl/leychile/navegar?idNorma=1024266",
     keywords: [
       "credito",
@@ -133,7 +133,7 @@ export const REGULATION_CORPUS: RegulationChunk[] = [
     article: "Art. 5",
     text: "Tratándose de operaciones desconocidas por el titular, el emisor del medio de pago será responsable de restituir los fondos al cliente. La carga de la prueba sobre dolo o culpa grave del titular recae en el emisor. La autenticación con clave dinámica u otros mecanismos no exime de esta responsabilidad por sí sola.",
     plainLanguageSummary:
-      "Si alguien clonó tu tarjeta o usó tu cuenta sin autorización y vos avisaste al banco, el banco tiene que devolverte la plata. Es el banco quien debe probar que actuaste con dolo o negligencia grave — no al revés. Que la transacción tuviera 3DSecure no los exime.",
+      "Si alguien clonó tu tarjeta o usó tu cuenta sin autorización y tú avisaste al banco, el banco tiene que devolverte la plata. Es el banco quien debe probar que actuaste con dolo o negligencia grave — no al revés. Que la transacción tuviera 3DSecure no los exime.",
     url: "https://www.bcn.cl/leychile/navegar?idNorma=1147562",
     keywords: [
       "fraude",
@@ -190,7 +190,7 @@ export const REGULATION_CORPUS: RegulationChunk[] = [
     article: "Art. 4",
     text: "El Registro Consolidado de Deudas (REDEC), administrado por la CMF, contiene la información de obligaciones financieras de cada persona. Los deudores tienen derecho a acceder gratuitamente a su propio reporte y a solicitar la corrección de información errónea o desactualizada.",
     plainLanguageSummary:
-      "Tenés derecho a ver gratis qué deudas figuran a tu nombre en el REDEC de la CMF. Si hay un error o data vieja, podés pedir que la corrijan.",
+      "Tienes derecho a ver gratis qué deudas figuran a tu nombre en el REDEC de la CMF. Si hay un error o data vieja, puedes pedir que la corrijan.",
     url: "https://www.bcn.cl/leychile/navegar?idNorma=1209293",
     keywords: [
       "redec",
@@ -213,7 +213,7 @@ export const REGULATION_CORPUS: RegulationChunk[] = [
     article: "N° 1.998",
     text: "Las Administradoras deben informar a sus afiliados, en cada cartola y en la web institucional, el monto exacto de la comisión cobrada y su justificación. Cualquier comisión no informada previamente puede ser objeto de reclamo formal por el afiliado ante la Superintendencia de Pensiones.",
     plainLanguageSummary:
-      "La AFP tiene que mostrarte la comisión claramente en cada cartola. Si aparece un cobro que no entendés o que no fue informado antes, es derecho del afiliado reclamar a SUPEN.",
+      "La AFP tiene que mostrarte la comisión claramente en cada cartola. Si aparece un cobro que no entiendes o que no fue informado antes, es derecho del afiliado reclamar a SUPEN.",
     url: "https://www.spensiones.cl/portal/institucional/594/w3-channel.html",
     keywords: [
       "afp",

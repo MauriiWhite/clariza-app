@@ -53,24 +53,27 @@ export default function AccionPage() {
   }
 
   return (
-    <CaseShell currentStep={2} completedSteps={[1]}>
-      <div className="flex flex-col gap-8 animate-in fade-in duration-300">
+    <CaseShell currentStep={2} completedSteps={[1]} wide>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 lg:gap-10 animate-in fade-in duration-300">
+        {/* Columna principal */}
+        <div className="flex flex-col gap-8 min-w-0">
         <header className="flex flex-col gap-3">
           <p className="text-sm font-semibold uppercase tracking-wider text-clay">
             Paso 2 de 3 · Acción
           </p>
           <h1 className="font-serif text-3xl md:text-4xl font-medium tracking-tight leading-tight">
-            Acá tenés todo para presentar tu reclamo.
+            Acá tienes todo para presentar tu reclamo.
           </h1>
           <p className="text-base text-ink-2 leading-relaxed max-w-2xl">
             Diagnóstico, plazos y el reclamo listo. Cuando lo presentes en el
-            portal del regulador, marcalo abajo y cerramos el caso.
+            portal del regulador, márcalo en el panel lateral y cerramos el
+            caso.
           </p>
         </header>
 
         {/* Cards de diagnostico + plazos */}
         {stored.diagnosis && stored.schedule && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <DiagnosisCard diagnosis={stored.diagnosis} />
             <TimelineDeadlines schedule={stored.schedule} />
           </div>
@@ -95,8 +98,8 @@ export default function AccionPage() {
             </div>
 
             <p className="text-sm text-ink-2 leading-relaxed">
-              Si el portal acepta archivos, descargá el PDF. Si pide los datos
-              en un formulario online, expandí "Listo para copiar" abajo.
+              Si el portal acepta archivos, descarga el PDF. Si pide los datos
+              en un formulario online, expande "Listo para copiar" abajo.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -156,19 +159,19 @@ export default function AccionPage() {
               <li className="flex gap-3">
                 <span className="font-semibold text-clay shrink-0">1.</span>
                 <span>
-                  Abrí el portal oficial de{" "}
+                  Abre el portal oficial de{" "}
                   <strong>{stored.diagnosis.primaryRegulator}</strong>.
                 </span>
               </li>
               <li className="flex gap-3">
                 <span className="font-semibold text-clay shrink-0">2.</span>
                 <span>
-                  Subí el PDF o pegá los datos del reclamo en su formulario.
+                  Sube el PDF o pega los datos del reclamo en su formulario.
                 </span>
               </li>
               <li className="flex gap-3">
                 <span className="font-semibold text-clay shrink-0">3.</span>
-                <span>Guardá el comprobante o número de seguimiento.</span>
+                <span>Guarda el comprobante o número de seguimiento.</span>
               </li>
               {stored.diagnosis.notes && (
                 <li className="flex gap-3 italic text-ink-3 pt-1">
@@ -203,27 +206,63 @@ export default function AccionPage() {
           </section>
         )}
 
-        {/* CTA siguiente paso — sticky bottom solido (no glass) */}
-        <div className="sticky bottom-4 z-30 mt-4">
-          <div className="rounded-lg bg-paper border-2 border-ink p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_12px_40px_rgba(26,31,46,0.18)]">
-            <div className="flex flex-col gap-0.5">
+        </div>
+
+        {/* Sidebar — CTA "Ya presenté" + mini-progreso.
+            En desktop (lg+): columna derecha pegajosa que viaja con el scroll.
+            En mobile: card al final de la columna principal. */}
+        <aside className="lg:sticky lg:top-32 lg:self-start lg:h-fit">
+          <div className="rounded-lg bg-paper border-2 border-ink p-5 md:p-6 flex flex-col gap-5 shadow-[0_12px_40px_rgba(26,31,46,0.12)]">
+            <div className="flex flex-col gap-1.5">
               <p className="text-xs font-semibold uppercase tracking-wider text-clay">
+                Cerrar el caso
+              </p>
+              <p className="font-serif text-lg md:text-xl font-medium text-ink leading-tight">
                 ¿Ya presentaste el reclamo?
               </p>
-              <p className="font-serif text-base md:text-lg font-medium text-ink leading-tight">
-                Marcalo como presentado para cerrar el caso.
+              <p className="text-sm text-ink-2 leading-relaxed mt-1">
+                Cuando lo subas al portal del regulador, márcalo aquí para
+                cerrar el caso y activar recordatorios.
               </p>
             </div>
+
             <Button
               onClick={markContacted}
               variant="primary"
               size="lg"
-              className="shrink-0 whitespace-nowrap"
+              className="w-full whitespace-nowrap"
             >
               ✓ Ya lo presenté →
             </Button>
+
+            {/* Mini stepper visual */}
+            <div className="flex items-center gap-1.5 pt-3 border-t border-border">
+              <span
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-success text-white text-[11px] font-bold"
+                aria-label="Paso 1 completado"
+              >
+                ✓
+              </span>
+              <span className="w-3 h-px bg-success" aria-hidden />
+              <span
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-clay text-white text-[11px] font-bold animate-pulse"
+                aria-label="Paso 2 en curso"
+              >
+                2
+              </span>
+              <span className="w-3 h-px bg-border" aria-hidden />
+              <span
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-cream border border-border text-[11px] font-medium text-ink-3"
+                aria-label="Paso 3 pendiente"
+              >
+                3
+              </span>
+              <span className="ml-2 text-[11px] text-ink-3 font-medium">
+                Acción → Cerrado
+              </span>
+            </div>
           </div>
-        </div>
+        </aside>
       </div>
     </CaseShell>
   );
@@ -238,7 +277,7 @@ function NoActiveCase() {
         No hay un caso activo todavía.
       </h1>
       <p className="text-ink-2 max-w-md leading-relaxed">
-        Empezá una conversación con Clariza para que te ayude a armar tu
+        Empieza una conversación con Clariza para que te ayude a armar tu
         reclamo paso a paso.
       </p>
       <Button href="/chat" variant="primary" size="lg">

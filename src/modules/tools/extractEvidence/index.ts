@@ -166,9 +166,20 @@ async function extractViaOpenRouter(
   // OpenRouter solo soporta image_url para Vision en formato OpenAI.
   // Los PDFs requieren un endpoint distinto que muchos modelos no soportan.
   if (attachment.mediaType === "application/pdf") {
-    return emptyEvidence(
-      "Por ahora solo proceso imagenes (JPG/PNG/WEBP). Para PDFs, abrilos y mandame una captura.",
-    );
+    // En vez de devolver "vacio", devolvemos un evidence con guia clara.
+    // El agente la usa para responderle al ciudadano que mande imagen.
+    return {
+      hasAttachment: true,
+      entity: null,
+      product: null,
+      chargeAmount: null,
+      chargeFrequency: null,
+      dateOfFact: null,
+      summary:
+        `Recibí un PDF (${attachment.filename ?? "documento"}) pero por ahora solo puedo leer imágenes. Decile al ciudadano que abra el PDF y mande una captura de pantalla (Win+Shift+S o Cmd+Shift+4) de la página relevante.`,
+      evidenceQuality: "baja",
+      fileType: "pdf",
+    };
   }
 
   const client = getOpenRouterClient();

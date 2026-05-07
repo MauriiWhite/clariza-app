@@ -4,6 +4,7 @@
 
 "use client";
 
+import { useEffect, useRef } from "react";
 import type { ConsoleEvent } from "@/modules/agent/types";
 
 interface ConsoleProps {
@@ -17,6 +18,14 @@ export function Console({ events }: ConsoleProps) {
     (e) => e.type === "tool_call" || e.type === "tool_result" || e.type === "error",
   );
 
+  // Auto-scroll al ultimo evento cada vez que llega uno nuevo.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [consoleEvents.length]);
+
   return (
     <aside className="flex flex-col h-full glass-dark text-white rounded-lg overflow-hidden shadow-[0_8px_32px_rgba(15,19,32,0.12)]">
       <header className="px-4 py-3 border-b border-white/10 flex items-center gap-2 backdrop-blur-md">
@@ -26,7 +35,10 @@ export function Console({ events }: ConsoleProps) {
         </h2>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[13px]">
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[13px] scroll-smooth"
+      >
         {consoleEvents.length === 0 ? (
           <p className="text-white/40 text-center py-8 font-sans">
             Acá vas a ver al agente trabajando paso a paso.

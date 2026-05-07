@@ -1,14 +1,14 @@
 // Pagina principal del flujo conversacional.
-// Layout split: Chat (izquierda) + Consola del agente (derecha).
-// Cuando el agente termina y hay diagnostico, mostramos un CTA grande
-// "Ver mi caso paso a paso →" que guarda los datos en sessionStorage
-// y navega a /caso (wizard de 5 pasos).
+// Layout:
+//  - Desktop: split chat (3/5) + consola (2/5) lado a lado
+//  - Mobile: tabs Chat / Consola (toggleable) — la consola es el wow moment
+//    del agente trabajando, no se puede perder en mobile
 
 "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saveCase } from "@/modules/case/services/caseStorage";
 import { Chat } from "@/modules/chat/components/Chat";
 import { useChat } from "@/modules/chat/hooks/useChat";
@@ -21,10 +21,25 @@ export default function ChatPage() {
     useChat();
 
   const showResults = !isStreaming && (diagnosis || schedule);
+  const [mobileTab, setMobileTab] = useState<"chat" | "console">("chat");
 
-  // Guarda el snapshot del caso en sessionStorage cuando aparecen resultados,
-  // para que /caso pueda leerlo cuando el ciudadano apriete "Ver mi caso".
-  // Ref para evitar re-saves innecesarios.
+  // Auto-cambiar a tab Consola en mobile cuando empieza el stream — para que
+  // el ciudadano vea al agente trabajando. Vuelve a Chat al terminar.
+  const lastStreamingRef = useRef(false);
+  useEffect(() => {
+    if (isStreaming && !lastStreamingRef.current) {
+      // Empezo a streamear: solo cambiamos en mobile (no afecta desktop).
+      if (typeof window !== "undefined" && window.innerWidth < 1024) {
+        setMobileTab("console");
+      }
+    } else if (!isStreaming && lastStreamingRef.current) {
+      // Termino el stream: vuelve a chat para ver la respuesta final.
+      setMobileTab("chat");
+    }
+    lastStreamingRef.current = isStreaming;
+  }, [isStreaming]);
+
+  // Guarda snapshot del caso en sessionStorage para /caso.
   const lastSavedRef = useRef<string>("");
   useEffect(() => {
     if (!showResults) return;
@@ -39,11 +54,16 @@ export default function ChatPage() {
     router.push("/caso");
   };
 
+  // Cuenta de tool calls visibles para el badge del tab consola.
+  const toolCount = events.filter(
+    (e) => e.type === "tool_call" || e.type === "tool_result",
+  ).length;
+
   return (
     <div className="flex-1 flex flex-col">
-      {/* Top bar glass con boton volver explicito + brand */}
+      {/* Top bar glass — compacto en mobile (2 columnas: Volver + Brand) */}
       <header className="sticky top-0 z-50 glass">
-        <div className="mx-auto max-w-7xl px-6 py-3 md:px-8 flex items-center justify-between gap-4">
+        <div className="mx-auto max-w-7xl px-4 py-3 md:px-6 flex items-center justify-between gap-3">
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border-strong bg-paper/80 hover:bg-paper text-sm font-medium text-ink transition-colors"
@@ -63,7 +83,7 @@ export default function ChatPage() {
               <path d="M19 12H5" />
               <path d="m12 19-7-7 7-7" />
             </svg>
-            Volver
+            <span className="hidden sm:inline">Volver</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -73,45 +93,84 @@ export default function ChatPage() {
             </span>
           </div>
 
-          <span className="text-xs text-ink-3 hidden md:block text-right">
+          <span className="text-xs text-ink-3 hidden md:block text-right shrink-0">
             {diagnosis
               ? `${diagnosis.primaryRegulator} · ${diagnosis.procedure}`
-              : "Tu reclamo, paso a paso"}
+              : "Tu reclamo"}
           </span>
-          <span className="text-xs text-ink-3 md:hidden">
-            {diagnosis ? diagnosis.primaryRegulator : "Reclamo"}
-          </span>
+          {/* Spacer en mobile para mantener brand centrado */}
+          <span className="md:hidden w-15" aria-hidden />
         </div>
       </header>
 
-      {/* Split: chat + consola.
-          Cuando hay resultados, la altura se reduce para hacer espacio al CTA
-          de abajo sin que se solapen visualmente. */}
+      {/* Tabs solo en mobile */}
+      <div className="lg:hidden border-b border-border bg-paper/40">
+        <div className="mx-auto max-w-7xl px-4 flex">
+          <button
+            type="button"
+            onClick={() => setMobileTab("chat")}
+            className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
+              mobileTab === "chat"
+                ? "border-clay text-ink"
+                : "border-transparent text-ink-3"
+            }`}
+            aria-pressed={mobileTab === "chat"}
+          >
+            Chat
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileTab("console")}
+            className={`flex-1 py-3 text-sm font-semibold border-b-2 transition-colors flex items-center justify-center gap-2 ${
+              mobileTab === "console"
+                ? "border-clay text-ink"
+                : "border-transparent text-ink-3"
+            }`}
+            aria-pressed={mobileTab === "console"}
+          >
+            Consola
+            {toolCount > 0 && (
+              <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-clay text-cream text-[10px] font-bold">
+                {toolCount}
+              </span>
+            )}
+            {isStreaming && (
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Layout principal */}
       <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 space-y-4">
+        {/* Desktop: split. Mobile: solo el tab activo. */}
         <div
-          className={`grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-4 ${
+          className={`grid gap-4 ${
             showResults
               ? "lg:h-[calc(100vh-18rem)] lg:max-h-130"
-              : "lg:h-[calc(100vh-6rem)] lg:max-h-160"
-          }`}
+              : "lg:h-[calc(100vh-7rem)] lg:max-h-160"
+          } lg:grid-cols-[3fr_2fr] h-[calc(100vh-12rem)]`}
         >
-          <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
-          <Console events={events} />
+          <div className={mobileTab === "chat" ? "" : "hidden lg:block"}>
+            <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
+          </div>
+          <div className={mobileTab === "console" ? "" : "hidden lg:block"}>
+            <Console events={events} />
+          </div>
         </div>
 
-        {/* CTA "Ver mi caso" — sticky abajo para que siempre este visible
-            y nunca se confunda con el chat. */}
+        {/* CTA "Ver mi caso" sticky bottom cuando hay resultados. */}
         {showResults && (
           <section
             aria-label="Resultados disponibles"
             className="sticky bottom-4 z-30 animate-in slide-in-from-bottom duration-500"
           >
-            <div className="rounded-lg glass border-2 border-clay/40 p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-[0_12px_40px_rgba(204,120,92,0.18)]">
+            <div className="rounded-lg glass border-2 border-clay/40 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_12px_40px_rgba(204,120,92,0.18)]">
               <div className="flex flex-col gap-1 max-w-xl">
                 <p className="text-xs font-semibold uppercase tracking-wider text-clay">
                   Tu caso está listo · Paso 1 de 3 completado
                 </p>
-                <h2 className="font-serif text-xl md:text-2xl font-medium leading-tight">
+                <h2 className="font-serif text-lg md:text-xl font-medium leading-tight">
                   {diagnosis
                     ? `Va a ${diagnosis.primaryRegulator}. Vamos a presentarlo.`
                     : "Vamos a presentar tu reclamo."}

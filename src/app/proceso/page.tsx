@@ -3,9 +3,71 @@
 // entregable tecnico (uso de herramientas Anthropic) y como caso
 // de estudio publico.
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/modules/core/design-system/Button";
+
+/** Image con fallback: si no carga, muestra placeholder editorial.
+ *  Util mientras el equipo no suba el screenshot real a public/. */
+function ScreenshotWithFallback({
+  src,
+  alt,
+  priority,
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+}) {
+  const [errored, setErrored] = useState(false);
+
+  if (errored) {
+    return (
+      <div className="relative aspect-16/12 bg-cream flex flex-col items-center justify-center text-center px-8 py-12 gap-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-clay/10 text-clay">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="9" cy="9" r="2" />
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+          </svg>
+        </div>
+        <p className="font-serif text-xl text-ink">
+          Captura de pantalla pendiente
+        </p>
+        <p className="text-sm text-ink-3 max-w-md leading-relaxed">
+          El equipo agregará pronto un screenshot real del diálogo con
+          Claude Code mostrando cómo se construyó este módulo.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative aspect-16/12 bg-cream">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1200px"
+        className="object-contain"
+        priority={priority}
+        onError={() => setErrored(true)}
+      />
+    </div>
+  );
+}
 
 const SCREENSHOTS = [
   {
@@ -103,7 +165,7 @@ export default function ProcesoPage() {
         </div>
       </section>
 
-      {/* Screenshots */}
+      {/* Screenshots — placeholder elegante hasta que el equipo suba imagenes */}
       <section className="mx-auto max-w-6xl px-6 pb-24 md:px-12 space-y-12">
         <h2 className="font-serif text-3xl md:text-[40px] font-medium tracking-tight">
           Diálogo con Claude
@@ -114,16 +176,11 @@ export default function ProcesoPage() {
             key={idx}
             className="rounded-lg overflow-hidden border border-border bg-paper shadow-[0_8px_32px_rgba(26,31,46,0.08)]"
           >
-            <div className="relative aspect-[16/12] bg-cream">
-              <Image
-                src={shot.src}
-                alt={shot.alt}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1200px"
-                className="object-contain"
-                priority={idx === 0}
-              />
-            </div>
+            <ScreenshotWithFallback
+              src={shot.src}
+              alt={shot.alt}
+              priority={idx === 0}
+            />
             <figcaption className="px-6 py-5 border-t border-border">
               <p className="text-base text-ink-2 leading-relaxed">
                 {shot.caption}

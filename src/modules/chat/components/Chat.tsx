@@ -42,8 +42,12 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = draft.trim();
-    if (!trimmed || isStreaming) return;
-    onSend(trimmed, file);
+    // Permitimos enviar con texto O solo con archivo (caso: subir foto sin texto).
+    if ((!trimmed && !file) || isStreaming) return;
+    const message =
+      trimmed ||
+      (file ? `Te adjunto este documento (${file.name}) para que lo revises.` : "");
+    onSend(message, file);
     setDraft("");
     setFile(null);
   };
@@ -169,7 +173,7 @@ export function Chat({ events, isStreaming, onSend }: ChatProps) {
 
           <Button
             type="submit"
-            disabled={isStreaming || draft.trim().length === 0}
+            disabled={isStreaming || (!draft.trim() && !file)}
           >
             Enviar
           </Button>

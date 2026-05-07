@@ -84,40 +84,44 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Split: chat + consola — alturas mas compactas para no sentir vacio */}
-      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-4 lg:h-[calc(100vh-6rem)] lg:max-h-160">
+      {/* Split: chat + consola.
+          Cuando hay resultados, la altura se reduce para hacer espacio al CTA
+          de abajo sin que se solapen visualmente. */}
+      <div className="flex-1 mx-auto max-w-7xl w-full px-4 py-4 md:px-6 md:py-5 space-y-4">
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-4 ${
+            showResults
+              ? "lg:h-[calc(100vh-18rem)] lg:max-h-130"
+              : "lg:h-[calc(100vh-6rem)] lg:max-h-160"
+          }`}
+        >
           <Chat events={events} isStreaming={isStreaming} onSend={startTurn} />
           <Console events={events} />
         </div>
 
-        {/* Cuando hay resultados: un solo CTA grande para ir al wizard.
-            Reemplaza las cards apiladas (que ahora viven en /caso). */}
+        {/* CTA "Ver mi caso" — sticky abajo para que siempre este visible
+            y nunca se confunda con el chat. */}
         {showResults && (
           <section
             aria-label="Resultados disponibles"
-            className="animate-in fade-in duration-500"
+            className="sticky bottom-4 z-30 animate-in slide-in-from-bottom duration-500"
           >
-            <div className="rounded-lg bg-paper border border-border p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-[0_8px_32px_rgba(26,31,46,0.06)]">
-              <div className="flex flex-col gap-2 max-w-xl">
-                <p className="text-sm font-semibold uppercase tracking-wider text-clay">
-                  Tu caso está listo
+            <div className="rounded-lg glass border-2 border-clay/40 p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-[0_12px_40px_rgba(204,120,92,0.18)]">
+              <div className="flex flex-col gap-1 max-w-xl">
+                <p className="text-xs font-semibold uppercase tracking-wider text-clay">
+                  Tu caso está listo · Paso 1 de 3 completado
                 </p>
-                <h2 className="font-serif text-2xl md:text-[28px] font-medium leading-tight">
+                <h2 className="font-serif text-xl md:text-2xl font-medium leading-tight">
                   {diagnosis
-                    ? `Va a ${diagnosis.primaryRegulator}. Vamos paso a paso para presentarlo.`
-                    : "Vamos paso a paso para presentar tu reclamo."}
+                    ? `Va a ${diagnosis.primaryRegulator}. Vamos a presentarlo.`
+                    : "Vamos a presentar tu reclamo."}
                 </h2>
-                <p className="text-sm text-ink-2 leading-relaxed">
-                  En 5 pasos te guiamos: diagnóstico, plazos, reclamo formal,
-                  cómo contactar al regulador y cierre del caso.
-                </p>
               </div>
               <Button
                 onClick={handleVerCaso}
                 variant="primary"
                 size="lg"
-                className="shrink-0"
+                className="shrink-0 whitespace-nowrap"
               >
                 Ver mi caso →
               </Button>

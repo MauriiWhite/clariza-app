@@ -1,34 +1,42 @@
-// Cliente browser-side para magic link auth con Supabase.
-// Lo consume ReminderForm cuando el ciudadano activa recordatorios por email.
-
-"use client";
-
-import { createBrowserClient } from "@supabase/ssr";
-
-function getSupabaseClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-  return createBrowserClient(url, anonKey);
-}
+import { createClient } from "@/utils/supabase/client";
 
 /**
- * Envia un magic link al email del usuario para activar recordatorios.
- * El callback aterriza en /auth/callback?next=/console.
+ * Servicio de autenticación para enviar el Magic Link
+ * Se usa para activar los recordatorios de email (Hito de Mauricio)
  */
-export async function sendMagicLink(
-  email: string,
-  redirectTo: string,
-): Promise<void> {
-  const supabase = getSupabaseClient();
-  const { error } = await supabase.auth.signInWithOtp({
+export async function sendMagicLink(email: string, redirectTo: string) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: redirectTo,
-      shouldCreateUser: true,
     },
   });
 
   if (error) {
-    throw new Error(error.message);
+    console.error("Error sending magic link:", error);
+    throw error;
   }
+
+  return data;
+}
+
+export async function signOut() {
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error("Error signing out:", error);
+    throw error;
+  }
+}
+
+export async function getCurrentSession() {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.getSession();
+  if (error) {
+    console.error("Error getting session:", error);
+    throw error;
+  }
+  return data.session;
 }

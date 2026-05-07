@@ -105,7 +105,7 @@ export default function CerradoPage() {
             <p className="text-base text-ink-2 max-w-md leading-relaxed">
               Tu caso quedó en manos de{" "}
               <strong>{stored.diagnosis.primaryRegulator}</strong>. Por ley
-              tienen plazos para responderte. Si no lo hacen, podés escalarlo.
+              tienen plazos para responderte. Si no lo hacen, puedes escalarlo.
             </p>
           )}
         </div>
@@ -113,10 +113,10 @@ export default function CerradoPage() {
         {/* Recordatorios */}
         <div className="rounded-lg border border-border bg-cream/50 p-6 md:p-8">
           <p className="font-serif text-lg font-medium text-ink mb-2">
-            ¿Querés que te avisemos antes de que se venza el plazo?
+            ¿Quieres que te avisemos antes de que se venza el plazo?
           </p>
           <p className="text-sm text-ink-2 leading-relaxed mb-4">
-            Si activás recordatorios por email te mandamos avisos a 7, 3 y 1
+            Si activas recordatorios por email te mandamos avisos a 7, 3 y 1
             día del vencimiento legal del regulador.
           </p>
           <Link

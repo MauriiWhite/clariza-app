@@ -6,11 +6,46 @@ import type { ClaimDocument } from "@/modules/tools/draftClaim/types";
 import { DownloadButton } from "./DownloadButton";
 
 interface ReclamoPreviewProps {
-  claim: ClaimDocument;
+  claim?: ClaimDocument | null;
+  isLoading?: boolean;
   onDownload: () => void;
 }
 
-export function ReclamoPreview({ claim, onDownload }: ReclamoPreviewProps) {
+export function ReclamoPreview({ claim, isLoading, onDownload }: ReclamoPreviewProps) {
+  if (isLoading) {
+    return (
+      <div className="rounded-md border border-border bg-paper shadow-sm overflow-hidden flex flex-col h-full animate-pulse">
+        <div className="bg-cream border-b border-border/50 px-6 py-5">
+          <div className="h-8 bg-border w-1/3 mb-2 rounded"></div>
+          <div className="h-4 bg-border w-1/4 rounded"></div>
+        </div>
+        <div className="p-6">
+          <div className="h-64 bg-cream rounded-md mb-8"></div>
+          <div className="h-8 bg-cream w-1/4 mb-4 rounded"></div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="h-12 bg-cream rounded"></div>
+            <div className="h-12 bg-cream rounded"></div>
+            <div className="col-span-2 h-24 bg-cream rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!claim) {
+    return (
+      <div className="rounded-md border border-dashed border-border bg-paper p-8 text-center shadow-sm h-full flex flex-col items-center justify-center min-h-[300px]">
+        <svg className="h-12 w-12 text-ink-3 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 className="font-serif text-lg font-medium text-ink mb-2">Sin reclamo generado</h3>
+        <p className="text-ink-2 max-w-sm">
+          Aún no se ha redactado un reclamo formal. Conversa con Clariza para que genere el borrador.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-md border border-border bg-paper shadow-sm overflow-hidden flex flex-col h-full">
       <div className="bg-cream border-b border-border/50 px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -5,10 +5,25 @@ import React from "react";
 import type { DeadlineSchedule } from "@/modules/diagnosis/types";
 
 interface TimelineDeadlinesProps {
-  schedule: DeadlineSchedule;
+  schedule?: DeadlineSchedule | null;
+  isLoading?: boolean;
 }
 
-export function TimelineDeadlines({ schedule }: TimelineDeadlinesProps) {
+export function TimelineDeadlines({ schedule, isLoading }: TimelineDeadlinesProps) {
+  if (isLoading) {
+    return (
+      <div className="rounded-md border border-border bg-paper p-6 shadow-sm animate-pulse">
+        <div className="h-8 bg-cream w-1/3 mb-2 rounded"></div>
+        <div className="h-4 bg-cream w-1/4 mb-6 rounded"></div>
+        <div className="h-16 bg-cream rounded-md mb-6"></div>
+      </div>
+    );
+  }
+
+  if (!schedule) {
+    return null; // Si no hay data, ocultamos el componente.
+  }
+
   // Caso sin plazo legal estricto (ej: denuncia penal sin caducidad).
   if (
     schedule.totalBusinessDays === null ||

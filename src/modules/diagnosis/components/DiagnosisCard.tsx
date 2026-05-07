@@ -6,7 +6,8 @@ import React from "react";
 import type { RegulatoryDiagnosis } from "@/modules/diagnosis/types";
 
 interface DiagnosisCardProps {
-  diagnosis: RegulatoryDiagnosis;
+  diagnosis?: RegulatoryDiagnosis | null;
+  isLoading?: boolean;
 }
 
 const severityStyles: Record<RegulatoryDiagnosis["severity"], string> = {
@@ -42,7 +43,32 @@ function buildProcedureLabel(d: RegulatoryDiagnosis): string {
   return d.procedure;
 }
 
-export function DiagnosisCard({ diagnosis }: DiagnosisCardProps) {
+export function DiagnosisCard({ diagnosis, isLoading }: DiagnosisCardProps) {
+  if (isLoading) {
+    return (
+      <div className="rounded-md border border-border bg-paper p-6 shadow-sm animate-pulse">
+        <div className="h-8 bg-cream w-1/3 mb-2 rounded"></div>
+        <div className="h-4 bg-cream w-1/4 mb-6 rounded"></div>
+        <div className="h-32 bg-cream rounded-md mb-6"></div>
+        <div className="h-12 bg-cream w-48 rounded-md"></div>
+      </div>
+    );
+  }
+
+  if (!diagnosis) {
+    return (
+      <div className="rounded-md border border-dashed border-border bg-paper p-8 text-center shadow-sm">
+        <svg className="mx-auto h-12 w-12 text-ink-3 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 className="font-serif text-lg font-medium text-ink mb-2">Sin diagnóstico</h3>
+        <p className="text-ink-2 max-w-sm mx-auto">
+          Describe tu caso en el chat para que Clariza analice la normativa aplicable y determine el ente competente.
+        </p>
+      </div>
+    );
+  }
+
   const regulatorLabel = buildRegulatorLabel(diagnosis);
   const procedureLabel = buildProcedureLabel(diagnosis);
 

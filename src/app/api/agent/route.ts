@@ -26,9 +26,10 @@ import { getAgentStream } from "@/modules/chat/services/mockAgentStream";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Limite del archivo a procesar — protege la API y costos de Vision.
-// 10 MB cubre fotos de cartolas/contratos sin problema.
-const MAX_FILE_BYTES = 10 * 1024 * 1024;
+// Limite del archivo a procesar — alineado con el limite de Netlify Functions
+// (~6 MB de body multipart). El cliente comprime imagenes antes de subir
+// (ver imageCompression.ts) asi que rara vez deberia toparse con esto.
+const MAX_FILE_BYTES = 5 * 1024 * 1024;
 
 interface AgentRequest {
   userMessage: string;
@@ -95,13 +96,27 @@ async function parseRequest(req: Request): Promise<AgentRequest | { error: strin
     const conversationHistory = parseHistory(form.get("conversationHistory"));
 
     const file = form.get("file");
-    if (!(file instanceof File) || file.size === 0) {
+
+    // Caso 1: el form NO declara archivo en absoluto → siguen sin attachment.
+    if (!file) {
       return { userMessage, attachment: null, conversationHistory };
+    }
+
+    // Caso 2: vino el campo "file" pero esta vacio o no es File. Esto pasa
+    // cuando el body multipart fue cortado por exceder el limite de la
+    // plataforma (Netlify ~6 MB). En vez de seguir silenciosamente sin
+    // archivo (el ciudadano cree que se subio y queda confundido), devolvemos
+    // un error explicito que la UI muestra.
+    if (!(file instanceof File) || file.size === 0) {
+      return {
+        error:
+          "El archivo no llegó al servidor. Suele pasar con fotos pesadas (>6 MB). Probá sacar otra foto con menos zoom o tomar captura de pantalla.",
+      };
     }
 
     if (file.size > MAX_FILE_BYTES) {
       return {
-        error: `Archivo demasiado grande (${Math.round(file.size / 1024 / 1024)} MB). Máximo 10 MB.`,
+        error: `Archivo de ${Math.round(file.size / 1024 / 1024)} MB es muy grande. Máximo 5 MB. Probá una captura de pantalla en vez de la foto original.`,
       };
     }
 

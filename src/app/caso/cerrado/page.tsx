@@ -14,6 +14,13 @@ import {
   type StoredCase,
 } from "@/modules/case/services/caseStorage";
 import { Button } from "@/modules/core/design-system/Button";
+import { ReminderForm } from "@/modules/reminders/components/ReminderForm";
+
+const ES_CL_DATE: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+};
 
 export default function CerradoPage() {
   const router = useRouter();
@@ -52,13 +59,30 @@ export default function CerradoPage() {
     );
   }
 
-  const formattedDate = stored.contactedAt
-    ? new Date(stored.contactedAt).toLocaleDateString("es-CL", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+  const formattedContactedDate = stored.contactedAt
+    ? new Date(stored.contactedAt).toLocaleDateString("es-CL", ES_CL_DATE)
     : null;
+
+  // Fecha legal de vencimiento del regulador (si la tenemos del schedule).
+  // Eso es CUANDO la respuesta deberia llegar — la usamos para proyectar al
+  // futuro, no dejar al ciudadano sin saber que esperar.
+  const formattedDeadline = stored.schedule?.deadlineDate
+    ? new Date(stored.schedule.deadlineDate).toLocaleDateString(
+        "es-CL",
+        ES_CL_DATE,
+      )
+    : null;
+
+  // Fecha sugerida de seguimiento — 7 dias antes del vencimiento legal,
+  // alineada con el primer recordatorio que mandariamos por email.
+  const followupDate =
+    stored.schedule?.deadlineDate &&
+    (() => {
+      const deadline = new Date(stored.schedule.deadlineDate);
+      const followup = new Date(deadline);
+      followup.setDate(followup.getDate() - 7);
+      return followup.toLocaleDateString("es-CL", ES_CL_DATE);
+    })();
 
   return (
     <CaseShell currentStep={3} completedSteps={[1, 2]}>
@@ -94,9 +118,9 @@ export default function CerradoPage() {
             <p className="font-serif text-2xl md:text-3xl font-medium text-ink">
               ¡Listo, tu reclamo está presentado!
             </p>
-            {formattedDate && (
+            {formattedContactedDate && (
               <p className="text-sm text-ink-3">
-                Marcado como presentado el {formattedDate}
+                Marcado como presentado el {formattedContactedDate}
               </p>
             )}
           </div>
@@ -110,22 +134,57 @@ export default function CerradoPage() {
           )}
         </div>
 
-        {/* Recordatorios */}
+        {/* Linea de tiempo proyectada — fechas concretas para que el
+            ciudadano sepa QUE esperar y CUANDO. Solo cuando hay schedule. */}
+        {(formattedDeadline || followupDate) && (
+          <div className="rounded-lg border border-clay/30 bg-clay/5 p-6 md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-wider text-clay mb-3">
+              Próximas fechas
+            </p>
+            <div className="flex flex-col gap-3 text-sm">
+              {followupDate && (
+                <div className="flex items-start gap-3">
+                  <span className="inline-block w-2 h-2 rounded-full bg-clay mt-2 shrink-0" />
+                  <div>
+                    <p className="font-semibold text-ink">{followupDate}</p>
+                    <p className="text-ink-2 leading-relaxed">
+                      Si no hay respuesta a 7 días del vencimiento, te
+                      sugerimos hacer seguimiento al regulador.
+                    </p>
+                  </div>
+                </div>
+              )}
+              {formattedDeadline && (
+                <div className="flex items-start gap-3">
+                  <span className="inline-block w-2 h-2 rounded-full bg-error mt-2 shrink-0" />
+                  <div>
+                    <p className="font-semibold text-ink">
+                      {formattedDeadline}
+                    </p>
+                    <p className="text-ink-2 leading-relaxed">
+                      Vencimiento legal del plazo para que{" "}
+                      {stored.diagnosis?.primaryRegulator ?? "el regulador"} te
+                      responda. Pasada esa fecha sin respuesta, puedes
+                      escalar.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Recordatorios — ReminderForm inline (antes era link a /preview).
+            La feature en si esta detras de Supabase Auth via magic link. */}
         <div className="rounded-lg border border-border bg-cream/50 p-6 md:p-8">
           <p className="font-serif text-lg font-medium text-ink mb-2">
             ¿Quieres que te avisemos antes de que se venza el plazo?
           </p>
-          <p className="text-sm text-ink-2 leading-relaxed mb-4">
+          <p className="text-sm text-ink-2 leading-relaxed mb-5">
             Si activas recordatorios por email te mandamos avisos a 7, 3 y 1
             día del vencimiento legal del regulador.
           </p>
-          <Link
-            href="/preview/reminders"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-clay hover:underline"
-          >
-            Activar recordatorios
-            <span aria-hidden>→</span>
-          </Link>
+          <ReminderForm />
         </div>
 
         {/* Acciones de cierre */}

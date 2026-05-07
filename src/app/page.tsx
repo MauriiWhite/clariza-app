@@ -52,9 +52,15 @@ export default function Home() {
             </Button>
           </div>
 
-          <p className="text-sm text-ink-3 pt-8 max-w-xl leading-relaxed">
-            Normativa real de CMF, SERNAC y BCN · Sin login · Sin app que
-            descargar
+          {/* Microcopy bajo el CTA — explica que pasa al apretar y baja la
+              fricción ("¿me va a pedir mi RUT? ¿cuánto tarda?"). */}
+          <p className="text-sm text-ink-2 max-w-xl leading-relaxed">
+            Una conversación de 3 a 5 minutos. Sin login, sin descargar nada.
+            Tus datos quedan en tu dispositivo.
+          </p>
+
+          <p className="text-xs text-ink-3 pt-2 max-w-xl leading-relaxed">
+            Normativa real de CMF, SERNAC y BCN
           </p>
         </div>
       </section>
@@ -145,7 +151,27 @@ export default function Home() {
               Biblioteca del Congreso Nacional o a la CMF. Si no la tiene a
               mano, lo dice — nunca inventa.
             </p>
-            <ul className="text-sm text-ink-2 leading-relaxed space-y-1.5 pt-2">
+            {/* Lista plegada por defecto — para no abrumar al ciudadano que
+                quiere arrancar. Auditable en un click si hace falta. */}
+            <details className="group pt-2">
+              <summary className="cursor-pointer list-none inline-flex items-center gap-2 text-sm font-semibold text-clay hover:underline">
+                <span>Ver las 9 leyes que cita Clariza</span>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                  className="transition-transform group-open:rotate-180"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </summary>
+              <ul className="text-sm text-ink-2 leading-relaxed space-y-1.5 mt-3">
               <li>
                 <a
                   href="https://www.bcn.cl/leychile/navegar?idNorma=1187323"
@@ -236,7 +262,8 @@ export default function Home() {
                   Ley 21.663 — Marco de Ciberseguridad (ANCI)
                 </a>
               </li>
-            </ul>
+              </ul>
+            </details>
           </div>
 
           {/* Privacidad */}
